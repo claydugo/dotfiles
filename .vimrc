@@ -1,0 +1,87 @@
+"""""""""""""""""""""""""""""""""""""
+"         .vimrc - 1-/16/19         "
+"            -Clay Dugo-            "
+"       dotfiles@m.claydugo.com     "
+"""""""""""""""""""""""""""""""""""""
+
+
+" Auto install vim-plug if It's missing
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+call plug#begin()
+Plug 'altercation/vim-colors-solarized' 
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'scrooloose/nerdtree'
+Plug 'junegunn/fzf'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-surround'
+Plug 'mhinz/vim-startify'
+Plug 'vimwiki/vimwiki'
+Plug 'edkolev/tmuxline.vim'
+call plug#end()
+
+
+set encoding=utf-8
+let mapleader = ","
+set backspace=indent,eol,start
+
+set hidden
+set nobackup
+set nowritebackup
+set noswapfile
+
+set cmdheight=2
+set updatetime=300
+
+set ignorecase
+set incsearch
+set hlsearch 
+
+set history=50
+set ruler         
+set showcmd      
+set laststatus=0
+set autowrite     
+set modelines=0   
+set nomodeline
+
+set relativenumber
+set noshowmode
+set tabstop=2                          " Width of a tab character
+set softtabstop=2                      " Tab length is 2 space
+set shiftwidth=2                       " Tab length is 2 space
+set smartindent                        " Add extra indent if new block started
+set autoindent                         " Use current lines indent for new line
+set expandtab                          " Insert <space> instead of tab
+set smarttab
+
+
+
+map <C-f> :NERDTreeToggle<CR>
+
+call togglebg#map("<F5>")
+
+set background=light
+colorscheme solarized 
+
+
+" Use tab for trigger completion with characters ahead and navigate.
+" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+

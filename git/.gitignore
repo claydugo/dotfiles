@@ -1,0 +1,35 @@
+# Compiled source
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Compressed Files 
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Node
+npm-debug.log
+
+# Log Files
+*.log
+
+# Mac Shit 
+.DS_Store
+.MacOSX
+.Trash
+Desktop.ini
+
+# Swap Files
+*.swp
+
+
+
