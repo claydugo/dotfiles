@@ -1,5 +1,5 @@
 """""""""""""""""""""""""""""""""""""
-"         .vimrc - 1-/16/19         "
+"         .vimrc - 10/22/19         "
 "            -Clay Dugo-            "
 "       dotfiles@m.claydugo.com     "
 """""""""""""""""""""""""""""""""""""
@@ -53,12 +53,12 @@ set nomodeline
 
 set relativenumber
 set noshowmode
-set tabstop=2                          " Width of a tab character
-set softtabstop=2                      " Tab length is 2 space
-set shiftwidth=2                       " Tab length is 2 space
-set smartindent                        " Add extra indent if new block started
-set autoindent                         " Use current lines indent for new line
-set expandtab                          " Insert <space> instead of tab
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
+set smartindent
+set autoindent
+set expandtab
 set smarttab
 
 
@@ -70,6 +70,11 @@ call togglebg#map("<F5>")
 set background=light
 colorscheme solarized 
 
+" Disable arrow keys to try to kick the habit
+noremap <Up> <Nop>
+noremap <Down> <Nop>
+noremap <Left> <Nop>
+noremap <Right> <Nop>
 
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
