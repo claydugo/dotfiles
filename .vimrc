@@ -1,6 +1,6 @@
-"""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""
 "         .vimrc - 10/22/19         "
-"            -Clay Dugo-            "
+"           - Clay Dugo -           "
 "       dotfiles@m.claydugo.com     "
 """""""""""""""""""""""""""""""""""""
 
@@ -11,6 +11,7 @@ if empty(glob('~/.vim/autoload/plug.vim'))
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
+
 
 call plug#begin()
 Plug 'altercation/vim-colors-solarized' 

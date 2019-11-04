@@ -36,13 +36,15 @@ alias ...='cd ../../'
 alias ....='cd ../../../'
 alias .....='cd ../../../../'
 alias ls='ls -la'
-alias md='mkdir'
+alias lsg='ls | grep'
 alias cl='clear'
+alias md='mkdir'
 alias zshrc="nvim ~/.zshrc"
 alias vimrc="nvim ~/.vimrc"
 alias tmuxrc="nvim ~/.tmux.conf"
 alias top="htop"
 alias qq="exit"
+alias :q='exit'
 alias f="open ."
 alias p="python3"
 alias v="nvim"
@@ -53,6 +55,9 @@ alias ga="git add"
 alias gs="git status -s"
 alias gsl="git status"
 alias gd="git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
+alias brewu='brew update && brew upgrade && brew cleanup && brew doctor'
+alias afk='/System/Library/CoreServices/Menu\ Extras/User.menu/Contents/Resources/CGSession -suspend'
+
 
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
