@@ -42,6 +42,7 @@ alias md='mkdir'
 alias zshrc="nvim ~/.zshrc"
 alias vimrc="nvim ~/.vimrc"
 alias tmuxrc="nvim ~/.tmux.conf"
+alias dotfiles="cd  ~/dotfiles/"
 alias top="htop"
 alias qq="exit"
 alias :q='exit'
