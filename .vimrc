@@ -89,7 +89,7 @@ autocmd! User GoyoLeave Limelight!
 
 " Plugin Configuration
 let g:startify_bookmarks = [ {'v': '~/.vimrc'}, '~/.zshrc', '~/.tmux.conf', '~/dotfiles', '~/vimwiki' ]
-let g:limelight_conceal_ctermfg = 240
+let g:limelight_conceal_ctermfg = 253
 
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
