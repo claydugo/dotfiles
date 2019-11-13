@@ -27,7 +27,7 @@ ZSH_TMUX_AUTOSTART="true"
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='vim'
 else
-  export EDITOR='mvim'
+  export EDITOR='nvim'
 fi
 
 source ~/dotfiles/.aliases
