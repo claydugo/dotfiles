@@ -1,5 +1,5 @@
 """"""""""""""""""""""""""""""""""""
-"         .vimrc - 11/14/19         "
+"         .vimrc - 01/29/20         "
 "           - Clay Dugo -           "
 "       dotfiles@m.claydugo.com     "
 """""""""""""""""""""""""""""""""""""
@@ -30,8 +30,9 @@ Plug 'mhinz/vim-startify'
 Plug 'vimwiki/vimwiki'
 Plug 'edkolev/tmuxline.vim'
 Plug 'dense-analysis/ale'
+Plug 'vim/killersheep'
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 call plug#end()
-
 
 set encoding=utf-8
 let mapleader = ","
@@ -71,8 +72,6 @@ set smarttab
 
 map <C-f> :NERDTreeToggle<CR>
 
-call togglebg#map("<F5>")
-
 set background=light
 colorscheme solarized 
 
@@ -88,7 +87,7 @@ autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
 
 " Plugin Configuration
-let g:startify_bookmarks = [ {'v': '~/.vimrc'}, '~/.zshrc', '~/.tmux.conf', '~/dotfiles', '~/vimwiki' ]
+let g:startify_bookmarks = [ {'v': '~/.vimrc'}, {'z': '~/.zshrc'}, {'t': '~/.tmux.conf'}, {'d': '~/dotfiles'}, {'w': '~/vimwiki/index.wiki'} ]
 let g:startify_custom_header = [
     \ '    ____ _               ____                    ',
     \ '   / ___| | __ _ _   _  |  _ \ _   _  __ _  ___  ',
@@ -101,6 +100,7 @@ let g:startify_custom_header = [
     \ '',
     \ ]
 let g:limelight_conceal_ctermfg = 253
+nmap <C-p> <Plug>MarkdownPreviewToggle
 
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
