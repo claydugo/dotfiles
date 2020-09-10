@@ -1,5 +1,5 @@
 """"""""""""""""""""""""""""""""""""
-"         .vimrc - 01/29/20         "
+"         .vimrc - 09/10/20         "
 "           - Clay Dugo -           "
 "       dotfiles@m.claydugo.com     "
 """""""""""""""""""""""""""""""""""""
@@ -32,6 +32,7 @@ Plug 'edkolev/tmuxline.vim'
 Plug 'dense-analysis/ale'
 Plug 'vim/killersheep'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
+Plug 'sbdchd/neoformat'
 call plug#end()
 
 set encoding=utf-8
@@ -68,18 +69,10 @@ set autoindent
 set expandtab
 set smarttab
 
-
-
 map <C-f> :NERDTreeToggle<CR>
 
 set background=light
 colorscheme solarized 
-
-" Disable arrow keys to try to kick the habit
-noremap <Up> <Nop>
-noremap <Down> <Nop>
-noremap <Left> <Nop>
-noremap <Right> <Nop>
 
 " Goyo Toggle, Enable Limelight when Entering Goyo
 nnoremap <Leader>gy :Goyo<CR>

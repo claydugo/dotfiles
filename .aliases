@@ -39,5 +39,6 @@ alias hsp='hugo server --renderToDisk --disableFastRender'
 alias j='java'
 alias jc='javac'
 alias pls='sudo $(history -p !!)'
-alias did="vim +'normal Go' +'r!date' ~/vimwiki/did.md"
+alias did="nvim +'normal Go' +'r!date' ~/vimwiki/did.md"
 alias ta="tmux a"
+alias venv=". venv/bin/activate"
