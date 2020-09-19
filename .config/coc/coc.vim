@@ -1,0 +1,1 @@
+/Users/clay/.config/coc/coc.vim

@@ -1,9 +1,6 @@
 """"""""""""""""""""""""""""""""""""
 "         .vimrc - 09/10/20         "
-"           - Clay Dugo -           "
-"       dotfiles@m.claydugo.com     "
 """""""""""""""""""""""""""""""""""""
-
 
 " Auto install vim-plug if It's missing
 if empty(glob('~/.vim/autoload/plug.vim'))
@@ -11,7 +8,6 @@ if empty(glob('~/.vim/autoload/plug.vim'))
     \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
-
 
 call plug#begin()
 Plug 'altercation/vim-colors-solarized' 
@@ -30,7 +26,6 @@ Plug 'mhinz/vim-startify'
 Plug 'vimwiki/vimwiki'
 Plug 'edkolev/tmuxline.vim'
 Plug 'dense-analysis/ale'
-Plug 'vim/killersheep'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'sbdchd/neoformat'
 call plug#end()

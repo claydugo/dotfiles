@@ -42,3 +42,4 @@ alias pls='sudo $(history -p !!)'
 alias did="nvim +'normal Go' +'r!date' ~/vimwiki/did.md"
 alias ta="tmux a"
 alias venv=". venv/bin/activate"
+alias sato="ssh cjd4753@satoshi.cis.uncw.edu"

@@ -1,7 +1,5 @@
 ############################
-#     .zshrc - 11/10/19    #
-#      - Clay Dugo -       #
-#  dotfiles@m.claydugo.com #
+#     .zshrc - 09/19/20    #
 ############################
 
 export ZSH="/Users/clay/.oh-my-zsh"
@@ -12,7 +10,6 @@ ZSH_THEME="agnoster-light"
 COMPLETION_WAITING_DOTS="true"
 
 source $ZSH/oh-my-zsh.sh
-
 
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='nvim'
