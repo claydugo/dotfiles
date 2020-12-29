@@ -6,7 +6,7 @@ export ZSH="/Users/clay/.oh-my-zsh"
 export EDITOR="nvim"
 
 # https://github.com/mkolosick/agnoster-light/blob/master/agnoster-light.zsh-theme
-ZSH_THEME="agnoster-light" 
+ZSH_THEME="agnoster" 
 COMPLETION_WAITING_DOTS="true"
 
 source $ZSH/oh-my-zsh.sh
@@ -21,7 +21,7 @@ source ~/dotfiles/.aliases
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-eval $(thefuck --alias)
-
 # opam configuration
 test -r /Users/clay/.opam/opam-init/init.zsh && . /Users/clay/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+export PATH="/opt/homebrew/bin:$PATH"
+export PATH="$HOME/bin:$PATH"

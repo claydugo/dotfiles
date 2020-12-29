@@ -13,7 +13,6 @@ call plug#begin()
 Plug 'altercation/vim-colors-solarized' 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
 Plug 'scrooloose/nerdtree'
 Plug 'junegunn/fzf'
 Plug 'junegunn/goyo.vim'
@@ -64,10 +63,11 @@ set autoindent
 set expandtab
 set smarttab
 
-map <C-f> :NERDTreeToggle<CR>
+set ttimeout
+set ttimeoutlen=100
+set timeoutlen=1000
 
-set background=light
-colorscheme solarized 
+map <C-f> :NERDTreeToggle<CR>
 
 " Goyo Toggle, Enable Limelight when Entering Goyo
 nnoremap <Leader>gy :Goyo<CR>
