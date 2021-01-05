@@ -1,5 +1,5 @@
 #!/bin/zsh
 # WIP but nice to start my startpage and my default terminal on startup. Will probably throw IRC in here eventually
 tmux new-session -d -c ~/proj/startpage/public -n startpage \; send-keys "python3 -m http.server 63456" Enter
-tmux new-session -d -c ~/vimwiki/ -n vimwiki \; send-keys "v index.wiki" Enter 
+tmux new-session -d -c ~/ -n vimwiki \; send-keys "v ~/vimwiki/index.wiki" Enter 
 tmux new-window

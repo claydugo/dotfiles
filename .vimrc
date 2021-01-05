@@ -13,6 +13,7 @@ call plug#begin()
 Plug 'altercation/vim-colors-solarized' 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'scrooloose/nerdtree'
 Plug 'junegunn/fzf'
 Plug 'junegunn/goyo.vim'
@@ -27,7 +28,10 @@ Plug 'edkolev/tmuxline.vim'
 Plug 'dense-analysis/ale'
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 Plug 'sbdchd/neoformat'
+Plug 'dracula/vim', { 'as': 'dracula' }
 call plug#end()
+
+let g:airline_theme='dracula'
 
 set encoding=utf-8
 let mapleader = ","
