@@ -26,3 +26,9 @@ source ~/dotfiles/.aliases
 test -r /Users/clay/.opam/opam-init/init.zsh && . /Users/clay/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH="$HOME/bin:$PATH"
+
+# Created by `userpath` on 2021-01-18 16:08:27
+export PATH="$PATH:/Users/clay/.local/bin"
+
+# Created by `userpath` on 2021-01-18 16:08:27
+export PATH="$PATH:/Users/clay/Library/Python/3.8/bin"

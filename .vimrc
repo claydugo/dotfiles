@@ -1,5 +1,5 @@
 """"""""""""""""""""""""""""""""""""
-"         .vimrc - 09/10/20         "
+"         .vimrc - 01/27/21         "
 """""""""""""""""""""""""""""""""""""
 
 " Auto install vim-plug if It's missing
@@ -10,25 +10,19 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 call plug#begin()
-Plug 'altercation/vim-colors-solarized' 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'scrooloose/nerdtree'
-Plug 'junegunn/fzf'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 Plug 'junegunn/vim-easy-align'
-Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'mhinz/vim-startify'
 Plug 'vimwiki/vimwiki'
 Plug 'edkolev/tmuxline.vim'
-Plug 'dense-analysis/ale'
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
-Plug 'sbdchd/neoformat'
 Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'tomlion/vim-solidity'
 call plug#end()
 
 let g:airline_theme='dracula'
