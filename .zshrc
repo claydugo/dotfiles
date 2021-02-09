@@ -5,6 +5,7 @@
 export ZSH="/Users/clay/.oh-my-zsh"
 export EDITOR="nvim"
 export PYTHONPATH="/usr/local/Cellar/python/3.9.0/bin/python3:$PYTHONPATH"
+export PATH=$PATH:/usr/local/smlnj/bin
 
 # https://github.com/mkolosick/agnoster-light/blob/master/agnoster-light.zsh-theme
 ZSH_THEME="agnoster" 
