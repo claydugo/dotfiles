@@ -5,7 +5,7 @@
 export ZSH="/Users/clay/.oh-my-zsh"
 export EDITOR="nvim"
 export PYTHONPATH="/usr/local/Cellar/python/3.9.0/bin/python3:$PYTHONPATH"
-export PATH=$PATH:/usr/local/smlnj/bin
+export PATH="$HOME/.npm-global/bin:$PATH"
 
 # https://github.com/mkolosick/agnoster-light/blob/master/agnoster-light.zsh-theme
 ZSH_THEME="agnoster" 
@@ -23,6 +23,11 @@ source ~/dotfiles/.aliases
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# edits do not persist through sudo updates
+enable-sudo-touchid() {
+    sudo sed -i -e '1s;^;auth       sufficient     pam_tid.so\n;' /etc/pam.d/sudo
+}
+
 # opam configuration
 test -r /Users/clay/.opam/opam-init/init.zsh && . /Users/clay/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
 export PATH="/opt/homebrew/bin:$PATH"
@@ -31,5 +36,5 @@ export PATH="$HOME/bin:$PATH"
 # Created by `userpath` on 2021-01-18 16:08:27
 export PATH="$PATH:/Users/clay/.local/bin"
 
-# Created by `userpath` on 2021-01-18 16:08:27
-export PATH="$PATH:/Users/clay/Library/Python/3.8/bin"
+# More bloat from programming languages class
+export GROOVY_HOME=/opt/homebrew/opt/groovy/libexec
