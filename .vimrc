@@ -23,6 +23,7 @@ Plug 'vimwiki/vimwiki'
 Plug 'edkolev/tmuxline.vim'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'tomlion/vim-solidity'
+Plug 'preservim/nerdtree'
 call plug#end()
 
 let g:airline_theme='dracula'
@@ -73,6 +74,9 @@ autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
 
 " Plugin Configuration
+let g:vimwiki_global_ext = 0
+let g:vimwiki_list = [{'path': $HOME . '/vimwiki',
+  \ 'syntax': 'markdown', 'ext': '.md'}]
 let g:startify_bookmarks = [ {'v': '~/.vimrc'}, {'z': '~/.zshrc'}, {'t': '~/.tmux.conf'}, {'d': '~/dotfiles'}, {'w': '~/vimwiki/index.wiki'} ]
 let g:startify_custom_header = [
     \ '    ____ _               ____                    ',

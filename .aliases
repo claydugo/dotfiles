@@ -44,3 +44,4 @@ alias pls='sudo $(history -p !!)'
 alias did="nvim +'normal Go' +'r!date' ~/vimwiki/did.md"
 alias ta="tmux a"
 alias venv=". venv/bin/activate"
+alias obsi="cd ~/Library/Mobile\ Documents/iCloud~md~obsidian/Documents/Main"
