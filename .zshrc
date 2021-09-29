@@ -5,7 +5,6 @@
 export ZSH="/Users/clay/.oh-my-zsh"
 export EDITOR="nvim"
 export PYTHONPATH="/usr/local/Cellar/python/3.9.0/bin/python3:$PYTHONPATH"
-export PATH="$HOME/.npm-global/bin:$PATH"
 
 # https://github.com/mkolosick/agnoster-light/blob/master/agnoster-light.zsh-theme
 ZSH_THEME="agnoster" 
@@ -36,5 +35,3 @@ export PATH="$HOME/bin:$PATH"
 # Created by `userpath` on 2021-01-18 16:08:27
 export PATH="$PATH:/Users/clay/.local/bin"
 
-# More bloat from programming languages class
-export GROOVY_HOME=/opt/homebrew/opt/groovy/libexec
