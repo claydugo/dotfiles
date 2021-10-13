@@ -2,6 +2,8 @@
 # Now that I have had to do this more than once
 # because the league / TFT client just stops working
 # I'm just making a script so I no longer need to google it
+# Deleting these files prevents client from refusing to open
+# as well as the need to reinstall entire 10gb game
 rm -rf /Users/Shared/Riot\ Games/
 rm -rf /Library/Application\ Support/Riot\ Games/
 
