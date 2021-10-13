@@ -57,9 +57,12 @@ set laststatus=0
 set autowrite     
 set modelines=0   
 set nomodeline
-
 set relativenumber
 set noshowmode
+
+set visualbell
+set showmatch
+
 set tabstop=2
 set softtabstop=2
 set shiftwidth=2
@@ -83,7 +86,7 @@ autocmd! User GoyoLeave Limelight!
 let g:vimwiki_global_ext = 0
 let g:vimwiki_list = [{'path': $HOME . '/vimwiki',
   \ 'syntax': 'markdown', 'ext': '.md'}]
-let g:startify_bookmarks = [ {'v': '~/.vimrc'}, {'z': '~/.zshrc'}, {'t': '~/.tmux.conf'}, {'d': '~/dotfiles'}, {'w': '~/vimwiki/index.wiki'} ]
+let g:startify_bookmarks = [ {'v': '~/.vimrc'}, {'z': '~/.zshrc'}, {'t': '~/.tmux.conf'}, {'d': '~/dotfiles'}, {'w': '~/vimwiki/index.md'} ]
 let g:startify_custom_header = [
     \ '    ____ _               ____                    ',
     \ '   / ___| | __ _ _   _  |  _ \ _   _  __ _  ___  ',
@@ -96,7 +99,6 @@ let g:startify_custom_header = [
     \ '',
     \ ]
 let g:limelight_conceal_ctermfg = 253
-nmap <C-p> <Plug>MarkdownPreviewToggle
 
 function! s:check_back_space() abort
   let col = col('.') - 1
@@ -106,7 +108,7 @@ endfunction
 " Make double-<Esc> clear search highlights
 nnoremap <silent> <Esc><Esc> <Esc>:nohlsearch<CR><Esc>
 
-" Hopefully working LSP shit
+" LSP shit
 lua <<EOF
   -- Setup nvim-cmp.
   local cmp = require'cmp'
@@ -130,6 +132,7 @@ lua <<EOF
       ['<C-Space>'] = cmp.mapping.complete(),
       ['<C-e>'] = cmp.mapping.close(),
       ['<CR>'] = cmp.mapping.confirm({ select = true }),
+      ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' })
     },
     sources = {
       { name = 'nvim_lsp' },
