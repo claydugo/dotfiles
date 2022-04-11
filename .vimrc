@@ -28,6 +28,8 @@ Plug 'edkolev/tmuxline.vim'
 Plug 'dracula/vim', { 'as': 'dracula' }
 "Plug 'tomlion/vim-solidity'
 Plug 'preservim/nerdtree'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
 call plug#end()
 
 let g:airline_theme='dracula'
@@ -57,7 +59,8 @@ set laststatus=0
 set autowrite     
 set modelines=0   
 set nomodeline
-set relativenumber
+set number relativenumber
+set nu rnu
 set noshowmode
 
 set visualbell
@@ -107,6 +110,12 @@ endfunction
 
 " Make double-<Esc> clear search highlights
 nnoremap <silent> <Esc><Esc> <Esc>:nohlsearch<CR><Esc>
+
+" Find files using Telescope command-line sugar.
+nnoremap <leader>ff <cmd>Telescope find_files<cr>
+nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+nnoremap <leader>fb <cmd>Telescope buffers<cr>
+nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 
 " LSP shit
 lua <<EOF

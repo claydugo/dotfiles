@@ -7,7 +7,9 @@ export EDITOR="nvim"
 export PYTHONPATH="/usr/local/Cellar/python/3.9.0/bin/python3:$PYTHONPATH"
 
 # https://github.com/mkolosick/agnoster-light/blob/master/agnoster-light.zsh-theme
-ZSH_THEME="agnoster" 
+#ZSH_THEME="agnoster" 
+ZSH_THEME="robbyrussell" 
+
 COMPLETION_WAITING_DOTS="true"
 
 source $ZSH/oh-my-zsh.sh
@@ -35,3 +37,4 @@ export PATH="$HOME/bin:$PATH"
 # Created by `userpath` on 2021-01-18 16:08:27
 export PATH="$PATH:/Users/clay/.local/bin"
 
+export PATH="$PATH:/Users/clay/.cargo/bin"
