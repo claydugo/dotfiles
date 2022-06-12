@@ -5,7 +5,8 @@ cmp.setup({
     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
-    ['<C-e>'] = cmp.mapping.close(),
+    -- ['<C-e>'] = cmp.mapping.close(),
+    ['<C-e>'] = cmp.mapping.abort(),
     ['<CR>'] = cmp.mapping.confirm({ select = true }),
     ['<Tab>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
     ['<S-Tab>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' })
@@ -16,18 +17,33 @@ cmp.setup({
   }
 })
 
-local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-
--- Setup lspconfig for pyright.
-require('lspconfig').pyright.setup {
-    capabilities = capabilities,
+-- install language servers
+require'nvim-lsp-installer'.setup {
+  automatic_installation = true
 }
+
+local capabilities = require'cmp_nvim_lsp'.update_capabilities(vim.lsp.protocol.make_client_capabilities())
+local on_init = function(client)
+    client.config.flags = {}
+    if client.config.flags then
+      client.config.flags.allow_incremental_sync = true
+      client.config.flags.debounce_text_changes = 200
+    end
+end
+local lspconfig = require'lspconfig'
+
+lspconfig.pyright.setup{capabilities = capabilities, on_init = on_init;}
+lspconfig.sumneko_lua.setup{capabilities = capabilities, on_init = on_init;}
+-- npm i -g bash-language-server
+lspconfig.bashls.setup{capabilities = capabilities, on_init = on_init;}
+
+require"fidget".setup{}
 
 --
 require'nvim-web-devicons'.setup{default = true;}
 
 require'nvim-treesitter.configs'.setup {
-    ensure_installed = { "python", "lua", "bash", "json", "yaml"},
+    ensure_installed = { "python", "lua", "bash"},
     highlight = {
         enable = true,
     }
@@ -41,12 +57,16 @@ tele.setup{
             '%.jpg',
             '%.jpeg',
             '%.png',
+            '%.mp4',
             '%.nc',
             '%.tif',
+            '%.bmp',
             '%.cpython',
             '%.ui',
             '%.fig',
             '%.ttf',
+            '%.pdf',
+            '%.bin',
             '.git',
         },
         mappings = {
@@ -61,35 +81,56 @@ tele.setup{
                 ['<ESC.'] = actions.close,
             }
         },
+        vimgrep_arguments = {
+            'rg',
+            '--color=never',
+            '--no-heading',
+            '--with-filename',
+            '--line-number',
+            '--column',
+            '--smart-case',
+            '--hidden',
+        },
         color_devicons = false,
         shorten_path = true,
-    },
-    extensions = {
-        frecency = {
-            show_scores = true,
-            show_unindexed = true,
-            ignore_patterns = {"*.git/*", "*/tmp/*"},
-            disable_devicons = true,
-            workspaces = {
-                ["dotfile"]    = "~/dotfiles/",
-                ["projects"] = "~/projects/",
-                ["vimwiki"]    = "~/vimwiki/"
-            }
-        }
     },
     pickers = {
         find_files = {
             disable_devicons = true
         },
+        live_grep = {
+            disable_devicons = true
+        },
     },
 }
 -- Load after setup to apply configuration
-tele.load_extension('harpoon')
-tele.load_extension('fzf')
+tele.load_extension'harpoon'
+tele.load_extension'fzf'
 
+require'gitsigns'.setup()
+
+
+-- lualine
 local padding = '    '
---
-require('lualine').setup {
+
+-- from https://github.com/nvim-lualine/lualine.nvim/blob/master/examples/evil_lualine.lua
+local function get_LSP()
+    local msg = ''
+    local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
+    local clients = vim.lsp.get_active_clients()
+    if next(clients) == nil then
+      return msg
+    end
+    for _, client in ipairs(clients) do
+      local filetypes = client.config.filetypes
+      if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
+        return client.name
+      end
+    end
+    return msg
+end
+
+require'lualine'.setup {
   options = {
     theme = 'tokyonight',
     component_separators = '|',
@@ -99,7 +140,7 @@ require('lualine').setup {
     lualine_a = {{ 'mode', separator = { left = padding .. ''}},},
     lualine_b = {'filename'},
     lualine_c = {},
-    lualine_x = {'progress', 'location'},
+    lualine_x = {'location', get_LSP},
     lualine_y = {'diff'},
     lualine_z = {{'branch', separator = { right = '' .. padding}},},
   },
@@ -115,7 +156,6 @@ require('lualine').setup {
   extensions = {}
 }
 
-
 vim.g.tokyonight_style = "storm"
 -- vim.g.tokyonight_colors = {comment = '#FFFFFF'}
 
@@ -130,3 +170,4 @@ vim.g.vimwiki_list = {
       ext = '.md',
     }
   }
+

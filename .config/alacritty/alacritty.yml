@@ -1,0 +1,11 @@
+#title: Alacritty
+dynamic_title: true
+key_bindings:
+  - { key: N,
+      mods: Control|Shift,
+      action: SpawnNewInstance
+    }
+font:
+  normal:
+    family: FiraCode Nerd Font
+

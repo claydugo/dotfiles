@@ -1,0 +1,8 @@
+#!/bin/bash
+# Just keep this in /usr/local/bin
+# CD into vimwiki folder so you can grep correctly
+tmux new-session -d -c ~/vimwiki/ -n vimwiki \; send-keys "v ~/vimwiki/index.md" Enter 
+tmux new-window -c ~/projects/python-owl/ -n python-owl
+tmux new-window
+echo "Created tmux session with Ramona setup"
+tmux a
