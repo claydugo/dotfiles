@@ -6,7 +6,6 @@ alias dl='cd ~/Downloads/'
 alias dt="cd ~/Desktop"
 alias doc="cd ~/Documents"
 alias proj='cd ~/projects/'
-alias ls='ls --color=auto'
 alias ll='ls -la'
 alias lsg='ls | grep'
 alias cl='clear'
@@ -20,7 +19,6 @@ alias vim='nvim'
 alias t='tmux'
 alias ta="tmux a"
 alias td='cd $(mktemp -d /tmp/$1.XXXX)'
-alias f='nautilus --browser .'
 alias la='cat ~/.aliases'
 alias glb='git shortlog -nse'
 alias nvimtime='nvim --startuptime /tmp/nvimstartup.log -c exit && tail -10 /tmp/nvimstartup.log'

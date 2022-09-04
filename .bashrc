@@ -43,6 +43,15 @@ if [ -t 1 ]; then
     bind 'set completion-ignore-case on'
 fi
 
+os=$(uname -s)
+
+if [ "$os" = "Linux" ]; then
+    source ~/dotfiles/.linux_aliases
+fi
+if [ "$os" = "Darwin" ]; then
+    source ~/dotfiles/.mac_aliases
+fi
+
 # import aliases
 source ~/dotfiles/.aliases
 
