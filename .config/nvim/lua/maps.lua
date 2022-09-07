@@ -8,6 +8,9 @@ local options = {noremap = true }
 -- correct Y behavior
 map('n', 'Y', 'y$', options)
 
+-- correct U behavior
+map('n', 'U', '<C-r>', options)
+
 -- undo breakpoints
 map('i', ',', ',<c-g>u', options)
 map('i', '.', '.<c-g>u', options)
@@ -17,6 +20,7 @@ map('i', '?', '?<c-g>u', options)
 -- Find files using telescope command-line
 -- hidden flag allows you to see dotfiles
 map('n', '<leader>ff', ':lua require\'telescope.builtin\'.find_files({hidden = true})<CR>', options)
+map('n', '<leader>fa', ':lua require\'telescope.builtin\'.find_files()<CR>', options)
 -- grep directory with ripgrep
 map('n', '<leader>fg', ':lua require\'telescope.builtin\'.live_grep()<CR>', options)
 -- frecency algo, most commonly accessed files - not dir specific

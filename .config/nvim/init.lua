@@ -1,10 +1,10 @@
 -- init.lua
 
--- load vim plug pluggins
-require 'install_plugins'
+-- load packer
+require 'pack'
 
--- load plugin settings
-require 'plugin_settings'
+-- use impatient
+require'impatient'
 
 -- load vim settings
 require 'settings'
