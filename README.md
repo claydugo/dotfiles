@@ -43,8 +43,9 @@ My auto-setup is currently using the script at `scripts/setup.sh`
 │   └── setup.sh
 ├── .tmux.conf
 └── .tmux-ssh.conf
+└── .xprofile
 
-8 directories, 28 files
+8 directories, 29 files
 ```
 
 #### Submodules
@@ -62,8 +63,13 @@ after updates
 `git submodule update --remote`
 
 #### NVIM
-nvim start time somewhere between 30ms - 70ms. With LSP and 20 plugins.
+nvim start time somewhere between 15ms - 20ms.
 
 #### tmux
 No plugins just mappings
 
+#### Old NVIM configurations
+
+[Switch from init.vim to init.lua](https://github.com/claydugo/dotfiles/commit/9803e70ab5df4f5db7f9da858a3c670d378daf0b)
+
+[Switch from packer.nvim to lazy.nvim](https://github.com/claydugo/dotfiles/commit/00000000a6b60527c21ba36515c93c71869ae253)
