@@ -82,17 +82,13 @@ source ~/dotfiles/.aliases
 export PATH=/home/clay/.cargo/bin:$PATH
 
 
-alias loc='cp ~/.config/mcam/wp_file_gui_config.json ~/.config/mcam/gui_config.json'
-
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 
-# Super Caps Lock
-source ~/.xprofile
-
 . "$HOME/.cargo/env"
 
-
+eval "$(/opt/homebrew/bin/brew shellenv)"
 eval "$(starship init bash)"
+export BASH_SILENCE_DEPRECATION_WARNING=1

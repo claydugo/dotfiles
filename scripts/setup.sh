@@ -53,6 +53,8 @@ if [ "$os" = "Linux" ]; then
     sudo apt-get update
     sudo apt install neovim tmux ripgrep htop cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3
     dconf write /org/gnome/desktop/input-sources/xkb-options "['caps:escape']"
+    ln -sfn ~/dotfiles/.xprofile ~/.xprofile
+    echo "source ~/.xprofile" >> ~/.bashrc
     fonts_dir="$HOME/.fonts"
     mkdir -p $fonts_dir
     cd $fonts_dir
@@ -61,9 +63,11 @@ if [ "$os" = "Darwin" ]; then
     echo "mac detected"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     brew install neovim --HEAD
-    brew install tmux ripgrep htop cmake wget python3 openssl
+    # mac no longer ships newest bash install with homebrew
+    brew install tmux ripgrep htop cmake wget python3 openssl bash
     brew install --cask karabiner-elements
-    ln -sf ~/dotfiles/.config/karabiner/ ~/.config/
+    chsh -s /bin/bash
+    echo "export BASH_SILENCE_DEPRECATION_WARNING=1" >> ~/.bashrc
     fonts_dir="/Library/Fonts/"
     mkdir -p $fonts_dir
     cd $fonts_dir
