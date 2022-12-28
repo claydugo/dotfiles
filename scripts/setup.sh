@@ -18,7 +18,6 @@ echo "symlinking"
 # Symlink first so things like conda install modifying .bashrc happen
 ln -sfn ~/dotfiles/.bashrc ~/.bashrc
 ln -sfn ~/dotfiles/.tmux.conf ~/.tmux.conf
-ln -sfn ~/dotfiles/.gitconfig ~/.gitconfig
 ln -sfn ~/dotfiles/.gitignore ~/.gitignore
 # Symlinking entire /nvim/ folder now with lua setup
 # which is spread across multiple files for optimized load time
@@ -36,9 +35,7 @@ ln -sf ~/dotfiles/scripts/ws ~/.local/bin/ws
 
 git clone https://github.com/magicmonty/bash-git-prompt.git ~/.bash-git-prompt --depth=1
 
-# Main setup currently using miniforge and the pathing fucks up mambaforge
-# on new machine pulls
-# this will be fine for now but i'm debating a branch as well
+# This shouldnt be necessary anymore but I like it
 cd ~/dotfiles
 git checkout -b $(hostname)
 
@@ -51,7 +48,7 @@ if [ "$os" = "Linux" ]; then
     sudo add-apt-repository ppa:neovim-ppa/unstable
     sudo add-apt-repository universe
     sudo apt-get update
-    sudo apt install neovim tmux ripgrep htop cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3
+    sudo apt install neovim tmux ripgrep htop cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3 xcape
     dconf write /org/gnome/desktop/input-sources/xkb-options "['caps:escape']"
     ln -sfn ~/dotfiles/.xprofile ~/.xprofile
     echo "source ~/.xprofile" >> ~/.bashrc
