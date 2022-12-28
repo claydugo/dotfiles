@@ -23,8 +23,6 @@ map('n', '<leader>ff', ':lua require\'telescope.builtin\'.find_files({hidden = t
 map('n', '<leader>fa', ':lua require\'telescope.builtin\'.find_files()<CR>', options)
 -- grep directory with ripgrep
 map('n', '<leader>fg', ':lua require\'telescope.builtin\'.live_grep()<CR>', options)
--- frecency algo, most commonly accessed files - not dir specific
-map('n', '<leader>fc', ':lua require\'telescope\'.extensions.frecency.frecency()<CR>', options)
 map('n', '<leader>fb', ':lua require\'telescope.builtin\'.buffers()<CR>', options)
 map('n', '<leader>fh', ':lua require\'telescope.builtin\'.help_tags()<CR>', options)
 -- goto definition of var/func under cursor
@@ -51,4 +49,12 @@ map('n', '<leader>9', ':lua require\'harpoon.ui\'.nav_file(9)<CR>', options)
 
 -- Gitsigns
 map('n', '<leader>gb', ':lua require\'gitsigns\'.toggle_current_line_blame()<CR>', options)
-map('n', '<leader>gc', ':lua require\'gitsigns\'.diffthis()<CR>', options)
+map('n', '<leader>gd', ':lua require\'gitsigns\'.diffthis()<CR>', options)
+
+-- nvim tree
+map('n', '<leader>tt', ':NvimTreeToggle<CR>', options)
+map('n', '<leader>tf', ':NvimTreeFocus<CR>', options)
+
+-- fun
+map("n", "<leader>mr", "<cmd>CellularAutomaton make_it_rain<CR>", options)
+map("n", "<leader>mg", "<cmd>CellularAutomaton game_of_life<CR>", options)

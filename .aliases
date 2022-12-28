@@ -2,20 +2,20 @@ alias ..='cd ../'
 alias ...='cd ../../'
 alias ....='cd ../../../'
 alias .....='cd ../../../../'
+alias ......='cd ../../../../../'
 alias dl='cd ~/Downloads/'
 alias dt="cd ~/Desktop"
 alias doc="cd ~/Documents"
 alias proj='cd ~/projects/'
 alias ll='ls -la'
-alias lsg='ls | grep'
 alias cl='clear'
-alias md='mkdir'
-alias top='htop'
 alias :q='exit'
 alias p='python3'
 alias path='echo -e ${PATH//:/\\n}'
-alias v='nvim'
-alias vim='nvim'
+alias v='/bin/env nvim'
+alias nvim='v'
+alias vim='v'
+alias vi='v'
 alias t='tmux'
 alias ta="tmux a"
 alias td='cd $(mktemp -d /tmp/$1.XXXX)'
@@ -25,9 +25,6 @@ alias nvimtime='nvim --startuptime /tmp/nvimstartup.log -c exit && tail -10 /tmp
 
 # Think this is zsh default
 alias ~='cd ~'
-
-# Stop putting this script in /bin/
-alias ws="bash ~/dotfiles/scripts/ws"
 
 # Ramona Specific
 if [ -f ~/dotfiles/ramona/.ramona ]; then

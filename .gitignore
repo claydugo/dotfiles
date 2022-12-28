@@ -6,7 +6,7 @@
 *.o
 *.so
 
-# Compressed Files 
+# Compressed Files
 *.7z
 *.dmg
 *.gz
@@ -22,7 +22,7 @@ npm-debug.log
 # Log Files
 *.log
 
-# Mac Shit 
+# Mac Shit
 .DS_Store
 .MacOSX
 .Trash
@@ -34,3 +34,9 @@ Desktop.ini
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+
+*.bak
+nvimstartup.log
+.config/nvim/plugin
+# Ignore so I dont merge gpg key
+.gitconfig

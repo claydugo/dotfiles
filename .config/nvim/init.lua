@@ -1,16 +1,7 @@
--- init.lua
-
--- load packer
-require 'pack'
-
--- use impatient
+require'pack'
 require'impatient'
-
--- load vim settings
-require 'settings'
-
--- load key mappings
-require 'maps'
+require'settings'
+require'maps'
 
 
 

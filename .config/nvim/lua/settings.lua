@@ -12,9 +12,9 @@ opt.writebackup = false
 opt.swapfile = false
 opt.clipboard = 'unnamed,unnamedplus'
 
--- cmdheight = 0 was looking good
--- but causing flickering on leaving insert mode
-opt.cmdheight = 1
+-- back to trying cmdheight 0 now that
+-- neovim 9.0 on the ppa
+opt.cmdheight = 0
 opt.updatetime = 300
 
 opt.ignorecase = true
@@ -77,6 +77,9 @@ for _, plugin in pairs(disabled_built_ins) do
     vim.g["loaded_" .. plugin] = 1
 end
 
+-- shut the fuck up
+vim.g.copilot_assume_mapped = true
+
 -- Remove trailing whitespace
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   pattern = { "*" },
@@ -90,4 +93,6 @@ vim.g.vimwiki_list = {
       syntax = 'markdown',
       ext = '.md',
     }
-  }
+}
+
+vim.g.copilot_node_command = "~/.nvm/versions/node/v16.15.0/bin/node"

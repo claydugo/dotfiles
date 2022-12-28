@@ -43,6 +43,7 @@ tele.setup{
         },
         color_devicons = false,
         shorten_path = true,
+        borderchars = { " ", " ", " ", " ", " ", " ", " ", " " },
     },
     pickers = {
         find_files = {

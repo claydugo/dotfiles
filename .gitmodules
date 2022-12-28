@@ -1,0 +1,3 @@
+[submodule "ramona"]
+	path = ramona
+	url = git@gitlab.com:claydugo/ramona.git

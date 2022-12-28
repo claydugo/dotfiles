@@ -8,7 +8,6 @@ return require'packer'.startup(function(use)
     -- nearly essential
     use 'wbthomason/packer.nvim'
     use 'lewis6991/impatient.nvim'
-    use 'nathom/filetype.nvim'
     -- lua users / lsp / cmp
     use {
     "williamboman/mason.nvim",
@@ -47,10 +46,21 @@ return require'packer'.startup(function(use)
             'kyazdani42/nvim-web-devicons'
         }
     }
+    use {
+      'nvim-tree/nvim-tree.lua',
+      requires = {
+        'nvim-tree/nvim-web-devicons', -- optional, for file icons
+      },
+      tag = 'nightly' -- optional, updated every week. (see issue #1193)
+    }
+
+    use 'eandrju/cellular-automaton.nvim'
+
     -- dirty vim dependencies
     use 'tpope/vim-commentary'
     use 'tpope/vim-surround'
     use 'junegunn/vim-easy-align'
+    use 'github/copilot.vim'
     --organization
     use 'vimwiki/vimwiki'
 
