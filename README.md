@@ -5,7 +5,6 @@
 My auto-setup is currently using the script at `scripts/setup.sh`
 
 ```
-❯ tree -a -I '.git|ramona'
 .
 ├── .aliases
 ├── .bashrc
@@ -15,25 +14,25 @@ My auto-setup is currently using the script at `scripts/setup.sh`
 │   │   ├── dracula.conf
 │   │   └── kitty.conf
 │   ├── nvim
-│   │   ├── after
-│   │   │   └── plugin
-│   │   │       ├── cmp.lua
-│   │   │       ├── colorscheme.lua
-│   │   │       ├── lsp.lua
-│   │   │       ├── lualine.lua
-│   │   │       ├── one_line_setups.lua
-│   │   │       ├── telescope.lua
-│   │   │       └── treesitter.lua
 │   │   ├── init.lua
-│   │   ├── lua
-│   │   │   ├── maps.lua
-│   │   │   ├── pack.lua
-│   │   │   └── settings.lua
-│   │   └── plugin
-│   │       └── packer_compiled.lua
+│   │   ├── lazy-lock.json
+│   │   └── lua
+│   │       ├── config
+│   │       │   ├── lazy.lua
+│   │       │   ├── maps.lua
+│   │       │   ├── options.lua
+│   │       │   └── plugins
+│   │       │       ├── gitsigns.lua
+│   │       │       ├── lsp.lua
+│   │       │       ├── lualine.lua
+│   │       │       ├── nvim-comment.lua
+│   │       │       ├── telescope.lua
+│   │       │       ├── tokyonight.lua
+│   │       │       ├── treesitter.lua
+│   │       │       └── vimwiki.lua
+│   │       └── init.lua
 │   └── starship.toml
 ├── dotfiles.png
-├── .gitconfig
 ├── .gitignore
 ├── .gitmodules
 ├── .linux_aliases
@@ -42,10 +41,11 @@ My auto-setup is currently using the script at `scripts/setup.sh`
 ├── scripts
 │   └── setup.sh
 ├── .tmux.conf
-└── .tmux-ssh.conf
+├── .tmux-ssh.conf
 └── .xprofile
 
-8 directories, 29 files
+7 directories, 30 files
+
 ```
 
 #### Submodules
