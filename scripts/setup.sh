@@ -54,6 +54,7 @@ if [ "$os" = "Linux" ]; then
     sudo apt install neovim tmux ripgrep htop cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3
     dconf write /org/gnome/desktop/input-sources/xkb-options "['caps:escape']"
     ln -sfn ~/dotfiles/.xprofile ~/.xprofile
+    echo "source ~/.xprofile" >> ~/.bashrc
     fonts_dir="$HOME/.fonts"
     mkdir -p $fonts_dir
     cd $fonts_dir
