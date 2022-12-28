@@ -50,11 +50,3 @@ map('n', '<leader>9', ':lua require\'harpoon.ui\'.nav_file(9)<CR>', options)
 -- Gitsigns
 map('n', '<leader>gb', ':lua require\'gitsigns\'.toggle_current_line_blame()<CR>', options)
 map('n', '<leader>gd', ':lua require\'gitsigns\'.diffthis()<CR>', options)
-
--- nvim tree
-map('n', '<leader>tt', ':NvimTreeToggle<CR>', options)
-map('n', '<leader>tf', ':NvimTreeFocus<CR>', options)
-
--- fun
-map("n", "<leader>mr", "<cmd>CellularAutomaton make_it_rain<CR>", options)
-map("n", "<leader>mg", "<cmd>CellularAutomaton game_of_life<CR>", options)

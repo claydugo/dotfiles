@@ -12,13 +12,6 @@ style = "fg:#232323 bg:#769ff0"
 format = "[ $path ]($style)"
 truncation_length = 99
 
-[directory.substitutions]
-"Documents" = " "
-"Downloads" = " "
-"Music" = " "
-"Pictures" = " "
-"python-owl" = "🦉"
-
 [git_branch]
 symbol = ""
 style = "bg:#394260"

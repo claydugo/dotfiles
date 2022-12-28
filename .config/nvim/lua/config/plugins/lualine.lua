@@ -1,4 +1,7 @@
--- lualine
+local M = {
+  "nvim-lualine/lualine.nvim",
+  event = "VeryLazy",
+}
 
 -- from https://github.com/nvim-lualine/lualine.nvim/blob/master/examples/evil_lualine.lua
 local function get_LSP()
@@ -32,30 +35,34 @@ local function get_LSP_with_Icon()
     end
     return icon .. lsp
 end
-
 local padding = '    '
-require'lualine'.setup {
-  options = {
-    theme = 'tokyonight',
-    component_separators = '|',
-    section_separators = { left = '', right = '' },
-  },
-    sections = {
-    lualine_a = {{ 'mode', separator = { left = padding .. ''}},},
-    lualine_b = {'filename'},
-    lualine_c = {},
-    lualine_x = {'location', get_LSP_with_Icon},
-    lualine_y = {'diff'},
-    lualine_z = {{'branch', separator = { right = '' .. padding}},},
-  },
-  inactive_sections = {
-    lualine_a = {'filename'},
-    lualine_b = {},
-    lualine_c = {},
-    lualine_x = {},
-    lualine_y = {},
-    lualine_z = {'branch'},
-  },
-  tabline = {},
-  extensions = {}
-}
+
+function M.config()
+  require'lualine'.setup({
+	options = {
+		theme = 'tokyonight',
+		component_separators = '|',
+		section_separators = { left = '', right = '' },
+  	},
+    	sections = {
+		lualine_a = {{ 'mode', separator = { left = padding .. ''}},},
+		lualine_b = {'filename'},
+		lualine_c = {},
+		lualine_x = {'location', get_LSP_with_Icon},
+		lualine_y = {'diff'},
+		lualine_z = {{'branch', separator = { right = '' .. padding}},},
+	},
+  	inactive_sections = {
+    		lualine_a = {'filename'},
+    		lualine_b = {},
+		lualine_c = {},
+    		lualine_x = {},
+    		lualine_y = {},
+    		lualine_z = {'branch'},
+  	},
+  	tabline = {},
+  	extensions = {}
+  })
+end
+
+return M

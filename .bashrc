@@ -76,8 +76,6 @@ fi
 # import aliases
 source ~/dotfiles/.aliases
 
-#export TERM="xterm-256color"
-
 # cargo path
 export PATH=/home/clay/.cargo/bin:$PATH
 
@@ -89,6 +87,4 @@ export NVM_DIR="$HOME/.nvm"
 
 . "$HOME/.cargo/env"
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
 eval "$(starship init bash)"
-export BASH_SILENCE_DEPRECATION_WARNING=1

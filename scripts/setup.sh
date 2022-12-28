@@ -67,6 +67,7 @@ if [ "$os" = "Darwin" ]; then
     brew install tmux ripgrep htop cmake wget python3 openssl bash
     brew install --cask karabiner-elements
     chsh -s /bin/bash
+    echo "eval \"$(/opt/homebrew/bin/brew shellenv)\"" >> ~/.bashrc
     echo "export BASH_SILENCE_DEPRECATION_WARNING=1" >> ~/.bashrc
     fonts_dir="/Library/Fonts/"
     mkdir -p $fonts_dir

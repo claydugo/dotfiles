@@ -1,4 +1,16 @@
-local tele = require'telescope'
+local M = {
+    "nvim-telescope/telescope.nvim",
+    cmd = { "Telescope" },
+
+    dependencies = {
+        { "nvim-lua/plenary.nvim" },
+        { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+        { "ThePrimeagen/harpoon" },
+    },
+}
+
+function M.config()
+    local tele = require'telescope'
 local actions = require'telescope.actions'
 tele.setup{
     defaults = {
@@ -17,7 +29,7 @@ tele.setup{
             '%.ttf',
             '%.pdf',
             '%.bin',
-            '.git',
+            '.git/',
         },
         mappings = {
             -- insert mode mappings
@@ -57,3 +69,6 @@ tele.setup{
 -- Load after setup to apply configuration
 tele.load_extension'harpoon'
 tele.load_extension'fzf'
+end
+
+return M
