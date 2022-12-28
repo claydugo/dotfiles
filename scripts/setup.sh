@@ -88,9 +88,6 @@ conda update conda --name base
 
 conda config --add channels conda-forge
 
-# Need my LSP
-conda install pyright
-
 echo "checking for ramona submodule"
 if [ -f ~/dotfiles/ramona/ ]; then
     chmod +x ~/dotfiles/ramona/finish_dev_env_setup.sh
@@ -103,9 +100,7 @@ echo "************************************"
 echo "finished"
 echo "dont forget to switch caps lock to esc in gnome gnome-tweaks"
 echo "and set the power screen timer to never"
-echo "uncomment conda activate"
-echo "remove .gitconfig gpg key"
-echo "run nvim, close, nvim agan, :PackerInstall"
+echo "and set terminal font to fira code"
 echo "************************************"
 
 
