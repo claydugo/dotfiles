@@ -33,6 +33,8 @@ ln -sf ~/dotfiles/.config/kitty/kitty.conf ~/.config/kitty/kitty.conf
 mkdir -p ~/.local/bin
 ln -sf ~/dotfiles/scripts/ws ~/.local/bin/ws
 
+# Using starship now but thats compiles with rust so this is easier for now
+# for fresh setups
 git clone https://github.com/magicmonty/bash-git-prompt.git ~/.bash-git-prompt --depth=1
 
 # This shouldnt be necessary anymore but I like it
@@ -63,9 +65,13 @@ if [ "$os" = "Darwin" ]; then
     # mac no longer ships newest bash install with homebrew
     brew install tmux ripgrep htop cmake wget python3 openssl bash
     brew install --cask karabiner-elements
+    ln -sf ~/dotfiles/.config/karabiner/ ~/.config/
     chsh -s /bin/bash
     echo "eval \"$(/opt/homebrew/bin/brew shellenv)\"" >> ~/.bashrc
     echo "export BASH_SILENCE_DEPRECATION_WARNING=1" >> ~/.bashrc
+    # kitty not working on macos for me
+    mkdir -p ~/.config/alacritty
+    ln -sf ~/dotfiles/.config/alacritty/ ~/.config/
     fonts_dir="/Library/Fonts/"
     mkdir -p $fonts_dir
     cd $fonts_dir
