@@ -2,6 +2,8 @@
 
 ![20221228](dotfiles.png)
 
+![20221228](dots_macos.png)
+
 My auto-setup is currently using the script at `scripts/setup.sh`
 
 ```
