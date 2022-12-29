@@ -28,6 +28,7 @@ function M.config()
         'pyright',
         'sumneko_lua',
         'bashls',
+        'rust_analyzer',
     })
 
     lsp.setup()
