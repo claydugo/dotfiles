@@ -1,6 +1,8 @@
 vim.g.mapleader = ","
 vim.g.maplocalleader = ","
 
+vim.o.grepprg = "rg --vimgrep"
+
 vim.o.encoding = 'utf-8'
 vim.o.backspace = 'indent,eol,start'
 
@@ -29,6 +31,7 @@ vim.o.modeline = true
 vim.o.number = true
 vim.o.relativenumber = true
 vim.o.showmode = false
+vim.o.scrolloff = 6
 
 vim.o.visualbell = true
 vim.o.showmatch = true
