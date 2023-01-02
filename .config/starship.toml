@@ -4,6 +4,7 @@ $conda\
 $directory\
 $git_branch\
 $git_status\
+$cmd_duration\
 [](fg:#394260 bg:#282a36)\
 \n$character"""
 
@@ -40,3 +41,6 @@ format = '[ \($environment\) ]($style)'
 [character]
 success_symbol = '[\$](bold green)'
 
+[cmd_duration]
+style = "fg:#F2E34C bg:#394260"
+format = "[$duration]($style)"
