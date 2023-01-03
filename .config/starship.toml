@@ -1,6 +1,7 @@
 format = """
 [ ](fg:#769ff0 bg:#282a36)\
 $conda\
+$hostname\
 $directory\
 $git_branch\
 $git_status\
@@ -14,6 +15,11 @@ add_newline = false
 style = "fg:#232323 bg:#769ff0"
 format = "[ $path ]($style)"
 truncation_length = 99
+
+[hostname]
+style = "fg:#232323 bg:#769ff0"
+format = '[ $hostname ]($style)'
+ssh_only = true
 
 [git_branch]
 symbol = ""

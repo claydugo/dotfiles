@@ -79,15 +79,14 @@ source ~/dotfiles/.aliases
 # cargo path
 export PATH=/home/clay/.cargo/bin:$PATH
 
+if [ -f "$HOME/.cargo/env" ]; then
+    . "$HOME/.cargo/env"
+fi
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+if hash starship 2>/dev/null; then
+    eval "$(starship init bash)"
+fi
 
-
-. "$HOME/.cargo/env"
-
-eval "$(starship init bash)"
-
-
-source ~/.xprofile
+if [ -f "$HOME/.xprofile" ]; then
+    source ~/.xprofile
+fi

@@ -25,7 +25,10 @@ mkdir -p ~/.config/
 ln -sf ~/dotfiles/.config/nvim/ ~/.config/
 
 
+echo "installing kitty"
 # Also do kitty now
+# Gonna install at this point
+curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
 mkdir -p ~/.config/kitty
 ln -sf ~/dotfiles/.config/kitty/kitty.conf ~/.config/kitty/kitty.conf
 
@@ -33,6 +36,7 @@ mkdir -p ~/.local/bin
 ln -sf ~/dotfiles/scripts/ws ~/.local/bin/ws
 
 # Replaces git bash prompt for me
+echo "installing starship"
 curl -sS https://starship.rs/install.sh | sh
 ln -sfn ~/dotfiles/.config/starship.toml ~/.config/
 
@@ -44,6 +48,7 @@ os=$(uname -s)
 
 if [ "$os" = "Linux" ]; then
     echo "linux detected"
+    echo "installing apt picks"
     # Use nightly nvim since most good features come after 0.7
     # and nvim on base apt is version 4.3
     sudo add-apt-repository ppa:neovim-ppa/unstable
@@ -52,13 +57,13 @@ if [ "$os" = "Linux" ]; then
     sudo apt install neovim tmux ripgrep htop cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3 xcape
     dconf write /org/gnome/desktop/input-sources/xkb-options "['caps:escape']"
     ln -sfn ~/dotfiles/.xprofile ~/.xprofile
-    echo "source ~/.xprofile" >> ~/.bashrc
     fonts_dir="$HOME/.fonts"
     mkdir -p $fonts_dir
     cd $fonts_dir
 fi
 if [ "$os" = "Darwin" ]; then
     echo "mac detected"
+    echo "installing brew picks"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     brew install neovim --HEAD
     # mac no longer ships newest bash install with homebrew
@@ -76,6 +81,7 @@ if [ "$os" = "Darwin" ]; then
     cd $fonts_dir
 fi
 
+echo "installing nerd font"
 wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FiraCode.zip && unzip "FiraCode" -d $fonts_dir && fc-cache -fv
 
 # Sometimes im doing setup before logging in
@@ -90,6 +96,8 @@ conda update conda --name base
 
 conda config --add channels conda-forge
 
+source ~/.bashrc
+
 echo "checking for ramona submodule"
 if [ -f ~/dotfiles/ramona/ ]; then
     chmod +x ~/dotfiles/ramona/finish_dev_env_setup.sh
@@ -100,10 +108,6 @@ fi
 
 echo "************************************"
 echo "finished"
-echo "dont forget to switch caps lock to esc in gnome gnome-tweaks"
-echo "and set the power screen timer to never"
-echo "and set terminal font to fira code"
+echo "remember to set the power screen timer to never"
 echo "************************************"
 
-
-source ~/.bashrc
