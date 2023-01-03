@@ -29,13 +29,12 @@ ln -sf ~/dotfiles/.config/nvim/ ~/.config/
 mkdir -p ~/.config/kitty
 ln -sf ~/dotfiles/.config/kitty/kitty.conf ~/.config/kitty/kitty.conf
 
-
 mkdir -p ~/.local/bin
 ln -sf ~/dotfiles/scripts/ws ~/.local/bin/ws
 
-# Using starship now but thats compiles with rust so this is easier for now
-# for fresh setups
-git clone https://github.com/magicmonty/bash-git-prompt.git ~/.bash-git-prompt --depth=1
+# Replaces git bash prompt for me
+curl -sS https://starship.rs/install.sh | sh
+ln -sfn ~/dotfiles/.config/starship.toml ~/.config/
 
 # This shouldnt be necessary anymore but I like it
 cd ~/dotfiles

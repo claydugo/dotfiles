@@ -29,8 +29,11 @@ function M.config()
         'sumneko_lua',
         'bashls',
         'rust_analyzer',
+        -- this was failing
+        -- but can manual manual install
+        -- in mason
+        --'ruff-lsp',
     })
-
     lsp.setup()
     local cmp = require'cmp'
     cmp.setup({
