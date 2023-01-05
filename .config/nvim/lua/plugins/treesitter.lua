@@ -3,7 +3,8 @@ return {
   build = ":TSUpdate",
   event = "BufReadPost",
   dependencies = {
-      'tree-sitter/tree-sitter-python'
+      'tree-sitter/tree-sitter-python',
+      'nvim-treesitter/nvim-treesitter-context',
   },
   config = function()
       require("nvim-treesitter.configs").setup({
@@ -18,6 +19,7 @@ return {
 		},
 		highlight = { enable = true, },
 	})
+    require("treesitter-context").setup()
 	end
 }
 

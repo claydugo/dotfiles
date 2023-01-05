@@ -26,6 +26,8 @@ local function get_LSP_with_Icon()
     local padding = ' '
     if lsp == 'pyright' then
         icon = '' .. padding;
+    elseif lsp == 'ruff_lsp' then
+        icon = '' .. padding;
     elseif lsp == 'sumneko_lua' then
         icon = '' .. padding;
     elseif lsp == 'bashls' then

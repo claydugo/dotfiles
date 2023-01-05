@@ -46,12 +46,15 @@ function M.config()
             ['<Tab>'] = cmp.mapping.confirm({ select = true }),
             ['<C-j>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
             ['<C-k>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
-    },
-    sources = {
-        { name = 'nvim_lsp' },
-        { name = 'buffer' },
-    }
-})
+        },
+        sources = {
+            { name = 'nvim_lsp' },
+            { name = 'buffer' },
+        }
+    })
+    vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
+    vim.keymap.set('n', '<leader>eq', vim.diagnostic.goto_prev)
+    vim.keymap.set('n', '<leader>ee', vim.diagnostic.goto_next)
 end
 
 return M
