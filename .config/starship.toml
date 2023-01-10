@@ -32,8 +32,8 @@ style = "bg:#394260"
 ahead = '[⇡${count}](fg:#EEEDE7 bg:#394260)'
 behind = '[⇣${count}](fg:#EEEDE7 bg:#394260)'
 diverged = '[⇡${ahead_count}⇣${behind_count}](fg:#EEEDE7 bg:#394260)'
-modified = '[✚ ${count}](fg:#A16AE8 bg:#394260)'
-staged = '[ ●${count}](fg:#FF2E2E bg:#394260)'
+modified = '[✚${count}](fg:#A16AE8 bg:#394260)'
+staged = '[ ●${count}](fg:#D22B2B bg:#394260)'
 stashed = '[⚑${count}](fg:#D62598 bg:#394260)'
 deleted = '[✖ ${count}](fg:#FF5C5C bg:#394260)'
 conflicted = '[✖-${count}](fg:#BF2A2E bg:#394260)'
@@ -42,11 +42,11 @@ format = '[[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)]($style)'
 
 [conda]
 style = "fg:#232323 bg:#769ff0"
-format = '[ \($environment\) ]($style)'
+format = '[\($environment\)]($style)'
 
 [character]
 success_symbol = '[\$](bold green)'
 
 [cmd_duration]
 style = "fg:#F2E34C bg:#394260"
-format = "[$duration]($style)"
+format = "[ $duration]($style)"
