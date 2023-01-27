@@ -20,37 +20,28 @@ local function get_LSP()
     return msg
 end
 
-local function get_LSP_with_Icon()
-    local lsp = get_LSP()
-    local icon = ''
-    local padding = ' '
-    if lsp == 'pyright' then
-        icon = '' .. padding;
-    elseif lsp == 'ruff_lsp' then
-        icon = '' .. padding;
-    elseif lsp == 'sumneko_lua' then
-        icon = '' .. padding;
-    elseif lsp == 'bashls' then
-        icon = '' .. padding;
+local function search_display()
+    local search = vim.fn.searchcount({maxcount = 0})
+    if search.current > 0 then
+        return search.current.."/"..search.total
     else
-        icon = '';
+        return ""
     end
-    return icon .. lsp
 end
-local padding = '    '
 
+local padding = '    '
 function M.config()
   require'lualine'.setup({
 	options = {
 		theme = 'tokyonight',
-		component_separators = '|',
+		component_separators = '',
 		section_separators = { left = '', right = '' },
   	},
     	sections = {
 		lualine_a = {{ 'mode', separator = { left = padding .. ''}},},
 		lualine_b = {'filename'},
 		lualine_c = {},
-		lualine_x = {'location', get_LSP_with_Icon},
+		lualine_x = {search_display, get_LSP},
 		lualine_y = {'diff'},
 		lualine_z = {{'branch', separator = { right = '' .. padding}},},
 	},

@@ -1,3 +1,6 @@
+# The background for the bubble characters
+# is the bg color for the kitty dracula theme
+# this is very tailored to my setup
 format = """
 [ ](fg:#769ff0 bg:#282a36)\
 $conda\
@@ -33,7 +36,7 @@ ahead = '[⇡${count}](fg:#EEEDE7 bg:#394260)'
 behind = '[⇣${count}](fg:#EEEDE7 bg:#394260)'
 diverged = '[⇡${ahead_count}⇣${behind_count}](fg:#EEEDE7 bg:#394260)'
 modified = '[✚${count}](fg:#A16AE8 bg:#394260)'
-staged = '[ ●${count}](fg:#D22B2B bg:#394260)'
+staged = '[●${count}](fg:#D22B2B bg:#394260)'
 stashed = '[⚑${count}](fg:#D62598 bg:#394260)'
 deleted = '[✖ ${count}](fg:#FF5C5C bg:#394260)'
 conflicted = '[✖-${count}](fg:#BF2A2E bg:#394260)'
