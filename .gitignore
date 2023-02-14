@@ -44,3 +44,16 @@ nvimstartup.log
 # lazy.nvim
 lazy-lock.json
 hmmst.py
+
+
+# FPGQ
+*.o
+*.o.cmd
+*.ko.cmd
+.cache.mk
+.tmp_versions
+*.o.ur-safe
+modules.order
+Module.symvers
+*.ko
+*.mod.c
