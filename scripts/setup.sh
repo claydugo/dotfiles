@@ -54,7 +54,8 @@ if [ "$os" = "Linux" ]; then
     sudo add-apt-repository ppa:neovim-ppa/unstable
     sudo add-apt-repository universe
     sudo apt-get update
-    sudo apt install neovim tmux ripgrep htop cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3 xcape
+    # npm for LSP servers
+    sudo apt install neovim tmux ripgrep htop cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3 xcape npm
     dconf write /org/gnome/desktop/input-sources/xkb-options "['caps:escape']"
     ln -sfn ~/dotfiles/.xprofile ~/.xprofile
     fonts_dir="$HOME/.fonts"
