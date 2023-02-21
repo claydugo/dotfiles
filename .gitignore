@@ -45,8 +45,7 @@ nvimstartup.log
 lazy-lock.json
 hmmst.py
 
-
-# FPGQ
+# FPGA
 *.o
 *.o.cmd
 *.ko.cmd

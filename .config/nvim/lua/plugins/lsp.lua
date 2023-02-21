@@ -26,13 +26,10 @@ function M.config()
     lsp.preset('recommended')
     lsp.ensure_installed({
         'pyright',
-        'sumneko_lua',
-        'bashls',
-        'rust_analyzer',
-        -- this was failing
-        -- but can manual manual install
-        -- in mason
-        --'ruff-lsp',
+        -- 'sumneko_lua',
+        -- 'bashls',
+        -- 'rust_analyzer',
+        -- 'ruff-lsp',
     })
     lsp.setup()
     local cmp = require'cmp'
