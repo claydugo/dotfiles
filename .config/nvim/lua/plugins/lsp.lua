@@ -23,7 +23,10 @@ local M = {
 
 function M.config()
     local lsp = require('lsp-zero')
-    lsp.preset('recommended')
+    lsp.preset({
+        name = 'recommended',
+        suggest_lsp_servers = false,
+    })
     lsp.ensure_installed({
         'pyright',
         -- 'sumneko_lua',

@@ -19,6 +19,9 @@ echo "symlinking"
 ln -sfn ~/dotfiles/.bashrc ~/.bashrc
 ln -sfn ~/dotfiles/.tmux.conf ~/.tmux.conf
 ln -sfn ~/dotfiles/.gitignore ~/.gitignore
+
+git config --global user.name "Clay Dugo"
+git config --global user.email "claydugo@gmail.com"
 # Symlinking entire /nvim/ folder now with lua setup
 # which is spread across multiple files for optimized load time
 mkdir -p ~/.config/
@@ -96,8 +99,6 @@ bash Mambaforge-$(uname)-$(uname -m).sh
 conda update conda --name base
 
 conda config --add channels conda-forge
-
-source ~/.bashrc
 
 echo "checking for ramona submodule"
 if [ -f ~/dotfiles/ramona/ ]; then
