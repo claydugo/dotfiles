@@ -101,7 +101,7 @@ conda update conda --name base
 conda config --add channels conda-forge
 
 echo "checking for ramona submodule"
-if [ -f ~/dotfiles/ramona/ ]; then
+if [ -d ~/dotfiles/ramona/ ]; then
     chmod +x ~/dotfiles/ramona/finish_dev_env_setup.sh
     bash ~/dotfiles/ramona/finish_dev_env_setup.sh
     chmod +x ~/dotfiles/ramona/work_prefs.sh
@@ -113,3 +113,5 @@ echo "finished"
 echo "remember to set the power screen timer to never"
 echo "************************************"
 
+
+source ~/.bashrc
