@@ -35,6 +35,8 @@ curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
 mkdir -p ~/.config/kitty
 ln -sf ~/dotfiles/.config/kitty/kitty.conf ~/.config/kitty/kitty.conf
 # gonna really lean into kitty and do the desktop intergration as well
+mkdir -p ~/.local/bin/
+mkdir -p ~/.local/share/applications/
 ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
 cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/applications/
 cp ~/.local/kitty.app/share/applications/kitty-open.desktop ~/.local/share/applications/
@@ -104,21 +106,9 @@ cd ~/Downloads
 curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh"
 bash Mambaforge-$(uname)-$(uname -m).sh
 
-conda update conda --name base
-
-conda config --add channels conda-forge
-
-echo "checking for ramona submodule"
-if [ -d ~/dotfiles/ramona/ ]; then
-    chmod +x ~/dotfiles/ramona/finish_dev_env_setup.sh
-    bash ~/dotfiles/ramona/finish_dev_env_setup.sh
-    chmod +x ~/dotfiles/ramona/work_prefs.sh
-    bash ~/dotfiles/ramona/work_prefs.sh
-fi
-
 echo "************************************"
 echo "finished"
-echo "remember to set the power screen timer to never"
+echo "run finish_dev_env_setup.sh after opening new shell"
 echo "************************************"
 
 

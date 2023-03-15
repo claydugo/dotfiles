@@ -22,6 +22,7 @@ truncation_length = 99
 [hostname]
 style = "fg:#232323 bg:#769ff0"
 format = '[ $hostname ]($style)'
+ssh_symbol = ""
 ssh_only = true
 
 [git_branch]
