@@ -44,7 +44,7 @@ sed -i "s|Icon=kitty|Icon=/home/$USER/.local/kitty.app/share/icons/hicolor/256x2
 sed -i "s|Exec=kitty|Exec=/home/$USER/.local/kitty.app/bin/kitty|g" ~/.local/share/applications/kitty*.desktop
 
 mkdir -p ~/.local/bin
-ln -sf ~/dotfiles/scripts/ws ~/.local/bin/ws
+ln -sf ~/dotfiles/ramona/scripts/ws ~/.local/bin/ws
 
 # Replaces git bash prompt for me
 echo "installing starship"
