@@ -17,7 +17,6 @@ alias vi='v'
 alias t='tmux'
 alias ta="tmux a"
 alias td='cd $(mktemp -d /tmp/$1.XXXX)'
-alias la='cat ~/.aliases'
 alias glb='git shortlog -nse'
 alias nvimtime='nvim --startuptime /tmp/nvimstartup.log -c exit && tail -10 /tmp/nvimstartup.log'
 
@@ -34,6 +33,9 @@ if hash exa 2>/dev/null; then
     alias ll='exa -lah'
 fi
 
+alias la='cat ~/.aliases'
+
 if hash bat 2>/dev/null; then
     alias cat='bat'
+    alias la='bat ~/.aliases'
 fi
