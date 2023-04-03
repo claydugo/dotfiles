@@ -3,21 +3,22 @@ local M = {
   event = "VeryLazy",
 }
 
--- from https://github.com/nvim-lualine/lualine.nvim/blob/master/examples/evil_lualine.lua
 local function get_LSP()
     local msg = ''
-    local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
+    -- local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
     local clients = vim.lsp.get_active_clients()
     if next(clients) == nil then
       return msg
     end
+    local ft_lsp_clients = {}
     for _, client in ipairs(clients) do
-      local filetypes = client.config.filetypes
-      if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-        return client.name
-      end
+      -- local filetypes = client.config.filetypes
+      -- if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
+      --   table.insert(ft_lsp_clients, client.name)
+      -- end
+       table.insert(ft_lsp_clients, client.name)
     end
-    return msg
+    return table.concat(ft_lsp_clients, ', ')
 end
 
 local function search_display()
@@ -41,8 +42,8 @@ function M.config()
 		lualine_a = {{ 'mode', separator = { left = padding .. ''}},},
 		lualine_b = {'filename'},
 		lualine_c = {},
-		lualine_x = {search_display, get_LSP},
-		lualine_y = {'diff'},
+		lualine_x = {search_display, 'diff'},
+		lualine_y = {get_LSP},
 		lualine_z = {{'branch', separator = { right = '' .. padding}},},
 	},
   	inactive_sections = {

@@ -37,5 +37,5 @@ alias la='cat ~/.aliases'
 
 if hash bat 2>/dev/null; then
     alias cat='bat'
-    alias la='bat ~/.aliases'
+    alias la='bat ~/.aliases -l bash'
 fi

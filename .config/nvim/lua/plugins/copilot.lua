@@ -1,8 +1,23 @@
 return {
-    'github/copilot.vim',
-    event = "BufReadPre",
+    "zbirenbaum/copilot.lua",
+    event = "bufreadpre",
+    cmd = { "Copilot" },
+    dependencies = {
+        { "zbirenbaum/copilot-cmp" },
+    },
     config = function()
-        vim.g.copilot_assume_mapped = true
-        vim.g.copilot_node_command = "~/.nvm/versions/node/v19.2.0/bin/node"
+        require('copilot').setup({
+            suggestion = {
+                auto_trigger = true,
+                keymap = {
+                    accept = "<Tab>",
+                    next = "<C-l>",
+                    prev = "<C-h>",
+                    dismiss = "<C-d>",
+                },
+            },
+            copilot_node_command = "node",
+            server_opts_overrides = {}
+        })
     end
 }
