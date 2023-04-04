@@ -30,7 +30,8 @@ fi
 
 if hash exa 2>/dev/null; then
     alias ls='exa'
-    alias ll='exa -lah'
+    alias ll="exa -lah --git --icons"
+    alias lll="exa -abghHliS@ --git --icons"
 fi
 
 alias la='cat ~/.aliases'

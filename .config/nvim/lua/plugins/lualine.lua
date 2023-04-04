@@ -4,21 +4,17 @@ local M = {
 }
 
 local function get_LSP()
-    local msg = ''
-    -- local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
     local clients = vim.lsp.get_active_clients()
+    local icons = require("config.langserver_icons")
     if next(clients) == nil then
-      return msg
+      return ''
     end
-    local ft_lsp_clients = {}
+    local lsp_clients = {}
     for _, client in ipairs(clients) do
-      -- local filetypes = client.config.filetypes
-      -- if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-      --   table.insert(ft_lsp_clients, client.name)
-      -- end
-       table.insert(ft_lsp_clients, client.name)
+       local lsp_name = icons and icons[client.name]..client.name or client.name
+       table.insert(lsp_clients, lsp_name)
     end
-    return table.concat(ft_lsp_clients, ', ')
+    return table.concat(lsp_clients, ', ')
 end
 
 local function search_display()

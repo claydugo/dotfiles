@@ -56,6 +56,3 @@ modules.order
 Module.symvers
 *.ko
 *.mod.c
-
-# for now
-.pre-commit-config.yaml
