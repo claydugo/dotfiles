@@ -7,12 +7,17 @@ local function get_LSP()
     local clients = vim.lsp.get_active_clients()
     local icons = require("config.langserver_icons")
     if next(clients) == nil then
-      return ''
+        return ''
     end
     local lsp_clients = {}
-    for _, client in ipairs(clients) do
-       local lsp_name = icons and icons[client.name]..client.name or client.name
-       table.insert(lsp_clients, lsp_name)
+    for _, client in pairs(clients) do
+        local lsp_name = client.name
+        if icons and icons[client.name] then
+            lsp_name = icons[client.name] .. client.name
+        else
+            lsp_name = client.name
+        end
+        table.insert(lsp_clients, lsp_name)
     end
     return table.concat(lsp_clients, ', ')
 end
