@@ -43,9 +43,9 @@ function M.config()
 		lualine_a = {{ 'mode', separator = { left = padding .. ''}},},
 		lualine_b = {'filename'},
 		lualine_c = {},
-		lualine_x = {search_display, 'diff'},
+		lualine_x = {search_display},
 		lualine_y = {get_LSP},
-		lualine_z = {{'branch', separator = { right = '' .. padding}},},
+		lualine_z = {{'branch', separator = { right = '' .. padding}}, 'diff'},
 	},
   	inactive_sections = {
     		lualine_a = {'filename'},

@@ -32,11 +32,11 @@ fi
 conda_dir=$HOME
 
 
-if [ -d "$HOME/mambaforge/" ]; then
+if [[ -d "$HOME/mambaforge/" ]]; then
     conda_dir=$HOME/mambaforge/
 fi
 
-if [ -d "$HOME/miniforge3/" ]; then
+if [[ -d "$HOME/miniforge3/" ]]; then
     conda_dir=$HOME/miniforge3/
 fi
 
@@ -61,16 +61,16 @@ fi
 
 # tab completion no longer case sensitive
 # needs wrapper to avoid login warning
-if [ -t 1 ]; then
+if [[ -t 1 ]]; then
     bind 'set completion-ignore-case on'
 fi
 
 os=$(uname -s)
 
-if [ "$os" = "Linux" ]; then
+if [[ "$os" = "Linux" ]]; then
     source ~/dotfiles/.linux_aliases
 fi
-if [ "$os" = "Darwin" ]; then
+if [[ "$os" = "Darwin" ]]; then
     source ~/dotfiles/.mac_aliases
 fi
 
@@ -80,7 +80,7 @@ source ~/dotfiles/.aliases
 # cargo path
 export PATH=/home/clay/.cargo/bin:$PATH
 
-if [ -f "$HOME/.cargo/env" ]; then
+if [[ -f "$HOME/.cargo/env" ]]; then
     . "$HOME/.cargo/env"
 fi
 
@@ -88,6 +88,6 @@ if hash starship 2>/dev/null; then
     eval "$(starship init bash)"
 fi
 
-if [ -f "$HOME/.xprofile" ]; then
+if [[ -f "$HOME/.xprofile" ]]; then
     source ~/.xprofile
 fi
