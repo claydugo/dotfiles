@@ -2,7 +2,7 @@
 # is the bg color for the kitty dracula theme
 # this is very tailored to my setup
 format = """
-[ ](fg:#769ff0 bg:#282a36)\
+[  ](fg:#769ff0 bg:#282a36)\
 $conda\
 $hostname\
 $directory\

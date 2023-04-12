@@ -19,7 +19,7 @@ local function get_LSP()
         end
         table.insert(lsp_clients, lsp_name)
     end
-    return table.concat(lsp_clients, ', ')
+    return table.concat(lsp_clients, ' ')
 end
 
 local function search_display()
@@ -31,7 +31,7 @@ local function search_display()
     end
 end
 
-local padding = '    '
+local padding = '  '
 function M.config()
   require'lualine'.setup({
 	options = {
@@ -45,7 +45,10 @@ function M.config()
 		lualine_c = {},
 		lualine_x = {search_display},
 		lualine_y = {get_LSP},
-		lualine_z = {{'branch', separator = { right = '' .. padding}}, 'diff'},
+		lualine_z = {
+            {'diff', separator = { left = ''}},
+            {'branch', separator = { right = '' .. padding}}
+        },
 	},
   	inactive_sections = {
     		lualine_a = {'filename'},

@@ -14,18 +14,14 @@ local M = {
     {'saadparwaiz1/cmp_luasnip'},
     {'hrsh7th/cmp-nvim-lsp'},
     {'hrsh7th/cmp-nvim-lua'},
-    { "zbirenbaum/copilot-cmp" },
+    {'zbirenbaum/copilot-cmp' },
+    {'folke/neodev.nvim'},
 
     -- Snippets
     {'L3MON4D3/LuaSnip'},
     {'rafamadriz/friendly-snippets'},
   }
 }
-
-local function has_words_before()
-  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-end
 
 function M.config()
     local lsp = require('lsp-zero')
@@ -41,6 +37,8 @@ function M.config()
         -- 'ruff-lsp',
     })
     lsp.setup()
+
+    require("neodev").setup()
     local cmp = require'cmp'
     require'copilot_cmp'.setup()
     local has_copilot, copilot_cmp = pcall(require, "copilot_cmp.comparators")
@@ -58,8 +56,6 @@ function M.config()
                         require("copilot.suggestion").accept()
                     elseif cmp.visible() then
                         cmp.confirm({ select = true })
-                    elseif has_words_before() then
-                        cmp.complete()
                     else
                         fallback()
                     end
