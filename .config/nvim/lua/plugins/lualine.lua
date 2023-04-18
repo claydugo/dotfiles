@@ -50,16 +50,6 @@ function M.config()
             {'branch', separator = { right = '' .. padding}}
         },
 	},
-  	inactive_sections = {
-    		lualine_a = {'filename'},
-    		lualine_b = {},
-		lualine_c = {},
-    		lualine_x = {},
-    		lualine_y = {},
-    		lualine_z = {'branch'},
-  	},
-  	tabline = {},
-  	extensions = {}
   })
 end
 
