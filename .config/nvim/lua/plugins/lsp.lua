@@ -30,11 +30,21 @@ function M.config()
         suggest_lsp_servers = false,
     })
     lsp.ensure_installed({
+        -- pyright is back to being an unreal memory hog
+        -- delisted for the time being
         'pyright',
         -- 'sumneko_lua',
         -- 'bashls',
         -- 'rust_analyzer',
         -- 'ruff-lsp',
+    })
+    require("mason").setup()
+    require("mason-lspconfig").setup()
+
+    require("lspconfig").pyright.setup({
+        root_dir = function()
+          return vim.fn.getcwd()
+        end,
     })
     lsp.setup()
 

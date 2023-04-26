@@ -1,3 +1,4 @@
+--
 -- make double esc clear searh highlights
 vim.keymap.set('n', '<Esc><Esc>', '<Esc>:nohlsearch<CR><Esc>')
 
@@ -59,4 +60,5 @@ vim.keymap.set('n', '<leader>9', ':lua require\'harpoon.ui\'.nav_file(9)<CR>')
 
 -- Gitsigns
 vim.keymap.set('n', '<leader>gb', ':lua require\'gitsigns\'.toggle_current_line_blame()<CR>')
+vim.keymap.set('n', '<leader>b', ':lua require\'gitsigns\'.blame_line()<CR>')
 vim.keymap.set('n', '<leader>gd', ':lua require\'gitsigns\'.diffthis()<CR>')

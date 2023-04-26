@@ -4,7 +4,7 @@ local M = {
 
     dependencies = {
         { "nvim-lua/plenary.nvim" },
-        { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+        -- { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
         { "ThePrimeagen/harpoon" },
     },
 }
@@ -68,7 +68,7 @@ function M.config()
 }
 -- Load after setup to apply configuration
 tele.load_extension'harpoon'
-tele.load_extension'fzf'
+-- tele.load_extension'fzf'
 end
 
 return M
