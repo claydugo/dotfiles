@@ -29,23 +29,23 @@ function M.config()
         name = 'recommended',
         suggest_lsp_servers = false,
     })
-    lsp.ensure_installed({
+    -- lsp.ensure_installed({
         -- pyright is back to being an unreal memory hog
         -- delisted for the time being
-        'pyright',
+        -- 'pyright',
         -- 'sumneko_lua',
         -- 'bashls',
         -- 'rust_analyzer',
         -- 'ruff-lsp',
-    })
-    require("mason").setup()
-    require("mason-lspconfig").setup()
-
-    require("lspconfig").pyright.setup({
-        root_dir = function()
-          return vim.fn.getcwd()
-        end,
-    })
+    -- })
+    -- require("mason").setup()
+    -- require("mason-lspconfig").setup()
+    --
+    -- require("lspconfig").pyright.setup({
+    --     root_dir = function()
+    --       return vim.fn.getcwd()
+    --     end,
+    -- })
     lsp.setup()
 
     require("neodev").setup()
