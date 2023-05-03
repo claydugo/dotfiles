@@ -12,9 +12,7 @@ alias cl='clear'
 alias :q='exit'
 alias p='python3'
 alias path='echo -e ${PATH//:/\\n}'
-alias vim='v'
-alias vi='v'
-alias t='tmux'
+alias t='tmux new-session -s $(hostname)'
 alias ta="tmux a"
 alias td='cd $(mktemp -d /tmp/$1.XXX)'
 alias glb='git shortlog -nse'
@@ -38,4 +36,9 @@ alias la='cat ~/.aliases'
 
 if hash bat 2>/dev/null; then
     alias la='bat ~/.aliases -l bash'
+fi
+
+if hash nvim 2>/dev/null; then
+    alias vim='nvim'
+    alias vi='nvim'
 fi
