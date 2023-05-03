@@ -16,7 +16,7 @@ alias vim='v'
 alias vi='v'
 alias t='tmux'
 alias ta="tmux a"
-alias td='cd $(mktemp -d /tmp/$1.XXXX)'
+alias td='cd $(mktemp -d /tmp/$1.XXX)'
 alias glb='git shortlog -nse'
 alias nvimtime='nvim --startuptime /tmp/nvimstartup.log -c exit && tail -10 /tmp/nvimstartup.log'
 

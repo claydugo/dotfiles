@@ -3,9 +3,9 @@ local M = {
   event = "BufReadPre",
   dependencies = {
     -- LSP Support
-    {'neovim/nvim-lspconfig'},
     {'williamboman/mason.nvim'},
     {'williamboman/mason-lspconfig.nvim'},
+    {'neovim/nvim-lspconfig'},
 
     -- Autocompletion
     {'hrsh7th/nvim-cmp'},
@@ -38,14 +38,14 @@ function M.config()
         -- 'rust_analyzer',
         -- 'ruff-lsp',
     -- })
-    -- require("mason").setup()
-    -- require("mason-lspconfig").setup()
-    --
-    -- require("lspconfig").pyright.setup({
-    --     root_dir = function()
-    --       return vim.fn.getcwd()
-    --     end,
-    -- })
+    require("mason").setup()
+    require("mason-lspconfig").setup()
+
+    -- https://github.com/neovim/neovim/issues/23291#issuecomment-1523243069
+    -- revert after
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
+    require("lspconfig").pyright.setup(capabilities)
     lsp.setup()
 
     require("neodev").setup()
