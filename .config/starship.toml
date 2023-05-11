@@ -16,7 +16,8 @@ add_newline = false
 
 [directory]
 style = "fg:#232323 bg:#769ff0"
-format = "[ /$path ]($style)"
+format = "[ $path ]($style)"
+truncation_symbol = '/'
 truncation_length = 99
 
 [hostname]
