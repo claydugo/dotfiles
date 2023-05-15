@@ -1,6 +1,6 @@
 return {
     "zbirenbaum/copilot.lua",
-    event = "bufreadpre",
+    event = "BufReadPre",
     cmd = { "Copilot" },
     config = function()
         require('copilot').setup({
@@ -14,6 +14,13 @@ return {
                     dismiss = "<C-d>",
                 },
             },
+            filetypes = {
+                markdown = false,
+                gitcommit = false,
+                gitrebase = false,
+                yaml = false,
+                help = false,
+              },
             -- copilot_node_command = "node",
             server_opts_overrides = {}
         })
