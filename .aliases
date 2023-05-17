@@ -42,3 +42,10 @@ if hash nvim 2>/dev/null; then
     alias vim='nvim'
     alias vi='nvim'
 fi
+
+ssh() {
+    title=$(echo "$@" | awk -F'[@.]' '{print $(NF-1)}')
+    tmux rename-window "$title"
+    command ssh "$@"
+    exit
+}
