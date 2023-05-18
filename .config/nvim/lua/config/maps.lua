@@ -34,6 +34,7 @@ vim.keymap.set('i', ';', ';<c-g>u')
 -- hidden flag allows you to see dotfiles
 vim.keymap.set('n', '<leader>ff', ':lua require\'telescope.builtin\'.find_files({hidden = true})<CR>')
 vim.keymap.set('n', '<leader>fa', ':lua require\'telescope.builtin\'.find_files()<CR>')
+vim.keymap.set('n', '<leader>fu', ':lua require\'telescope\'.extensions.undo.undo()<CR>')
 -- grep directory with ripgrep
 vim.keymap.set('n', '<leader>fg', ':lua require\'telescope.builtin\'.live_grep()<CR>')
 vim.keymap.set('n', '<leader>fb', ':lua require\'telescope.builtin\'.buffers()<CR>')

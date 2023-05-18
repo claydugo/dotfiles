@@ -6,6 +6,7 @@ local M = {
         { "nvim-lua/plenary.nvim" },
         -- { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
         { "ThePrimeagen/harpoon" },
+        { "debugloop/telescope-undo.nvim" },
     },
 }
 
@@ -68,6 +69,7 @@ function M.config()
 }
 -- Load after setup to apply configuration
 tele.load_extension'harpoon'
+tele.load_extension'undo'
 -- tele.load_extension'fzf'
 end
 

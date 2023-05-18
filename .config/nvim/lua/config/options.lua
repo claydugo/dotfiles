@@ -65,7 +65,7 @@ vim.api.nvim_create_autocmd('VimEnter', {
       local arg = vim.api.nvim_eval('argv(0)')
       if arg and (vim.fn.isdirectory(arg) ~= 0 or arg == "") then
         vim.defer_fn(function()
-          require'telescope.builtin'.find_files()
+          require'telescope.builtin'.find_files({hidden = true})
         end, 10)
       end
     end
