@@ -49,7 +49,8 @@ style = "fg:#232323 bg:#769ff0"
 format = '[\($environment\)]($style)'
 
 [character]
-success_symbol = '[\$](bold green)'
+success_symbol = '[🔥](white)'
+error_symbol = '[💀](white)'
 
 [cmd_duration]
 style = "fg:#FFFAB4 bg:#394260"
