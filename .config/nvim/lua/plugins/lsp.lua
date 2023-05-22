@@ -43,9 +43,10 @@ function M.config()
 
     -- https://github.com/neovim/neovim/issues/23291#issuecomment-1523243069
     -- revert after
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
-    require("lspconfig").pyright.setup(capabilities)
+    -- local capabilities = vim.lsp.protocol.make_client_capabilities()
+    -- capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
+    -- require("lspconfig").pyright.setup(capabilities)
+    require("vim.lsp._watchfiles")._watchfunc = require("vim._watch").watch
     lsp.setup()
 
     require("neodev").setup()
