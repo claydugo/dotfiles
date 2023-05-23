@@ -4,7 +4,7 @@ local M = {
 
     dependencies = {
         { "nvim-lua/plenary.nvim" },
-        -- { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+        { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
         { "ThePrimeagen/harpoon" },
         { "debugloop/telescope-undo.nvim" },
     },
@@ -15,6 +15,8 @@ function M.config()
     local actions = require'telescope.actions'
     tele.setup{
         defaults = {
+            prompt_prefix = "🔬 ",
+            selection_caret = "👉 ",
             file_ignore_patterns = {
                 '%.jpg',
                 '%.jpeg',
@@ -35,6 +37,10 @@ function M.config()
             mappings = {
                 -- insert mode mappings
                 i = {
+                    ["<RightMouse>"] = actions.close,
+                    ["<LeftMouse>"] = actions.select_default,
+                    ["<ScrollWheelDown>"] = actions.move_selection_next,
+                    ["<ScrollWheelUp>"] = actions.move_selection_previous,
                     ['<C-j>'] = actions.move_selection_next,
                     ['<C-k>'] = actions.move_selection_previous,
                     ['<ESC>'] = actions.close,
@@ -69,8 +75,8 @@ function M.config()
 }
 -- Load after setup to apply configuration
 tele.load_extension'harpoon'
+tele.load_extension'fzf'
 tele.load_extension'undo'
--- tele.load_extension'fzf'
 end
 
 return M
