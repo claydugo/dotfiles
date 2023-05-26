@@ -15,8 +15,6 @@ vim.keymap.set('n', 'U', '<C-r>')
 -- go away
 vim.keymap.set('n', 'Q', '<nop>')
 
-vim.keymap.set('n', '<C-c>', ':!kill -9 $PPID<CR>')
-
 -- move cursor to center of screen when searching, and expand folds
 vim.keymap.set("n", "n", "nzzzv", { desc = "Next result (expand folds)" })
 vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous result (expand folds)" })
