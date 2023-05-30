@@ -51,6 +51,12 @@ vim.o.ttimeoutlen = 5
 vim.o.timeoutlen = 1000
 vim.o.term = 'screen-256color'
 
+-- Remove trailing whitespace
+vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+  pattern = { "*" },
+  command = [[%s/\s\+$//e]],
+})
+
 vim.api.nvim_create_augroup('startup', { clear = true })
 vim.api.nvim_create_autocmd('VimEnter', {
     group = 'startup',
