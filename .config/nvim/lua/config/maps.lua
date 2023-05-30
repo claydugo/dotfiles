@@ -16,8 +16,8 @@ vim.keymap.set('n', 'U', '<C-r>')
 vim.keymap.set('n', 'Q', '<nop>')
 
 -- move cursor to center of screen when searching, and expand folds
-vim.keymap.set("n", "n", "nzzzv", { desc = "Next result (expand folds)" })
-vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous result (expand folds)" })
+vim.keymap.set("n", "n", "nzzzv")
+vim.keymap.set("n", "N", "Nzzzv")
 
 -- Reselect visual selection after indenting
 vim.keymap.set("v", "<", "<gv")

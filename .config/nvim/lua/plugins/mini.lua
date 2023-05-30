@@ -11,5 +11,6 @@ return {
               starter.gen_hook.aligning("center", "top"),
             },
         })
+        require('mini.trailspace').setup()
     end
 }

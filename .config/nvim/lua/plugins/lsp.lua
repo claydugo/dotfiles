@@ -25,6 +25,14 @@ local M = {
 
 function M.config()
     local lsp = require('lsp-zero')
+    -- https://github.com/neovim/neovim/issues/23291#issuecomment-1523243069
+    local ok, wf = pcall(require, "vim.lsp._watchfiles")
+        if ok then
+            -- disable lsp watcher. Too slow on linux
+            wf._watchfunc = function()
+        return function() end
+        end
+    end
     lsp.preset({
         name = 'recommended',
         suggest_lsp_servers = false,
@@ -41,12 +49,6 @@ function M.config()
     require("mason").setup()
     require("mason-lspconfig").setup()
 
-    -- https://github.com/neovim/neovim/issues/23291#issuecomment-1523243069
-    -- revert after
-    -- local capabilities = vim.lsp.protocol.make_client_capabilities()
-    -- capabilities.workspace.didChangeWatchedFiles.dynamicRegistration = false
-    -- require("lspconfig").pyright.setup(capabilities)
-    require("vim.lsp._watchfiles")._watchfunc = require("vim._watch").watch
     lsp.setup()
 
     require("neodev").setup()
