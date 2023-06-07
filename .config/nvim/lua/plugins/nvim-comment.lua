@@ -1,6 +1,6 @@
 return {
     'terrortylor/nvim-comment',
-    event = "BufReadPost",
+    event = { "BufReadPre", "BufNewFile" },
     config = function()
         require('nvim_comment').setup()
     end

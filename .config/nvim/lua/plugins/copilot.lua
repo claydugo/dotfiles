@@ -1,6 +1,6 @@
 return {
     "zbirenbaum/copilot.lua",
-    event = "BufReadPre",
+    event = { "BufReadPre", "BufNewFile" },
     cmd = { "Copilot" },
     config = function()
         require('copilot').setup({

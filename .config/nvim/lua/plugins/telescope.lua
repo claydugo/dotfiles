@@ -1,10 +1,12 @@
 local M = {
     "nvim-telescope/telescope.nvim",
+    -- dir = "~/projects/telescope.nvim/",
     cmd = { "Telescope" },
 
     dependencies = {
         { "nvim-lua/plenary.nvim" },
-        { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+        -- { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+        { "natecraddock/telescope-zf-native.nvim" },
         { "ThePrimeagen/harpoon" },
         { "debugloop/telescope-undo.nvim" },
     },
@@ -16,7 +18,7 @@ function M.config()
     tele.setup{
         defaults = {
             prompt_prefix = "🔬 ",
-            selection_caret = "👉 ",
+            -- selection_caret = " ",
             file_ignore_patterns = {
                 '%.jpg',
                 '%.jpeg',
@@ -75,7 +77,8 @@ function M.config()
 }
 -- Load after setup to apply configuration
 tele.load_extension'harpoon'
-tele.load_extension'fzf'
+tele.load_extension'zf-native'
+-- tele.load_extension'fzf'
 tele.load_extension'undo'
 end
 

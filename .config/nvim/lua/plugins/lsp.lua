@@ -1,6 +1,6 @@
 local M = {
   'VonHeikemen/lsp-zero.nvim',
-  event = "BufReadPre",
+  event = { "BufReadPre", "BufNewFile" },
   dependencies = {
     -- LSP Support
     {'williamboman/mason.nvim'},
