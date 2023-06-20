@@ -26,9 +26,12 @@ local M = {
 function M.config()
     local lsp = require('lsp-zero')
     -- https://github.com/neovim/neovim/issues/23291#issuecomment-1523243069
+    -- https://github.com/neovim/neovim/pull/23500#issuecomment-1585986913
+    -- pyright asks for every file in every directory to be watched,
+    -- so for large projects that will necessarily turn into a lot of polling handles being created.
+    -- sigh
     local ok, wf = pcall(require, "vim.lsp._watchfiles")
         if ok then
-            -- disable lsp watcher. Too slow on linux
             wf._watchfunc = function()
         return function() end
         end
