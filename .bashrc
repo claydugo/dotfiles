@@ -1,5 +1,5 @@
 shopt -s histappend
-HISTIGNORE="&:[ ]*:exit:e:R:make:tmux.*:cd:la:ls:ll:gd:gs:c:history:clear:cl:v:t:p:cd:\:..:...:....:q"
+HISTIGNORE="&:[ ]*:exit:e:R:tmux.*:cd:la:ls:ll:gd:gs:c:history:clear:cl:v:t:p:\:..:...:....:q"
 HISTCONTROL=ignoreboth
 HISTSIZE=1000
 HISTFILESIZE=2000

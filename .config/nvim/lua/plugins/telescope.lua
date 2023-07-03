@@ -64,7 +64,7 @@ function M.config()
             },
             color_devicons = false,
             shorten_path = true,
-            borderchars = { " ", " ", " ", " ", " ", " ", " ", " " },
+            -- borderchars = { " ", " ", " ", " ", " ", " ", " ", " " },
         },
         pickers = {
             find_files = {
