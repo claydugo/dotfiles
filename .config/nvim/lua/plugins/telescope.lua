@@ -1,11 +1,14 @@
 local M = {
     "nvim-telescope/telescope.nvim",
+    -- dir = "~/projects/telescope.nvim/",
     cmd = { "Telescope" },
 
     dependencies = {
         { "nvim-lua/plenary.nvim" },
-        { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+        -- { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+        { "natecraddock/telescope-zf-native.nvim" },
         { "ThePrimeagen/harpoon" },
+        { "debugloop/telescope-undo.nvim" },
     },
 }
 
@@ -14,6 +17,8 @@ function M.config()
     local actions = require'telescope.actions'
     tele.setup{
         defaults = {
+            prompt_prefix = "🔬 ",
+            -- selection_caret = " ",
             file_ignore_patterns = {
                 '%.jpg',
                 '%.jpeg',
@@ -34,6 +39,10 @@ function M.config()
             mappings = {
                 -- insert mode mappings
                 i = {
+                    ["<RightMouse>"] = actions.close,
+                    ["<LeftMouse>"] = actions.select_default,
+                    ["<ScrollWheelDown>"] = actions.move_selection_next,
+                    ["<ScrollWheelUp>"] = actions.move_selection_previous,
                     ['<C-j>'] = actions.move_selection_next,
                     ['<C-k>'] = actions.move_selection_previous,
                     ['<ESC>'] = actions.close,
@@ -55,7 +64,7 @@ function M.config()
             },
             color_devicons = false,
             shorten_path = true,
-            borderchars = { " ", " ", " ", " ", " ", " ", " ", " " },
+            -- borderchars = { " ", " ", " ", " ", " ", " ", " ", " " },
         },
         pickers = {
             find_files = {
@@ -68,7 +77,9 @@ function M.config()
 }
 -- Load after setup to apply configuration
 tele.load_extension'harpoon'
-tele.load_extension'fzf'
+tele.load_extension'zf-native'
+-- tele.load_extension'fzf'
+tele.load_extension'undo'
 end
 
 return M

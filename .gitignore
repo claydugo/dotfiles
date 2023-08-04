@@ -40,3 +40,22 @@ nvimstartup.log
 .config/nvim/plugin
 # Ignore so I dont merge gpg key
 .gitconfig
+
+# lazy.nvim
+lazy-lock.json
+hmmst.py
+
+# FPGA
+*.o
+*.o.cmd
+*.ko.cmd
+.cache.mk
+.tmp_versions
+*.o.ur-safe
+modules.order
+Module.symvers
+*.ko
+*.mod.c
+
+# https://github.com/microsoft/pyright/issues/4176#issuecomment-1024168748
+pyrightconfig.json

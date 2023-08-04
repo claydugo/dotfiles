@@ -19,23 +19,37 @@ echo "symlinking"
 ln -sfn ~/dotfiles/.bashrc ~/.bashrc
 ln -sfn ~/dotfiles/.tmux.conf ~/.tmux.conf
 ln -sfn ~/dotfiles/.gitignore ~/.gitignore
+
+git config --global user.name "Clay Dugo"
+git config --global user.email "claydugo@gmail.com"
 # Symlinking entire /nvim/ folder now with lua setup
 # which is spread across multiple files for optimized load time
 mkdir -p ~/.config/
 ln -sf ~/dotfiles/.config/nvim/ ~/.config/
 
 
+echo "installing kitty"
 # Also do kitty now
+# Gonna install at this point
+curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
 mkdir -p ~/.config/kitty
 ln -sf ~/dotfiles/.config/kitty/kitty.conf ~/.config/kitty/kitty.conf
-
+# gonna really lean into kitty and do the desktop intergration as well
+mkdir -p ~/.local/bin/
+mkdir -p ~/.local/share/applications/
+ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
+cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/applications/
+cp ~/.local/kitty.app/share/applications/kitty-open.desktop ~/.local/share/applications/
+sed -i "s|Icon=kitty|Icon=/home/$USER/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" ~/.local/share/applications/kitty*.desktop
+sed -i "s|Exec=kitty|Exec=/home/$USER/.local/kitty.app/bin/kitty|g" ~/.local/share/applications/kitty*.desktop
 
 mkdir -p ~/.local/bin
-ln -sf ~/dotfiles/scripts/ws ~/.local/bin/ws
+ln -sf ~/dotfiles/ramona/scripts/ws ~/.local/bin/ws
 
-# Using starship now but thats compiles with rust so this is easier for now
-# for fresh setups
-git clone https://github.com/magicmonty/bash-git-prompt.git ~/.bash-git-prompt --depth=1
+# Replaces git bash prompt for me
+echo "installing starship"
+curl -sS https://starship.rs/install.sh | sh
+ln -sfn ~/dotfiles/.config/starship.toml ~/.config/
 
 # This shouldnt be necessary anymore but I like it
 cd ~/dotfiles
@@ -45,21 +59,23 @@ os=$(uname -s)
 
 if [ "$os" = "Linux" ]; then
     echo "linux detected"
+    echo "installing apt picks"
     # Use nightly nvim since most good features come after 0.7
     # and nvim on base apt is version 4.3
     sudo add-apt-repository ppa:neovim-ppa/unstable
     sudo add-apt-repository universe
     sudo apt-get update
-    sudo apt install neovim tmux ripgrep htop cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3 xcape
+    # npm for LSP servers
+    sudo apt install neovim tmux ripgrep htop cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3 xcape npm
     dconf write /org/gnome/desktop/input-sources/xkb-options "['caps:escape']"
     ln -sfn ~/dotfiles/.xprofile ~/.xprofile
-    echo "source ~/.xprofile" >> ~/.bashrc
     fonts_dir="$HOME/.fonts"
     mkdir -p $fonts_dir
     cd $fonts_dir
 fi
 if [ "$os" = "Darwin" ]; then
     echo "mac detected"
+    echo "installing brew picks"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     brew install neovim --HEAD
     # mac no longer ships newest bash install with homebrew
@@ -77,6 +93,7 @@ if [ "$os" = "Darwin" ]; then
     cd $fonts_dir
 fi
 
+echo "installing nerd font"
 wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FiraCode.zip && unzip "FiraCode" -d $fonts_dir && fc-cache -fv
 
 # Sometimes im doing setup before logging in
@@ -87,23 +104,9 @@ cd ~/Downloads
 curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh"
 bash Mambaforge-$(uname)-$(uname -m).sh
 
-conda update conda --name base
-
-conda config --add channels conda-forge
-
-echo "checking for ramona submodule"
-if [ -f ~/dotfiles/ramona/ ]; then
-    chmod +x ~/dotfiles/ramona/finish_dev_env_setup.sh
-    bash ~/dotfiles/ramona/finish_dev_env_setup.sh
-    chmod +x ~/dotfiles/ramona/work_prefs.sh
-    bash ~/dotfiles/ramona/work_prefs.sh
-fi
-
 echo "************************************"
 echo "finished"
-echo "dont forget to switch caps lock to esc in gnome gnome-tweaks"
-echo "and set the power screen timer to never"
-echo "and set terminal font to fira code"
+echo "run finish_dev_env_setup.sh after opening new shell"
 echo "************************************"
 
 

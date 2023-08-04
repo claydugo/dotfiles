@@ -4,37 +4,42 @@
 
 ![20221228](dots_macos.png)
 
-My auto-setup is currently using the script at `scripts/setup.sh`
+My auto-installer is located at `scripts/setup.sh`
 
 ```
+$ tree -a -I '.git|ramona|karabiner'
 .
 ├── .aliases
 ├── .bashrc
 ├── .config
+│   ├── alacritty
+│   │   └── alacritty.yml
 │   ├── kitty
-│   │   ├── diff.conf
-│   │   ├── dracula.conf
 │   │   └── kitty.conf
 │   ├── nvim
 │   │   ├── init.lua
 │   │   ├── lazy-lock.json
 │   │   └── lua
 │   │       ├── config
+│   │       │   ├── langserver_icons.lua
 │   │       │   ├── lazy.lua
 │   │       │   ├── maps.lua
-│   │       │   ├── options.lua
-│   │       │   └── plugins
-│   │       │       ├── gitsigns.lua
-│   │       │       ├── lsp.lua
-│   │       │       ├── lualine.lua
-│   │       │       ├── nvim-comment.lua
-│   │       │       ├── telescope.lua
-│   │       │       ├── tokyonight.lua
-│   │       │       ├── treesitter.lua
-│   │       │       └── vimwiki.lua
-│   │       └── init.lua
+│   │       │   └── options.lua
+│   │       └── plugins
+│   │           ├── copilot.lua
+│   │           ├── gitsigns.lua
+│   │           ├── lsp.lua
+│   │           ├── lualine.lua
+│   │           ├── nvim-comment.lua
+│   │           ├── smartcolumn.lua
+│   │           ├── telescope.lua
+│   │           ├── tokyonight.lua
+│   │           ├── treesitter.lua
+│   │           ├── undotree.lua
+│   │           └── vimwiki.lua
 │   └── starship.toml
 ├── dotfiles.png
+├── dots_macos.png
 ├── .gitignore
 ├── .gitmodules
 ├── .linux_aliases
@@ -46,8 +51,7 @@ My auto-setup is currently using the script at `scripts/setup.sh`
 ├── .tmux-ssh.conf
 └── .xprofile
 
-7 directories, 30 files
-
+8 directories, 33 files
 ```
 
 #### Submodules
@@ -65,10 +69,7 @@ after updates
 `git submodule update --remote`
 
 #### NVIM
-nvim start time somewhere between 15ms - 20ms.
-
-#### tmux
-No plugins just mappings
+nvim start time somewhere between 3 - 5ms.
 
 #### Old NVIM configurations
 

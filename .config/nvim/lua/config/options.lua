@@ -1,5 +1,5 @@
-vim.g.mapleader = ","
-vim.g.maplocalleader = ","
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
 vim.o.grepprg = "rg --vimgrep"
 
@@ -55,6 +55,21 @@ vim.o.term = 'screen-256color'
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   pattern = { "*" },
   command = [[%s/\s\+$//e]],
+})
+
+vim.api.nvim_create_augroup('startup', { clear = true })
+vim.api.nvim_create_autocmd('VimEnter', {
+    group = 'startup',
+    pattern = '*',
+    callback = function()
+      -- Open file browser if argument is a folder
+      local arg = vim.api.nvim_eval('argv(0)')
+      if arg and (vim.fn.isdirectory(arg) ~= 0 or arg == "") then
+        vim.defer_fn(function()
+          require'telescope.builtin'.find_files({hidden = true})
+        end, 10)
+      end
+    end
 })
 
 vim.g.vimwiki_global_ext = 0

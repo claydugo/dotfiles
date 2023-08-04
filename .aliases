@@ -7,19 +7,16 @@ alias dl='cd ~/Downloads/'
 alias dt="cd ~/Desktop"
 alias doc="cd ~/Documents"
 alias proj='cd ~/projects/'
-alias ll='ls -la'
+alias ll='ls -lah'
 alias cl='clear'
 alias :q='exit'
 alias p='python3'
 alias path='echo -e ${PATH//:/\\n}'
-alias vim='v'
-alias vi='v'
-alias t='tmux'
+alias t='tmux new-session -s $(hostname)'
 alias ta="tmux a"
-alias td='cd $(mktemp -d /tmp/$1.XXXX)'
-alias la='cat ~/.aliases'
+alias td='cd $(mktemp -d /tmp/$1.XXX)'
 alias glb='git shortlog -nse'
-alias nvimtime='nvim --startuptime /tmp/nvimstartup.log -c exit && tail -10 /tmp/nvimstartup.log'
+alias git_clean='git branch | grep -v "main" | xargs git branch -D'
 
 # Think this is zsh default
 alias ~='cd ~'
@@ -29,3 +26,19 @@ if [ -f ~/dotfiles/ramona/.ramona ]; then
     source ~/dotfiles/ramona/.ramona
 fi
 
+if hash exa 2>/dev/null; then
+    alias ls='exa'
+    alias ll="exa -lah --git --icons"
+    alias lll="exa -abghHliS@ --git --icons"
+fi
+
+alias la='cat ~/.aliases'
+
+if hash bat 2>/dev/null; then
+    alias la='bat ~/.aliases -l bash'
+fi
+
+if hash nvim 2>/dev/null; then
+    alias vim='nvim'
+    alias vi='nvim'
+fi

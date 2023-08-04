@@ -1,3 +1,4 @@
+--
 -- make double esc clear searh highlights
 vim.keymap.set('n', '<Esc><Esc>', '<Esc>:nohlsearch<CR><Esc>')
 
@@ -14,6 +15,14 @@ vim.keymap.set('n', 'U', '<C-r>')
 -- go away
 vim.keymap.set('n', 'Q', '<nop>')
 
+-- move cursor to center of screen when searching, and expand folds
+vim.keymap.set("n", "n", "nzzzv")
+vim.keymap.set("n", "N", "Nzzzv")
+
+-- Reselect visual selection after indenting
+vim.keymap.set("v", "<", "<gv")
+vim.keymap.set("v", ">", ">gv")
+
 -- undo breakpoints
 vim.keymap.set('i', ',', ',<c-g>u')
 vim.keymap.set('i', '.', '.<c-g>u')
@@ -23,6 +32,7 @@ vim.keymap.set('i', ';', ';<c-g>u')
 -- hidden flag allows you to see dotfiles
 vim.keymap.set('n', '<leader>ff', ':lua require\'telescope.builtin\'.find_files({hidden = true})<CR>')
 vim.keymap.set('n', '<leader>fa', ':lua require\'telescope.builtin\'.find_files()<CR>')
+vim.keymap.set('n', '<leader>fu', ':lua require\'telescope\'.extensions.undo.undo()<CR>')
 -- grep directory with ripgrep
 vim.keymap.set('n', '<leader>fg', ':lua require\'telescope.builtin\'.live_grep()<CR>')
 vim.keymap.set('n', '<leader>fb', ':lua require\'telescope.builtin\'.buffers()<CR>')
@@ -51,4 +61,5 @@ vim.keymap.set('n', '<leader>9', ':lua require\'harpoon.ui\'.nav_file(9)<CR>')
 
 -- Gitsigns
 vim.keymap.set('n', '<leader>gb', ':lua require\'gitsigns\'.toggle_current_line_blame()<CR>')
+vim.keymap.set('n', '<leader>b', ':lua require\'gitsigns\'.blame_line()<CR>')
 vim.keymap.set('n', '<leader>gd', ':lua require\'gitsigns\'.diffthis()<CR>')

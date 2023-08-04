@@ -3,65 +3,53 @@ local M = {
   event = "VeryLazy",
 }
 
--- from https://github.com/nvim-lualine/lualine.nvim/blob/master/examples/evil_lualine.lua
 local function get_LSP()
-    local msg = ''
-    local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
     local clients = vim.lsp.get_active_clients()
+    local icons = require("config.langserver_icons")
     if next(clients) == nil then
-      return msg
+        return ''
     end
-    for _, client in ipairs(clients) do
-      local filetypes = client.config.filetypes
-      if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-        return client.name
-      end
+    local lsp_clients = {}
+    for _, client in pairs(clients) do
+        local lsp_name = client.name
+        if icons and icons[client.name] then
+            lsp_name = icons[client.name] .. client.name
+        else
+            lsp_name = client.name
+        end
+        table.insert(lsp_clients, lsp_name)
     end
-    return msg
+    return table.concat(lsp_clients, ' ')
 end
 
-local function get_LSP_with_Icon()
-    local lsp = get_LSP()
-    local icon = ''
-    local padding = ' '
-    if lsp == 'pyright' then
-        icon = '' .. padding;
-    elseif lsp == 'sumneko_lua' then
-        icon = '' .. padding;
-    elseif lsp == 'bashls' then
-        icon = '' .. padding;
+local function search_display()
+    local search = vim.fn.searchcount({maxcount = 0})
+    if search.current > 0 then
+        return search.current.."/"..search.total
     else
-        icon = '';
+        return ""
     end
-    return icon .. lsp
 end
-local padding = '    '
 
+local padding = '  '
 function M.config()
   require'lualine'.setup({
 	options = {
-		theme = 'tokyonight',
-		component_separators = '|',
+		theme = 'auto',
+		component_separators = '',
 		section_separators = { left = '', right = '' },
   	},
     	sections = {
 		lualine_a = {{ 'mode', separator = { left = padding .. ''}},},
 		lualine_b = {'filename'},
 		lualine_c = {},
-		lualine_x = {'location', get_LSP_with_Icon},
-		lualine_y = {'diff'},
-		lualine_z = {{'branch', separator = { right = '' .. padding}},},
+		lualine_x = {search_display},
+		lualine_y = {get_LSP},
+		lualine_z = {
+            {'diff', separator = { left = ''}},
+            {'branch', separator = { right = '' .. padding}}
+        },
 	},
-  	inactive_sections = {
-    		lualine_a = {'filename'},
-    		lualine_b = {},
-		lualine_c = {},
-    		lualine_x = {},
-    		lualine_y = {},
-    		lualine_z = {'branch'},
-  	},
-  	tabline = {},
-  	extensions = {}
   })
 end
 

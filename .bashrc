@@ -1,5 +1,5 @@
 shopt -s histappend
-HISTIGNORE="&:[ ]*:exit:e:R:make:tmux.*:cd:la:ls:ll:gd:gs:c:history:clear:cl:v:t:p:cd:\:..:...:....:q"
+HISTIGNORE="&:[ ]*:exit:e:R:tmux.*:cd:la:ls:ll:gd:gs:c:history:clear:cl:v:t:p:\:..:...:....:q"
 HISTCONTROL=ignoreboth
 HISTSIZE=1000
 HISTFILESIZE=2000
@@ -31,12 +31,13 @@ fi
 
 conda_dir=$HOME
 
-if [ -d "$HOME/miniforge3/" ]; then
-    conda_dir=$HOME/miniforge3/
+
+if [[ -d "$HOME/mambaforge/" ]]; then
+    conda_dir=$HOME/mambaforge/
 fi
 
-if [ -d "$HOME/mambaforge/" ]; then
-    conda_dir=$HOME/mambaforge/
+if [[ -d "$HOME/miniforge3/" ]]; then
+    conda_dir=$HOME/miniforge3/
 fi
 
 # >>> conda initialize >>>
@@ -60,16 +61,16 @@ fi
 
 # tab completion no longer case sensitive
 # needs wrapper to avoid login warning
-if [ -t 1 ]; then
+if [[ -t 1 ]]; then
     bind 'set completion-ignore-case on'
 fi
 
 os=$(uname -s)
 
-if [ "$os" = "Linux" ]; then
+if [[ "$os" = "Linux" ]]; then
     source ~/dotfiles/.linux_aliases
 fi
-if [ "$os" = "Darwin" ]; then
+if [[ "$os" = "Darwin" ]]; then
     source ~/dotfiles/.mac_aliases
 fi
 
@@ -79,14 +80,14 @@ source ~/dotfiles/.aliases
 # cargo path
 export PATH=/home/clay/.cargo/bin:$PATH
 
+if [[ -f "$HOME/.cargo/env" ]]; then
+    . "$HOME/.cargo/env"
+fi
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+if hash starship 2>/dev/null; then
+    eval "$(starship init bash)"
+fi
 
-
-. "$HOME/.cargo/env"
-
-export BASH_SILENCE_DEPRECATION_WARNING=1
-eval "$(/opt/homebrew/bin/brew shellenv)"
-eval "$(starship init bash)"
+if [[ -f "$HOME/.xprofile" ]]; then
+    source ~/.xprofile
+fi
