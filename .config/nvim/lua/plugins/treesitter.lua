@@ -16,10 +16,14 @@ return {
 		      "markdown",
 		      "html",
 		      "json",
-		},
-		highlight = { enable = true, },
+		  },
+		  highlight = { enable = true, },
 	})
-    require("treesitter-context").setup()
+    require("treesitter-context").setup({
+      -- they bumped this at some point and now its annoying
+      -- will have to play around to find a good sweet spot
+      multiline_threshold = 4,
+    })
 	end
 }
 

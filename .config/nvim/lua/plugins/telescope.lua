@@ -1,8 +1,8 @@
 local M = {
     "nvim-telescope/telescope.nvim",
     -- dir = "~/projects/telescope.nvim/",
+    lazy = false,
     cmd = { "Telescope" },
-
     dependencies = {
         { "nvim-lua/plenary.nvim" },
         -- { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
@@ -17,6 +17,16 @@ function M.config()
     local actions = require'telescope.actions'
     tele.setup{
         defaults = {
+            -- https://github.com/nvim-telescope/telescope.nvim/issues/2667#issuecomment-1700970850
+            sorting_strategy = "ascending",
+            layout_config = {
+                horizontal = {
+                    prompt_position = "top",
+                },
+                vertical = {
+                    prompt_position = "top",
+                }
+            },
             prompt_prefix = "🔬 ",
             -- selection_caret = " ",
             file_ignore_patterns = {
