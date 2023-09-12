@@ -13,7 +13,9 @@ local function get_LSP()
     for _, client in pairs(clients) do
         local lsp_name = client.name
         if icons and icons[client.name] then
-            lsp_name = icons[client.name] .. client.name
+            -- lsp_name = icons[client.name] .. client.name
+            -- just show icon if known
+            lsp_name = icons[client.name]
         else
             lsp_name = client.name
         end
