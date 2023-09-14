@@ -33,3 +33,27 @@ vim.keymap.set('n', '<leader>9', ':lua require\'harpoon.ui\'.nav_file(9)<CR>')
 vim.keymap.set('n', '<leader>gb', ':lua require\'gitsigns\'.toggle_current_line_blame()<CR>')
 vim.keymap.set('n', '<leader>b', ':lua require\'gitsigns\'.blame_line()<CR>')
 vim.keymap.set('n', '<leader>gd', ':lua require\'gitsigns\'.diffthis()<CR>')
+
+vim.api.nvim_create_augroup('startup', { clear = true })
+vim.api.nvim_create_autocmd('VimEnter', {
+    group = 'startup',
+    pattern = '*',
+    callback = function()
+      -- Open file browser if argument is a folder
+      local arg = vim.api.nvim_eval('argv(0)')
+      if arg and (vim.fn.isdirectory(arg) ~= 0 or arg == "") then
+        vim.defer_fn(function()
+          require'telescope.builtin'.find_files({hidden = true})
+        end, 10)
+      end
+    end
+})
+
+vim.g.vimwiki_global_ext = 0
+vim.g.vimwiki_list = {
+    {
+      path = '~/vimwiki/',
+      syntax = 'markdown',
+      ext = '.md',
+    }
+}
