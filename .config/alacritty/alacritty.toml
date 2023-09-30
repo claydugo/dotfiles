@@ -1,0 +1,8 @@
+[window]
+dynamic_title = true
+
+[font.normal]
+family = "FiraCode Nerd Font"
+
+[colors.primary]
+background = "#282a36"

@@ -14,7 +14,13 @@ vim.o.writebackup = false
 vim.o.swapfile = false
 vim.o.clipboard = 'unnamed,unnamedplus'
 
-vim.o.cmdheight = 0
+local os_type = os.getenv("OSTYPE")
+
+if os_type == "linux-gnu" then
+    vim.o.cmdheight = 0
+elseif os_type == "darwin" then
+    vim.o.cmdheight = 1
+end
 vim.o.updatetime = 300
 
 vim.o.ignorecase = true
