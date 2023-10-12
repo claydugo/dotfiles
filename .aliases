@@ -11,6 +11,7 @@ alias ll='ls -lah'
 alias cl='clear'
 alias :q='exit'
 alias p='python3'
+alias i='ipython'
 alias path='echo -e ${PATH//:/\\n}'
 alias t='tmux new-session -s $(hostname)'
 alias ta="tmux a"

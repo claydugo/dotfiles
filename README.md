@@ -6,7 +6,7 @@
 
 My auto-installer is located at `scripts/setup.sh`
 
-```
+```bash
 $ tree -a -I '.git|ramona|karabiner'
 .
 ├── .aliases
@@ -24,18 +24,18 @@ $ tree -a -I '.git|ramona|karabiner'
 │   │       │   ├── langserver_icons.lua
 │   │       │   ├── lazy.lua
 │   │       │   ├── maps.lua
-│   │       │   └── options.lua
+│   │       │   ├── options.lua
+│   │       │   └── plugin_maps.lua
 │   │       └── plugins
 │   │           ├── copilot.lua
 │   │           ├── gitsigns.lua
 │   │           ├── lsp.lua
 │   │           ├── lualine.lua
-│   │           ├── nvim-comment.lua
-│   │           ├── smartcolumn.lua
+│   │           ├── mini.lua
+│   │           ├── nvim-comment.bak
 │   │           ├── telescope.lua
 │   │           ├── tokyonight.lua
 │   │           ├── treesitter.lua
-│   │           ├── undotree.lua
 │   │           └── vimwiki.lua
 │   └── starship.toml
 ├── dotfiles.png
@@ -51,8 +51,15 @@ $ tree -a -I '.git|ramona|karabiner'
 ├── .tmux-ssh.conf
 └── .xprofile
 
-8 directories, 33 files
+9 directories, 33 files
 ```
+
+#### Dependencies
+* [neovim](https://neovim.io/)
+* [tmux](https://github.com/tmux/tmux/wiki)
+* [starship](https://starship.rs)
+* [exa](https://the.exa.website/)
+* [watchman](https://facebook.github.io/watchman/) because [nvim's watchfiles implementation is bad and pyright is greedy](.config/nvim/lua/plugins/lsp.lua)
 
 #### Submodules
 
@@ -67,9 +74,6 @@ after cloning:
 after updates
 
 `git submodule update --remote`
-
-#### NVIM
-nvim start time somewhere between 3 - 5ms.
 
 #### Old NVIM configurations
 
