@@ -59,7 +59,6 @@ $ tree -a -I '.git|ramona|karabiner'
 * [tmux](https://github.com/tmux/tmux/wiki)
 * [starship](https://starship.rs)
 * [exa](https://the.exa.website/)
-* [watchman](https://facebook.github.io/watchman/) because [nvim's watchfiles implementation is bad and pyright is greedy](.config/nvim/lua/plugins/lsp.lua)
 
 #### Submodules
 
