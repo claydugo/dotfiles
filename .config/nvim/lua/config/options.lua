@@ -49,7 +49,6 @@ vim.o.smarttab = true
 vim.o.ttimeout = true
 vim.o.ttimeoutlen = 5
 vim.o.timeoutlen = 1000
-vim.o.term = 'screen-256color'
 
 -- Remove trailing whitespace
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
