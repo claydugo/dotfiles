@@ -31,14 +31,14 @@ fi
 
 conda_dir=$HOME
 
+if [[ -d "$HOME/mambaforge/" ]]; then
+    conda_dir=$HOME/mambaforge/
+fi
 
 if [[ -d "$HOME/miniforge3/" ]]; then
     conda_dir=$HOME/miniforge3/
 fi
 
-if [[ -d "$HOME/mambaforge/" ]]; then
-    conda_dir=$HOME/mambaforge/
-fi
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$("$conda_dir/bin/conda" 'shell.bash' 'hook' 2> /dev/null)"
