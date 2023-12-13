@@ -17,7 +17,7 @@ alias t='tmux new-session -s $(hostname)'
 alias ta="tmux a"
 alias td='cd $(mktemp -d /tmp/$1.XXX)'
 alias glb='git shortlog -nse'
-alias git_clean='git branch | grep -v "main" | xargs git branch -D'
+alias git_clean='git branch | grep -v "main" | grep -v "master" | xargs git branch -D'
 
 # Think this is zsh default
 alias ~='cd ~'
