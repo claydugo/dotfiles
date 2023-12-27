@@ -14,7 +14,7 @@ vim.o.writebackup = false
 vim.o.swapfile = false
 vim.o.clipboard = 'unnamed,unnamedplus'
 
-vim.o.cmdheight = 0
+vim.o.cmdheight = 1
 vim.o.updatetime = 300
 
 vim.o.ignorecase = true

@@ -5,7 +5,6 @@ local M = {
     cmd = { "Telescope" },
     dependencies = {
         { "nvim-lua/plenary.nvim" },
-        -- { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
         { "natecraddock/telescope-zf-native.nvim" },
         { "ThePrimeagen/harpoon" },
         { "debugloop/telescope-undo.nvim" },
@@ -17,7 +16,6 @@ function M.config()
     local actions = require'telescope.actions'
     tele.setup{
         defaults = {
-            -- https://github.com/nvim-telescope/telescope.nvim/issues/2667#issuecomment-1700970850
             sorting_strategy = "ascending",
             layout_config = {
                 horizontal = {
@@ -90,7 +88,6 @@ function M.config()
 -- Load after setup to apply configuration
 tele.load_extension'harpoon'
 tele.load_extension'zf-native'
--- tele.load_extension'fzf'
 tele.load_extension'undo'
 end
 

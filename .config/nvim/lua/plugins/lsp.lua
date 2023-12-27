@@ -1,20 +1,17 @@
 local M = {
-  'VonHeikemen/lsp-zero.nvim',
+  'williamboman/mason.nvim',
   event = { "BufReadPre", "BufNewFile" },
   dependencies = {
-    -- LSP Support
-    {'williamboman/mason.nvim'},
     {'williamboman/mason-lspconfig.nvim'},
     {'neovim/nvim-lspconfig'},
 
-    -- Autocompletion
     {'hrsh7th/nvim-cmp'},
     {'hrsh7th/cmp-buffer'},
     {'hrsh7th/cmp-path'},
     {'saadparwaiz1/cmp_luasnip'},
     {'hrsh7th/cmp-nvim-lsp'},
     {'hrsh7th/cmp-nvim-lua'},
-    {'zbirenbaum/copilot-cmp' },
+    {'zbirenbaum/copilot-cmp'},
     {'folke/neodev.nvim'},
 
     -- Snippets
@@ -24,7 +21,10 @@ local M = {
 }
 
 function M.config()
-    local lsp = require('lsp-zero')
+    require'mason'.setup()
+    require'mason-lspconfig'.setup({
+        ensure_installed = { "pyright", "ruff_lsp", "lua_ls", "rust_analyzer", "bashls" },
+    })
     -- https://github.com/neovim/neovim/issues/23291#issuecomment-1523243069
     -- https://github.com/neovim/neovim/pull/23500#issuecomment-1585986913
     -- pyright asks for every file in every directory to be watched,
@@ -36,28 +36,21 @@ function M.config()
         return function() end
         end
     end
-    lsp.preset({
-        name = 'recommended',
-        suggest_lsp_servers = false,
-    })
-    -- lsp.ensure_installed({
-        -- pyright is back to being an unreal memory hog
-        -- delisted for the time being
-        -- 'pyright',
-        -- 'sumneko_lua',
-        -- 'bashls',
-        -- 'rust_analyzer',
-        -- 'ruff-lsp',
-    -- })
-    require("mason").setup()
-    require("mason-lspconfig").setup()
 
-    lsp.setup()
+    local lspconfig = require'lspconfig'
+    lspconfig.pyright.setup{}
+    lspconfig.ruff_lsp.setup{}
+    lspconfig.lua_ls.setup{}
+    lspconfig.bashls.setup{}
+    lspconfig.rust_analyzer.setup{}
 
-    require("neodev").setup()
+    require'neodev'.setup()
     local cmp = require'cmp'
     require'copilot_cmp'.setup()
     local has_copilot, copilot_cmp = pcall(require, "copilot_cmp.comparators")
+    local has_copilot_suggestion, copilot_suggestion = pcall(require, "copilot.suggestion")
+    local luasnip = require'luasnip'
+
     cmp.setup({
         mapping = {
             ['<C-d>'] = cmp.mapping.scroll_docs(-4),
@@ -65,11 +58,10 @@ function M.config()
             ['<C-Space>'] = cmp.mapping.complete(),
             ['<C-e>'] = cmp.mapping.abort(),
             ['<CR>'] = cmp.mapping.confirm({ select = true }),
-            -- ['<Tab>'] = cmp.mapping.confirm({ select = true }),
             ["<Tab>"] = cmp.mapping(
                 function(fallback)
-                    if require("copilot.suggestion").is_visible() then
-                        require("copilot.suggestion").accept()
+                    if has_copilot_suggestion and copilot_suggestion.is_visible() then
+                        require'copilot.suggestion'.accept()
                     elseif cmp.visible() then
                         cmp.confirm({ select = true })
                     else
@@ -92,6 +84,8 @@ function M.config()
                 }),
             ['<C-j>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
             ['<C-k>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
+            ['<Down>'] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 's' }),
+            ['<Up>'] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 's' }),
         },
         sources = {
             { name = "copilot", group_index = 2},
@@ -116,6 +110,11 @@ function M.config()
                 cmp.config.compare.order,
             },
         },
+         snippet = {
+            expand = function(args)
+            luasnip.lsp_expand(args.body)
+         end,
+       },
     })
     vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
     vim.keymap.set('n', '<leader>eq', vim.diagnostic.goto_prev)
