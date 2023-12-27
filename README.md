@@ -7,6 +7,7 @@
 My auto-installer is located at `scripts/setup.sh`
 
 ```bash
+
 $ tree -a -I '.git|ramona|karabiner'
 .
 ├── .aliases
@@ -20,21 +21,19 @@ $ tree -a -I '.git|ramona|karabiner'
 │   │   ├── init.lua
 │   │   ├── lazy-lock.json
 │   │   └── lua
-│   │       ├── config
-│   │       │   ├── langserver_icons.lua
-│   │       │   ├── lazy.lua
-│   │       │   ├── maps.lua
-│   │       │   ├── options.lua
-│   │       │   └── plugin_maps.lua
+│   │       ├── langserver_icons.lua
+│   │       ├── lazy_manager.lua
+│   │       ├── maps.lua
+│   │       ├── maps_plugin.lua
+│   │       ├── options.lua
 │   │       └── plugins
 │   │           ├── copilot.lua
+│   │           ├── github_theme.lua
 │   │           ├── gitsigns.lua
 │   │           ├── lsp.lua
 │   │           ├── lualine.lua
 │   │           ├── mini.lua
-│   │           ├── nvim-comment.bak
 │   │           ├── telescope.lua
-│   │           ├── tokyonight.lua
 │   │           ├── treesitter.lua
 │   │           └── vimwiki.lua
 │   └── starship.toml
@@ -51,7 +50,7 @@ $ tree -a -I '.git|ramona|karabiner'
 ├── .tmux-ssh.conf
 └── .xprofile
 
-9 directories, 33 files
+8 directories, 32 files
 ```
 
 #### Dependencies
@@ -76,6 +75,9 @@ after updates
 
 #### Old NVIM configurations
 
+[Custom Bubble Theme](https://github.com/claydugo/dotfiles/tree/c3a7fd79d0722f6af88129d9861a21a8f20ef223)
+
 [Switch from init.vim to init.lua](https://github.com/claydugo/dotfiles/commit/9803e70ab5df4f5db7f9da858a3c670d378daf0b)
 
 [Switch from packer.nvim to lazy.nvim](https://github.com/claydugo/dotfiles/commit/00000000a6b60527c21ba36515c93c71869ae253)
+
