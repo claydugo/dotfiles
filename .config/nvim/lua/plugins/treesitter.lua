@@ -3,7 +3,6 @@ return {
   build = ":TSUpdate",
   event = { "BufReadPre", "BufNewFile" },
   dependencies = {
-      'tree-sitter/tree-sitter-python',
       'nvim-treesitter/nvim-treesitter-context',
   },
   config = function()
@@ -17,14 +16,12 @@ return {
 		      "html",
 		      "json",
 		  },
-		  highlight = { enable = true, },
+		  highlight = { enable = true },
+          indent = { enable = true },
 	})
     require("treesitter-context").setup({
-      -- they bumped this at some point and now its annoying
-      -- will have to play around to find a good sweet spot
+      -- they bumped this at some point to some worse default
       multiline_threshold = 4,
     })
 	end
 }
-
-

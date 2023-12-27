@@ -1,10 +1,9 @@
 return {
-  sumneko_lua = " ",
+  bashls = " ",
+  clangd = " ",
+  copilot = " ",
   lua_ls = " ",
   pyright = " ",
   ruff_lsp = " ",
-  clangd = " ",
-  copilot = " ",
   rust_analyzer = " ",
-  bashls = " ",
 }

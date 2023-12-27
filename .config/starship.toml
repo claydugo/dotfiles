@@ -2,50 +2,47 @@
 # is the bg color for the kitty dracula theme
 # this is very tailored to my setup
 format = """
-[  ](fg:#769ff0 bg:#282a36)\
+[](bg:#282a36)\
 $conda\
 $hostname\
 $directory\
 $git_branch\
 $git_status\
 $cmd_duration\
-[](fg:#394260 bg:#282a36)\
 \n$character"""
 
 add_newline = false
 
 [directory]
-style = "fg:#232323 bg:#769ff0"
-format = "[ $path ]($style)"
+# style = "fg:#FFFFFF"
+# format = "[ $path ]($style)"
 truncation_symbol = '/'
 truncation_length = 99
 
 [hostname]
-style = "fg:#232323 bg:#769ff0 bold"
+style = "fg:#BBBBBB"
 format = '[ $hostname ]($style)'
 ssh_only = true
 
 [git_branch]
 symbol = ""
-style = "bg:#394260"
-format = '[[ $symbol $branch ](fg:#769ff0 bg:#394260)]($style)'
+format = '[[$symbol$branch ](fg:bold purple )]()'
 
 # Tried to make this like bash-git-prompt
 [git_status]
-style = "bg:#394260"
-ahead = '[⇡${count}](fg:#EEEDE7 bg:#394260)'
-behind = '[⇣${count}](fg:#EEEDE7 bg:#394260)'
-diverged = '[⇡${ahead_count}⇣${behind_count}](fg:#EEEDE7 bg:#394260)'
-modified = '[✚${count}](fg:#A16AE8 bg:#394260)'
-staged = '[●${count}](fg:#D22B2B bg:#394260)'
-stashed = '[⚑${count}](fg:#D62598 bg:#394260)'
-deleted = '[✖ ${count}](fg:#FF5C5C bg:#394260)'
-conflicted = '[✖-${count}](fg:#BF2A2E bg:#394260)'
-untracked = '[...${count}](fg:#A7C2D7 bg:#394260)'
-format = '[[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)]($style)'
+ahead = '[⇡${count}](fg:#EEEDE7)'
+behind = '[⇣${count}](fg:#EEEDE7)'
+diverged = '[⇡${ahead_count}⇣${behind_count}](fg:#EEEDE7)'
+modified = '[✚${count}](fg:#A16AE8)'
+staged = '[●${count}](fg:#D22B2B)'
+stashed = '[⚑${count}](fg:#D62598)'
+deleted = '[✖ ${count}](fg:#FF5C5C)'
+conflicted = '[✖-${count}](fg:#BF2A2E)'
+untracked = '[...${count}](fg:#A7C2D7)'
+format = '[[($all_status$ahead_behind )](fg:#FFFFFF)]()'
 
 [conda]
-style = "fg:#232323 bg:#769ff0"
+style = "fg:#FFFFFF"
 format = '[\($environment\)]($style)'
 
 [character]
@@ -53,5 +50,5 @@ success_symbol = '[🔥](white)'
 error_symbol = '[💀](white)'
 
 [cmd_duration]
-style = "fg:#FFFAB4 bg:#394260"
-format = "[ $duration]($style)"
+style = "fg:#FFFAB4"
+format = "[$duration]($style)"

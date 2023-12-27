@@ -1,7 +1,7 @@
-require("config.options")
-require("config.maps")
+require'options'
+require'maps'
 
 if not vim.g.vscode then
-    require("config.lazy")
-    require("config.plugin_maps")
+    require'lazy_manager'
+    require'maps_plugin'
 end

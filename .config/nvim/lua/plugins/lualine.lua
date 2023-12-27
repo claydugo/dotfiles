@@ -5,7 +5,7 @@ local M = {
 
 local function get_LSP()
     local clients = vim.lsp.get_active_clients()
-    local icons = require("config.langserver_icons")
+    local icons = require("langserver_icons")
     if next(clients) == nil then
         return ''
     end
@@ -13,8 +13,6 @@ local function get_LSP()
     for _, client in pairs(clients) do
         local lsp_name = client.name
         if icons and icons[client.name] then
-            -- lsp_name = icons[client.name] .. client.name
-            -- just show icon if known
             lsp_name = icons[client.name]
         else
             lsp_name = client.name
@@ -26,31 +24,36 @@ end
 
 local function search_display()
     local search = vim.fn.searchcount({maxcount = 0})
+    local search_term = vim.fn.getreg('/')
     if search.current > 0 then
-        return search.current.."/"..search.total
+        return "/"..search_term.." ["..search.current.."/"..search.total.."]"
     else
         return ""
     end
 end
 
-local padding = '  '
 function M.config()
   require'lualine'.setup({
 	options = {
-		theme = 'auto',
+		theme = 'nord',
 		component_separators = '',
-		section_separators = { left = '', right = '' },
+        section_separators = { left = '', right = '' },
   	},
     	sections = {
-		lualine_a = {{ 'mode', separator = { left = padding .. ''}},},
-		lualine_b = {'filename'},
+		lualine_a = {'mode'},
+		lualine_b = {
+            {
+              'filename',
+              path = 3
+            },
+        },
 		lualine_c = {},
 		lualine_x = {search_display},
-		lualine_y = {get_LSP},
-		lualine_z = {
-            {'diff', separator = { left = ''}},
-            {'branch', separator = { right = '' .. padding}}
+		lualine_y = {
+            {'diff'},
+            {'branch'},
         },
+		lualine_z = {get_LSP},
 	},
   })
 end
