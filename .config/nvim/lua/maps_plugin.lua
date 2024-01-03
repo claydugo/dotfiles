@@ -1,8 +1,8 @@
-vim.keymap.set("n", "<leader>ff", ":lua require'telescope.builtin'.find_files({hidden = true})<CR>")
-vim.keymap.set("n", "<leader>fg", ":lua require'telescope.builtin'.live_grep()<CR>")
+vim.keymap.set("n", "<leader>f", ":lua require'telescope.builtin'.find_files({hidden = true})<CR>")
+vim.keymap.set("n", "<leader>g", ":lua require'telescope.builtin'.live_grep()<CR>")
 
-vim.keymap.set("n", "<leader>fd", ":lua require'telescope.builtin'.lsp_definitions()<CR>")
-vim.keymap.set("n", "<leader>ft", ":lua require'telescope.builtin'.lsp_type_definitions()<CR>")
+vim.keymap.set("n", "<leader>d", ":lua require'telescope.builtin'.lsp_definitions()<CR>")
+vim.keymap.set("n", "<leader>t", ":lua require'telescope.builtin'.lsp_type_definitions()<CR>")
 
 vim.keymap.set("n", "<leader>hh", ":lua require'harpoon.ui'.toggle_quick_menu()<CR>")
 vim.keymap.set("n", "<leader>ha", ":lua require'harpoon.mark'.add_file()<CR>")

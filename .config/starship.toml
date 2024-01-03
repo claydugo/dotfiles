@@ -26,7 +26,7 @@ ssh_only = true
 
 [git_branch]
 symbol = ""
-format = '[[$symbol$branch ](fg:bold purple )]()'
+format = '[[$symbol $branch ](fg:bold purple )]()'
 
 # Tried to make this like bash-git-prompt
 [git_status]
@@ -43,7 +43,7 @@ format = '[[($all_status$ahead_behind )](fg:#FFFFFF)]()'
 
 [conda]
 style = "fg:#FFFFFF"
-format = '[\($environment\)]($style)'
+format = '[\($environment\) ]($style)'
 
 [character]
 success_symbol = '[🔥](white)'

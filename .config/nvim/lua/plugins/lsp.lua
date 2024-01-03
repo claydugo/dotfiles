@@ -46,9 +46,11 @@ function M.config()
 
 	require("neodev").setup()
 	local cmp = require("cmp")
-	require("copilot_cmp").setup()
 	local has_copilot, copilot_cmp = pcall(require, "copilot_cmp.comparators")
 	local has_copilot_suggestion, copilot_suggestion = pcall(require, "copilot.suggestion")
+    if has_copilot then
+      require("copilot_cmp").setup()
+    end
 	local luasnip = require("luasnip")
 
 	cmp.setup({
