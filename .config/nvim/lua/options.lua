@@ -15,7 +15,7 @@ vim.o.swapfile = false
 vim.o.clipboard = "unnamed,unnamedplus"
 
 vim.o.cmdheight = 0
-vim.o.updatetime = 300
+vim.o.updatetime = 200
 
 vim.o.ignorecase = true
 vim.o.incsearch = true
