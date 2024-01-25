@@ -5,7 +5,6 @@ local M = {
 	cmd = { "Telescope" },
 	dependencies = {
 		{ "nvim-lua/plenary.nvim" },
-		{ "natecraddock/telescope-zf-native.nvim" },
 		{ "ThePrimeagen/harpoon" },
 		{ "debugloop/telescope-undo.nvim" },
 	},
@@ -87,7 +86,6 @@ function M.config()
 	})
 	-- Load after setup to apply configuration
 	tele.load_extension("harpoon")
-	tele.load_extension("zf-native")
 	tele.load_extension("undo")
 end
 

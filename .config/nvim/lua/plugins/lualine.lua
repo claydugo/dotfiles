@@ -35,25 +35,20 @@ end
 function M.config()
 	require("lualine").setup({
 		options = {
-			theme = "nord",
+			theme = "auto",
 			component_separators = "",
 			section_separators = { left = "", right = "" },
 		},
 		sections = {
 			lualine_a = { "mode" },
-			lualine_b = {
-				{
-					"filename",
-					path = 3,
-				},
-			},
+			lualine_b = {"filename"},
 			lualine_c = {},
 			lualine_x = { search_display },
-			lualine_y = {
-				{ "diff" },
+			lualine_y = { get_LSP },
+			lualine_z = {
 				{ "branch" },
+				{ "diff" },
 			},
-			lualine_z = { get_LSP },
 		},
 	})
 end
