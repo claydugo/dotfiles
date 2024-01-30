@@ -8,7 +8,7 @@ function M.config()
   -- vim.o.background = "dark"
   local tokyonight = require("tokyonight")
   tokyonight.setup({
-    style = "storm",
+    style = "night",
     transparent = false,
     styles = {},
   })
