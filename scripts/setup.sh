@@ -3,7 +3,7 @@
 # Mainly care about getting vim and tmux up
 
 # shift+k to open man pages
-echo "Setting up dotfiles..."
+echo -e "\e[34Setting up dotfiles...\e[0m"
 # set -e  # exit on failure
 # Update submodules since this script depends on them
 git submodule update --remote
@@ -14,7 +14,7 @@ sudo -v
 # Exit on fail
 set -o errexit
 
-echo "symlinking"
+echo -e "\e[32mSymlinking...\e[0m"
 # Symlink first so things like conda install modifying .bashrc happen
 ln -sfn ~/dotfiles/.bashrc ~/.bashrc
 ln -sfn ~/dotfiles/.tmux.conf ~/.tmux.conf
@@ -31,15 +31,15 @@ mkdir -p ~/.ipython/profile_default/startup/
 ln -sf ~/dotfiles/.ipython/profile_default/startup/00-conf.py ~/.ipython/profile_default/startup/00-conf.py
 
 
-echo "installing kitty"
+echo -e "\e[32minstalling kitty...\e[0m"
 # Also do kitty now
 # Gonna install at this point
+mkdir -p ~/.local/bin/
+mkdir -p ~/.local/share/applications/
 curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
 mkdir -p ~/.config/kitty
 ln -sf ~/dotfiles/.config/kitty/kitty.conf ~/.config/kitty/kitty.conf
 # gonna really lean into kitty and do the desktop intergration as well
-mkdir -p ~/.local/bin/
-mkdir -p ~/.local/share/applications/
 ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
 cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/applications/
 cp ~/.local/kitty.app/share/applications/kitty-open.desktop ~/.local/share/applications/
@@ -50,7 +50,7 @@ mkdir -p ~/.local/bin
 ln -sf ~/dotfiles/ramona/scripts/ws ~/.local/bin/ws
 
 # Replaces git bash prompt for me
-echo "installing starship"
+echo -e "\e[32minstalling starship...\e[0m"
 curl -sS https://starship.rs/install.sh | sh
 ln -sfn ~/dotfiles/.config/starship.toml ~/.config/
 
@@ -61,8 +61,8 @@ git checkout -b $(hostname)
 os=$(uname -s)
 
 if [ "$os" = "Linux" ]; then
-    echo "linux detected"
-    echo "installing apt picks"
+    echo -e "\e[31mlinux detected\e[0m"
+    echo -e "\e[32minstalling apt picks\e[0m"
     # Use nightly nvim since most good features come after 0.7
     # and nvim on base apt is version 4.3
     sudo add-apt-repository ppa:neovim-ppa/unstable
@@ -77,8 +77,8 @@ if [ "$os" = "Linux" ]; then
     cd $fonts_dir
 fi
 if [ "$os" = "Darwin" ]; then
-    echo "mac detected"
-    echo "installing brew picks"
+    echo -e "\e[31mmac detected\e[0m"
+    echo -e "\e[32minstalling brew picks\e[0m"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     brew install neovim --HEAD
     # mac no longer ships newest bash install with homebrew
@@ -96,21 +96,21 @@ if [ "$os" = "Darwin" ]; then
     cd $fonts_dir
 fi
 
-echo "installing nerd font"
+echo -e "\e[32minstalling nerd font...\e[0m"
 wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FiraCode.zip && unzip "FiraCode" -d $fonts_dir && fc-cache -fv
 
 # Sometimes im doing setup before logging in
 # So user folders arent created yet
-echo "installing conda"
+echo -e "\e[32minstalling conda...\e[0m"
 mkdir -p ~/Downloads
 cd ~/Downloads
 curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh"
 bash Mambaforge-$(uname)-$(uname -m).sh
 
-echo "************************************"
-echo "finished"
-echo "run finish_dev_env_setup.sh after opening new shell"
-echo "************************************"
+echo -e "\e[33m************************************\e[0m"
+echo -e "\e[32mfinished\e[0m"
+echo -e "\e[32mrun finish_dev_env_setup.sh after opening new shell\e[0m"
+echo -e "\e[33m************************************\e[0m"
 
 
 source ~/.bashrc
