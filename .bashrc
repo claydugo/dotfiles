@@ -31,12 +31,12 @@ fi
 
 conda_dir=$HOME
 
-if [[ -d "$HOME/mambaforge/" ]]; then
-    conda_dir=$HOME/mambaforge/
-fi
-
 if [[ -d "$HOME/miniforge3/" ]]; then
     conda_dir=$HOME/miniforge3/
+fi
+
+if [[ -d "$HOME/mambaforge/" ]]; then
+    conda_dir=$HOME/mambaforge/
 fi
 
 # >>> conda initialize >>>
