@@ -23,23 +23,30 @@ local M = {
 function M.config()
 	require("mason").setup()
 	require("mason-lspconfig").setup({
-		ensure_installed = { "pyright", "ruff_lsp", "lua_ls", "rust_analyzer", "bashls" },
+		ensure_installed = {
+            -- "pyright",
+            "ruff_lsp",
+            "pylsp",
+            "lua_ls",
+            "rust_analyzer",
+            "bashls" },
 	})
 	-- https://github.com/neovim/neovim/issues/23291#issuecomment-1523243069
 	-- https://github.com/neovim/neovim/pull/23500#issuecomment-1585986913
 	-- pyright asks for every file in every directory to be watched,
 	-- so for large projects that will necessarily turn into a lot of polling handles being created.
 	-- sigh
-	local ok, wf = pcall(require, "vim.lsp._watchfiles")
-	if ok then
-		wf._watchfunc = function()
-			return function() end
-		end
-	end
+	-- local ok, wf = pcall(require, "vim.lsp._watchfiles")
+	-- if ok then
+	-- 	wf._watchfunc = function()
+	-- 		return function() end
+	-- 	end
+	-- end
 
 	local lspconfig = require("lspconfig")
-	lspconfig.pyright.setup({})
-	lspconfig.ruff_lsp.setup({})
+	-- lspconfig.pyright.setup({})
+    lspconfig.ruff_lsp.setup({})
+    lspconfig.pylsp.setup({})
 	lspconfig.lua_ls.setup({})
 	lspconfig.bashls.setup({})
 	lspconfig.rust_analyzer.setup({})
