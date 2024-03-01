@@ -30,7 +30,7 @@ vim.keymap.set("n", "<leader>9", ":lua require'harpoon.ui'.nav_file(9)<CR>")
 -- vim.keymap.set("n", "<leader>8", function() harpoon:list():select(8) end)
 -- vim.keymap.set("n", "<leader>9", function() harpoon:list():select(9) end)
 
-vim.keymap.set("n", "<leader>gb", ":lua require'gitsigns'.toggle_current_line_blame()<CR>")
+vim.keymap.set("n", "<leader>b", ":lua require'gitsigns'.toggle_current_line_blame()<CR>")
 
 vim.api.nvim_create_augroup("startup", { clear = true })
 vim.api.nvim_create_autocmd("VimEnter", {
