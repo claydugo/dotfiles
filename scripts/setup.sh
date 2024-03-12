@@ -69,7 +69,7 @@ if [ "$os" = "Linux" ]; then
     sudo add-apt-repository universe
     sudo apt-get update
     # npm for LSP servers
-    sudo apt install neovim tmux ripgrep htop cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3 xcape npm
+    sudo apt install neovim fswatch tmux ripgrep htop cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3 xcape npm
     dconf write /org/gnome/desktop/input-sources/xkb-options "['caps:escape']"
     ln -sfn ~/dotfiles/.xprofile ~/.xprofile
     fonts_dir="$HOME/.fonts"
@@ -82,7 +82,7 @@ if [ "$os" = "Darwin" ]; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     brew install neovim --HEAD
     # mac no longer ships newest bash install with homebrew
-    brew install tmux ripgrep htop cmake wget python3 openssl bash
+    brew install fswatch tmux ripgrep htop cmake wget python3 openssl bash
     brew install --cask karabiner-elements
     ln -sf ~/dotfiles/.config/karabiner/ ~/.config/
     chsh -s /bin/bash

@@ -14,9 +14,10 @@ local M = {
 		{ "zbirenbaum/copilot-cmp" },
 		{ "folke/neodev.nvim" },
 
-		-- Snippets
 		{ "L3MON4D3/LuaSnip" },
 		{ "rafamadriz/friendly-snippets" },
+
+        { "RRethy/vim-illuminate" },
 	},
 }
 
@@ -24,32 +25,45 @@ function M.config()
 	require("mason").setup()
 	require("mason-lspconfig").setup({
 		ensure_installed = {
-            -- "pyright",
             "ruff_lsp",
             "pylsp",
             "lua_ls",
             "rust_analyzer",
             "bashls" },
 	})
-	-- https://github.com/neovim/neovim/issues/23291#issuecomment-1523243069
-	-- https://github.com/neovim/neovim/pull/23500#issuecomment-1585986913
-	-- pyright asks for every file in every directory to be watched,
-	-- so for large projects that will necessarily turn into a lot of polling handles being created.
-	-- sigh
-	-- local ok, wf = pcall(require, "vim.lsp._watchfiles")
-	-- if ok then
-	-- 	wf._watchfunc = function()
-	-- 		return function() end
-	-- 	end
-	-- end
 
 	local lspconfig = require("lspconfig")
-	-- lspconfig.pyright.setup({})
-    lspconfig.ruff_lsp.setup({})
-    lspconfig.pylsp.setup({})
-	lspconfig.lua_ls.setup({})
-	lspconfig.bashls.setup({})
-	lspconfig.rust_analyzer.setup({})
+    local capabilities = require('cmp_nvim_lsp').default_capabilities()
+    local illuminate = require('illuminate')
+    local on_attach = function(client) illuminate.on_attach(client) end
+    local langservers = { 'ruff_lsp', 'bashls', 'lua_ls', 'rust_analyzer'}
+    lspconfig.pylsp.setup({
+      capabilities = capabilities,
+      on_attach = on_attach,
+      settings = {
+        pylsp = {
+          plugins = {
+            ruff = { enabled = false },
+            autopep8 = { enabled = false },
+            flake8 = { enabled = false },
+            mccabe = { enabled = false },
+            pycodestyle = { enabled = false },
+            pydocstyle = { enabled = false },
+            pyflakes = { enabled = false },
+            pylint = { enabled = false },
+            yapf = { enabled = false },
+          },
+        },
+      },
+    })
+
+    for _, langserver in ipairs(langservers) do
+        lspconfig[langserver].setup({
+            capabilities = capabilities,
+            on_attach = on_attach,
+            single_file_support = true,
+        })
+    end
 
 	require("neodev").setup()
 	local cmp = require("cmp")
