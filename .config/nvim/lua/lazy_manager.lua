@@ -26,7 +26,7 @@ require("lazy").setup("plugins", {
                 "man",
                 "matchit",
                 "matchparen",
-                "netrwPlugin",
+                -- "netrwPlugin",
                 "rplugin",
                 "spellfile",
                 "tarPlugin",

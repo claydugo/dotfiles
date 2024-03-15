@@ -1,5 +1,8 @@
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_CONFIG_HOME="$HOME/.config"
+
 shopt -s histappend
-HISTIGNORE="&:[ ]*:exit:e:R:tmux.*:cd:la:ls:ll:gd:gs:c:history:clear:cl:v:t:p:\:..:...:....:q"
+HISTIGNORE="&:[ ]*:exit:e:R:tmux.*:cd:la:ls:ll:lll:c:history:clear:cl:v:t:p:\:..:...:....:q"
 HISTCONTROL=ignoreboth
 HISTSIZE=1000
 HISTFILESIZE=2000
@@ -28,6 +31,8 @@ fi
 if [[ ${TERM} == "xterm-kitty" ]]; then
     export TERM=xterm-256color
 fi
+
+export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/.ripgreprc"
 
 conda_dir=$HOME
 
@@ -73,10 +78,8 @@ if [[ "$os" = "Darwin" ]]; then
     source ~/dotfiles/.mac_aliases
 fi
 
-# import aliases
 source ~/dotfiles/.aliases
 
-# cargo path
 export PATH=/home/clay/.cargo/bin:$PATH
 
 if [[ -f "$HOME/.cargo/env" ]]; then

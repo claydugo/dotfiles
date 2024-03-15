@@ -3,12 +3,12 @@ return {
 	version = false,
 	event = { "BufReadPre", "BufNewFile" },
 	config = function()
-		require("mini.starter").setup({
-			items = { { name = "", action = "", section = "" } },
-			header = "",
-			footer = "",
-			silent = true,
-		})
+		-- require("mini.starter").setup({
+		-- 	items = { { name = "", action = "", section = "" } },
+		-- 	header = "",
+		-- 	footer = "",
+		-- 	silent = true,
+		-- })
 		require("mini.hipatterns").setup({
 			highlighters = {
 				hack = { pattern = "%f[%w]()HACK()%f[%W]", group = "MiniHipatternsHack" },

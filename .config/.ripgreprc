@@ -1,0 +1,11 @@
+--smart-case
+
+--hidden
+
+--follow
+
+--max-columns=10000
+
+--sort=path
+
+--glob=!{.git,.svn,node_modules,Trash}

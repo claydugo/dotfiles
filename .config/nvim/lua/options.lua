@@ -2,6 +2,7 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 vim.o.grepprg = "rg --vimgrep"
+vim.o.grepformat = '%f:%l:%c:%m'
 
 vim.o.encoding = "utf-8"
 vim.o.backspace = "indent,eol,start"
@@ -49,6 +50,11 @@ vim.o.smarttab = true
 vim.o.ttimeout = true
 vim.o.ttimeoutlen = 5
 vim.o.timeoutlen = 1000
+
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_node_provider = 0
 
 -- Remove trailing whitespace
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {

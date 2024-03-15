@@ -26,6 +26,7 @@ git config --global user.email "claydugo@gmail.com"
 # which is spread across multiple files for optimized load time
 mkdir -p ~/.config/
 ln -sf ~/dotfiles/.config/nvim/ ~/.config/
+ln -sfn ~/dotfiles/.config/.ripgreprc ~/.config/.ripgreprc
 
 mkdir -p ~/.ipython/profile_default/startup/
 ln -sf ~/dotfiles/.ipython/profile_default/startup/00-conf.py ~/.ipython/profile_default/startup/00-conf.py

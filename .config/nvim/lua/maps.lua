@@ -1,15 +1,5 @@
 -- make double esc clear searh highlights
 -- vim.keymap.set('n', '<Esc><Esc>', '<Esc>:nohlsearch<CR><Esc>')
-vim.keymap.set("n", "<Esc><Esc>", function()
-	vim.api.nvim_command("nohlsearch")
-	vim.fn.setreg("/", "")
-end)
-
-local function clear_search()
-	vim.api.nvim_command("nohlsearch") -- Clear the search highlighting
-	vim.fn.setreg("/", "") -- Clear the last search pattern
-end
-
 -- correct Y behavior
 vim.keymap.set("n", "Y", "y$")
 
