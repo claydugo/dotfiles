@@ -22,8 +22,6 @@ ln -sfn ~/dotfiles/.gitignore ~/.gitignore
 
 git config --global user.name "Clay Dugo"
 git config --global user.email "claydugo@gmail.com"
-# Symlinking entire /nvim/ folder now with lua setup
-# which is spread across multiple files for optimized load time
 mkdir -p ~/.config/
 ln -sf ~/dotfiles/.config/nvim/ ~/.config/
 ln -sfn ~/dotfiles/.config/.ripgreprc ~/.config/.ripgreprc
@@ -33,14 +31,11 @@ ln -sf ~/dotfiles/.ipython/profile_default/startup/00-conf.py ~/.ipython/profile
 
 
 echo -e "\e[32minstalling kitty...\e[0m"
-# Also do kitty now
-# Gonna install at this point
 mkdir -p ~/.local/bin/
 mkdir -p ~/.local/share/applications/
 curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
 mkdir -p ~/.config/kitty
 ln -sf ~/dotfiles/.config/kitty/kitty.conf ~/.config/kitty/kitty.conf
-# gonna really lean into kitty and do the desktop intergration as well
 ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
 cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/applications/
 cp ~/.local/kitty.app/share/applications/kitty-open.desktop ~/.local/share/applications/
@@ -55,7 +50,6 @@ echo -e "\e[32minstalling starship...\e[0m"
 curl -sS https://starship.rs/install.sh | sh
 ln -sfn ~/dotfiles/.config/starship.toml ~/.config/
 
-# This shouldnt be necessary anymore but I like it
 cd ~/dotfiles
 git checkout -b $(hostname)
 
@@ -69,8 +63,7 @@ if [ "$os" = "Linux" ]; then
     sudo add-apt-repository ppa:neovim-ppa/unstable
     sudo add-apt-repository universe
     sudo apt-get update
-    # npm for LSP servers
-    sudo apt install neovim fswatch tmux ripgrep htop cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3 xcape npm
+    sudo apt install neovim fswatch tmux ripgrep htop cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3 xcape
     dconf write /org/gnome/desktop/input-sources/xkb-options "['caps:escape']"
     ln -sfn ~/dotfiles/.xprofile ~/.xprofile
     fonts_dir="$HOME/.fonts"
@@ -100,8 +93,6 @@ fi
 echo -e "\e[32minstalling nerd font...\e[0m"
 wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FiraCode.zip && unzip "FiraCode" -d $fonts_dir && fc-cache -fv
 
-# Sometimes im doing setup before logging in
-# So user folders arent created yet
 echo -e "\e[32minstalling conda...\e[0m"
 mkdir -p ~/Downloads
 cd ~/Downloads

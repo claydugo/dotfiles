@@ -15,7 +15,7 @@ function M.config()
 	local actions = require("telescope.actions")
 	tele.setup({
 		defaults = {
-			sorting_strategy = "ascending",
+			-- sorting_strategy = "ascending",
 			layout_config = {
 				horizontal = {
 					prompt_position = "top",
