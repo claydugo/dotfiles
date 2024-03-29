@@ -15,7 +15,7 @@ vim.keymap.set("n", "<leader>6", ":lua require'harpoon.ui'.nav_file(6)<CR>")
 vim.keymap.set("n", "<leader>7", ":lua require'harpoon.ui'.nav_file(7)<CR>")
 vim.keymap.set("n", "<leader>8", ":lua require'harpoon.ui'.nav_file(8)<CR>")
 vim.keymap.set("n", "<leader>9", ":lua require'harpoon.ui'.nav_file(9)<CR>")
--- idk at sompoint this is required
+-- not ready still seemingly - 20240325
 -- local harpoon = require("harpoon")
 -- vim.keymap.set("n", "<leader>ha", function() harpoon:list():append() end)
 -- vim.keymap.set("n", "<leader>hh", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)

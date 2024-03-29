@@ -5,7 +5,9 @@ local M = {
 	cmd = { "Telescope" },
 	dependencies = {
 		{ "nvim-lua/plenary.nvim" },
-		{ "ThePrimeagen/harpoon" },
+        -- # was not saving my files
+		-- { "ThePrimeagen/harpoon", branch = "harpoon2"},
+		{ "ThePrimeagen/harpoon"},
 		{ "debugloop/telescope-undo.nvim" },
 	},
 }
