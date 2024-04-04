@@ -25,6 +25,23 @@ local M = {
 
 function M.config()
 	require("mason").setup()
+    -- https://github.com/microsoft/pyright/issues/4176#issuecomment-1310534474
+    -- Do you have a pyrightconfig.json file in your home directory?
+    -- If you open a file (as opposed to a directory / project / workspace / or whatever term neovim uses) pyright
+    -- will scan up the directory hierarchy to find a pyrightconfig.json file.
+    -- If it finds one, it assumes the opened file is part of a project rooted at that place in the directory hierarchy.
+    -- fucking microsoft man...
+    -- I had fswatch throwing so many errors despite
+    -- fs.inotify.max_user_watches=10000000
+    -- fs.inotify.max_queued_events=10000000
+    -- in /etc/sysctl.conf
+    -- I only realized the issue when :checkhealth reported
+    -- that pyright was using $HOME as my project root_dir
+    -- unlike all the other langservers
+    -- I am constantly fixxing odd edge case bugs for this langserver
+    -- and having to install nodejs
+    -- all because pylsp is so slow
+
     local langservers = { 'pyright', 'ruff_lsp', 'bashls', 'lua_ls', 'rust_analyzer'}
 	require("mason-lspconfig").setup({
 		ensure_installed = langservers,
@@ -34,7 +51,6 @@ function M.config()
     local capabilities = require('cmp_nvim_lsp').default_capabilities()
     local illuminate = require('illuminate')
     local on_attach = function(client) illuminate.on_attach(client) end
-    -- was nice but just too slow
     -- lspconfig.pylsp.setup({
     --   capabilities = capabilities,
     --   on_attach = on_attach,
