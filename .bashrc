@@ -32,7 +32,9 @@ if [[ ${TERM} == "xterm-kitty" ]]; then
     export TERM=xterm-256color
 fi
 
-export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/.ripgreprc"
+if [ -f "$XDG_CONFIG_HOME/.ripgreprc" ]; then
+    export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/.ripgreprc"
+fi
 
 conda_dir=$HOME
 
