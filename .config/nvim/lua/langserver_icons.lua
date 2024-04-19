@@ -7,5 +7,6 @@ return {
 	basedpyright = " ",
 	pylsp = " ",
 	ruff_lsp = " ",
+	ruff = " ",
 	rust_analyzer = " ",
 }

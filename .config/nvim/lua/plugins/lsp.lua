@@ -42,7 +42,14 @@ function M.config()
     -- and having to install nodejs
     -- all because pylsp is so slow
 
-    local langservers = { 'pyright', 'ruff_lsp', 'bashls', 'lua_ls', 'rust_analyzer'}
+    local langservers = {
+        'pyright',
+        -- 'ruff_lsp',
+        'ruff',
+        'bashls',
+        'lua_ls',
+        'rust_analyzer'
+    }
 	require("mason-lspconfig").setup({
 		ensure_installed = langservers,
     })
@@ -50,7 +57,13 @@ function M.config()
 	local lspconfig = require("lspconfig")
     local capabilities = require('cmp_nvim_lsp').default_capabilities()
     local illuminate = require('illuminate')
-    local on_attach = function(client) illuminate.on_attach(client) end
+    -- local on_attach = function(client) illuminate.on_attach(client) end
+    local on_attach = function(client, bufnr)
+      illuminate.on_attach(client)
+      if client.name == 'ruff' then
+        client.server_capabilities.hoverProvider = false
+      end
+    end
     -- lspconfig.pylsp.setup({
     --   capabilities = capabilities,
     --   on_attach = on_attach,
@@ -71,13 +84,34 @@ function M.config()
     --   },
     -- })
     --
+    -- for _, langserver in ipairs(langservers) do
+    --     lspconfig[langserver].setup({
+    --         capabilities = capabilities,
+    --         on_attach = on_attach,
+    --         single_file_support = true,
+    --     })
+    -- end
     for _, langserver in ipairs(langservers) do
-        lspconfig[langserver].setup({
+        local config = {
             capabilities = capabilities,
             on_attach = on_attach,
             single_file_support = true,
-        })
+        }
+        if langserver == 'pyright' then
+            config.settings = {
+                pyright = {
+                    disableOrganizeImports = true,
+                },
+                python = {
+                    analysis = {
+                        ignore = { '*' },
+                    },
+                },
+            }
+        end
+        lspconfig[langserver].setup(config)
     end
+
 
 	require("neodev").setup()
 	local cmp = require("cmp")
