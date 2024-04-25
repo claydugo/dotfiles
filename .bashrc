@@ -91,7 +91,3 @@ fi
 if hash starship 2>/dev/null; then
     eval "$(starship init bash)"
 fi
-
-if [[ -f "$HOME/.xprofile" ]]; then
-    source ~/.xprofile
-fi

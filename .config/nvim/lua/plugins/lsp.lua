@@ -57,40 +57,12 @@ function M.config()
 	local lspconfig = require("lspconfig")
     local capabilities = require('cmp_nvim_lsp').default_capabilities()
     local illuminate = require('illuminate')
-    -- local on_attach = function(client) illuminate.on_attach(client) end
     local on_attach = function(client, bufnr)
       illuminate.on_attach(client)
       if client.name == 'ruff' then
         client.server_capabilities.hoverProvider = false
       end
     end
-    -- lspconfig.pylsp.setup({
-    --   capabilities = capabilities,
-    --   on_attach = on_attach,
-    --   settings = {
-    --     pylsp = {
-    --       plugins = {
-    --         ruff = { enabled = false },
-    --         autopep8 = { enabled = false },
-    --         flake8 = { enabled = false },
-    --         mccabe = { enabled = false },
-    --         pycodestyle = { enabled = false },
-    --         pydocstyle = { enabled = false },
-    --         pyflakes = { enabled = false },
-    --         pylint = { enabled = false },
-    --         yapf = { enabled = false },
-    --       },
-    --     },
-    --   },
-    -- })
-    --
-    -- for _, langserver in ipairs(langservers) do
-    --     lspconfig[langserver].setup({
-    --         capabilities = capabilities,
-    --         on_attach = on_attach,
-    --         single_file_support = true,
-    --     })
-    -- end
     for _, langserver in ipairs(langservers) do
         local config = {
             capabilities = capabilities,

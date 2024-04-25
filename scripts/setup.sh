@@ -63,11 +63,10 @@ if [ "$os" = "Linux" ]; then
     sudo add-apt-repository ppa:neovim-ppa/unstable
     sudo add-apt-repository universe
     sudo apt-get update
-    sudo apt install neovim fswatch tmux ripgrep htop cmake pkg-config libfreetype6-dev libfontconfig1-dev libxcb-xfixes0-dev libxkbcommon-dev python3 xcape
+    sudo apt install neovim fswatch tmux ripgrep htop cmake python3 gnome-tweaks npm
     # for fswatch neovim
     echo -e "fs.inotify.max_user_watches=100000\nfs.inotify.max_queued_events=100000" | sudo tee -a /etc/sysctl.conf
     dconf write /org/gnome/desktop/input-sources/xkb-options "['caps:escape']"
-    ln -sfn ~/dotfiles/.xprofile ~/.xprofile
     fonts_dir="$HOME/.fonts"
     mkdir -p $fonts_dir
     cd $fonts_dir

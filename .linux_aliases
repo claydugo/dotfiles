@@ -1,4 +1,4 @@
 alias ls='ls --color=auto'
-alias f='nemo .'
+alias f='nautilus .'
 alias v='/bin/env nvim'
 alias aptup='sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y'
