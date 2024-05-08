@@ -6,6 +6,7 @@
 echo -e "\e[34Setting up dotfiles...\e[0m"
 # set -e  # exit on failure
 # Update submodules since this script depends on them
+cd ~/dotfiles/
 git submodule update --remote
 
 # run as root
@@ -63,7 +64,11 @@ if [ "$os" = "Linux" ]; then
     sudo add-apt-repository ppa:neovim-ppa/unstable
     sudo add-apt-repository universe
     sudo apt-get update
-    sudo apt install neovim fswatch tmux ripgrep htop cmake python3 gnome-tweaks npm
+    sudo apt install neovim fswatch tmux ripgrep htop cmake python3 gnome-tweaks
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+    source ~/.bashrc
+    nvm install 22
+    nvm use 22
     # for fswatch neovim
     echo -e "fs.inotify.max_user_watches=100000\nfs.inotify.max_queued_events=100000" | sudo tee -a /etc/sysctl.conf
     dconf write /org/gnome/desktop/input-sources/xkb-options "['caps:escape']"
