@@ -15,9 +15,7 @@ vim.o.writebackup = false
 vim.o.swapfile = false
 vim.o.clipboard = "unnamed,unnamedplus"
 
-vim.o.cmdheight = 0
 vim.o.updatetime = 200
-
 vim.o.ignorecase = true
 vim.o.incsearch = true
 vim.o.smartcase = true
@@ -61,3 +59,16 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 	pattern = { "*" },
 	command = [[%s/\s\+$//e]],
 })
+
+
+vim.o.cmdheight = 0
+local function adjust_cmdheight()
+  vim.o.cmdheight = 1
+  vim.defer_fn(function() vim.o.cmdheight = 0 end, 3000)  -- Reset after 3 seconds
+end
+
+local original_notify = vim.notify
+vim.notify = function(msg, ...)
+  adjust_cmdheight()
+  original_notify(msg, ...)
+end

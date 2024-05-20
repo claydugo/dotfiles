@@ -4,7 +4,7 @@ local M = {
 }
 
 local function get_LSP()
-	local clients = vim.lsp.get_active_clients()
+	local clients = vim.lsp.get_clients()
 	local icons = require("langserver_icons")
 	if next(clients) == nil then
 		return ""
