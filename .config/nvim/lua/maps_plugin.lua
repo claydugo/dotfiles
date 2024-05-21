@@ -14,8 +14,10 @@ vim.api.nvim_create_autocmd("VimEnter", {
 		local arg = vim.api.nvim_eval("argv(0)")
 		if arg and (vim.fn.isdirectory(arg) ~= 0 or arg == "") then
 			vim.defer_fn(function()
-                local buf_ft = vim.api.nvim_buf_get_option(0, "filetype")
-                if buf_ft == "netrw" then return end
+				local buf_ft = vim.api.nvim_buf_get_option(0, "filetype")
+				if buf_ft == "netrw" then
+					return
+				end
 				require("telescope.builtin").find_files({ hidden = true })
 			end, 10)
 		end
@@ -32,16 +34,16 @@ vim.g.vimwiki_list = {
 }
 -- barbecue optimization recommended as of 20230110
 require("barbecue").setup({
-  create_autocmd = false,
+	create_autocmd = false,
 })
 vim.api.nvim_create_autocmd({
-  "WinResized", -- or WinResized on NVIM-v0.9 and higher
-  "BufWinEnter",
-  "CursorHold",
-  "InsertLeave",
+	"WinResized", -- or WinResized on NVIM-v0.9 and higher
+	"BufWinEnter",
+	"CursorHold",
+	"InsertLeave",
 }, {
-  group = vim.api.nvim_create_augroup("barbecue.updater", {}),
-  callback = function()
-    require("barbecue.ui").update()
-  end,
+	group = vim.api.nvim_create_augroup("barbecue.updater", {}),
+	callback = function()
+		require("barbecue.ui").update()
+	end,
 })

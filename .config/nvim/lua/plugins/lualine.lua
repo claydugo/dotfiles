@@ -41,7 +41,7 @@ function M.config()
 		},
 		sections = {
 			lualine_a = { "mode" },
-			lualine_b = {"filename"},
+			lualine_b = { "filename" },
 			lualine_c = {},
 			lualine_x = { search_display },
 			lualine_y = { get_LSP },

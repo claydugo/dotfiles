@@ -1,11 +1,10 @@
 return {
-    "utilyre/barbecue.nvim",
+	"utilyre/barbecue.nvim",
 	event = { "BufReadPre", "BufNewFile" },
-    dependencies = {
-      "SmiteshP/nvim-navic",
-    },
-    config = function()
-        require("barbecue").setup({
-    })
-    end,
+	dependencies = {
+		"SmiteshP/nvim-navic",
+	},
+	config = function()
+		require("barbecue").setup({})
+	end,
 }

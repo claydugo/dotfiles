@@ -1,11 +1,8 @@
 local M = {
-    "neovim/nvim-lspconfig",
+	"neovim/nvim-lspconfig",
 	event = { "BufReadPre", "BufNewFile" },
 	dependencies = {
-        { "williamboman/mason.nvim",
-            cmd = 'Mason',
-            build = ':MasonUpdate'
-        },
+		{ "williamboman/mason.nvim", cmd = "Mason", build = ":MasonUpdate" },
 		{ "williamboman/mason-lspconfig.nvim" },
 		{ "hrsh7th/nvim-cmp" },
 		{ "hrsh7th/cmp-buffer" },
@@ -19,82 +16,80 @@ local M = {
 		{ "L3MON4D3/LuaSnip" },
 		{ "rafamadriz/friendly-snippets" },
 
-        { "RRethy/vim-illuminate" },
+		{ "RRethy/vim-illuminate" },
 	},
 }
 
 function M.config()
 	require("mason").setup()
-    -- https://github.com/microsoft/pyright/issues/4176#issuecomment-1310534474
-    -- Do you have a pyrightconfig.json file in your home directory?
-    -- If you open a file (as opposed to a directory / project / workspace / or whatever term neovim uses) pyright
-    -- will scan up the directory hierarchy to find a pyrightconfig.json file.
-    -- If it finds one, it assumes the opened file is part of a project rooted at that place in the directory hierarchy.
-    -- fucking microsoft man...
-    -- I had fswatch throwing so many errors despite
-    -- fs.inotify.max_user_watches=10000000
-    -- fs.inotify.max_queued_events=10000000
-    -- in /etc/sysctl.conf
-    -- I only realized the issue when :checkhealth reported
-    -- that pyright was using $HOME as my project root_dir
-    -- unlike all the other langservers
-    -- I am constantly fixxing odd edge case bugs for this langserver
-    -- and having to install nodejs
-    -- all because pylsp is so slow
+	-- https://github.com/microsoft/pyright/issues/4176#issuecomment-1310534474
+	-- Do you have a pyrightconfig.json file in your home directory?
+	-- If you open a file (as opposed to a directory / project / workspace / or whatever term neovim uses) pyright
+	-- will scan up the directory hierarchy to find a pyrightconfig.json file.
+	-- If it finds one, it assumes the opened file is part of a project rooted at that place in the directory hierarchy.
+	-- fucking microsoft man...
+	-- I had fswatch throwing so many errors despite
+	-- fs.inotify.max_user_watches=10000000
+	-- fs.inotify.max_queued_events=10000000
+	-- in /etc/sysctl.conf
+	-- I only realized the issue when :checkhealth reported
+	-- that pyright was using $HOME as my project root_dir
+	-- unlike all the other langservers
+	-- I am constantly fixxing odd edge case bugs for this langserver
+	-- and having to install nodejs
+	-- all because pylsp is so slow
 
-    local langservers = {
-        'pyright',
-        -- 'ruff_lsp',
-        'ruff',
-        'bashls',
-        'lua_ls',
-        'rust_analyzer'
-    }
+	local langservers = {
+		"pyright",
+		-- 'ruff_lsp',
+		"ruff",
+		"bashls",
+		"lua_ls",
+		"rust_analyzer",
+	}
 	require("mason-lspconfig").setup({
 		ensure_installed = langservers,
-    })
+	})
 
 	local lspconfig = require("lspconfig")
-    local capabilities = require('cmp_nvim_lsp').default_capabilities()
-    local illuminate = require('illuminate')
-    local on_attach = function(client, bufnr)
-      illuminate.on_attach(client)
-      if client.name == 'ruff' then
-        client.server_capabilities.hoverProvider = false
-      end
-    end
-    for _, langserver in ipairs(langservers) do
-        local config = {
-            capabilities = capabilities,
-            on_attach = on_attach,
-            single_file_support = true,
-        }
-        if langserver == 'pyright' then
-            config.settings = {
-                pyright = {
-                    disableOrganizeImports = true,
-                },
-                python = {
-                    analysis = {
-                        ignore = { '*' },
-                    },
-                },
-            }
-        end
-        lspconfig[langserver].setup(config)
-    end
-
+	local capabilities = require("cmp_nvim_lsp").default_capabilities()
+	local illuminate = require("illuminate")
+	local on_attach = function(client, bufnr)
+		illuminate.on_attach(client)
+		if client.name == "ruff" then
+			client.server_capabilities.hoverProvider = false
+		end
+	end
+	for _, langserver in ipairs(langservers) do
+		local config = {
+			capabilities = capabilities,
+			on_attach = on_attach,
+			single_file_support = true,
+		}
+		if langserver == "pyright" then
+			config.settings = {
+				pyright = {
+					disableOrganizeImports = true,
+				},
+				python = {
+					analysis = {
+						ignore = { "*" },
+					},
+				},
+			}
+		end
+		lspconfig[langserver].setup(config)
+	end
 
 	require("neodev").setup()
 	local cmp = require("cmp")
 	local has_copilot, copilot_cmp = pcall(require, "copilot_cmp.comparators")
 	local has_copilot_suggestion, copilot_suggestion = pcall(require, "copilot.suggestion")
-    if has_copilot then
-      require("copilot_cmp").setup()
-    end
+	if has_copilot then
+		require("copilot_cmp").setup()
+	end
 	local luasnip = require("luasnip")
-    require("luasnip").filetype_extend("python", { "pydoc", "python", "debug" })
-
+	require("luasnip").filetype_extend("python", { "pydoc", "python", "debug" })
 
 	cmp.setup({
 		mapping = {

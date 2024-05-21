@@ -2,7 +2,7 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 vim.o.grepprg = "rg --vimgrep"
-vim.o.grepformat = '%f:%l:%c:%m'
+vim.o.grepformat = "%f:%l:%c:%m"
 
 vim.o.encoding = "utf-8"
 vim.o.backspace = "indent,eol,start"
@@ -49,7 +49,7 @@ vim.o.ttimeout = true
 vim.o.ttimeoutlen = 5
 vim.o.timeoutlen = 1000
 
-vim.g.loaded_python3_provider = 0
+-- vim.g.loaded_python3_provider = 0
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_node_provider = 0
@@ -60,15 +60,16 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 	command = [[%s/\s\+$//e]],
 })
 
-
 vim.o.cmdheight = 0
 local function adjust_cmdheight()
-  vim.o.cmdheight = 1
-  vim.defer_fn(function() vim.o.cmdheight = 0 end, 3000)  -- Reset after 3 seconds
+	vim.o.cmdheight = 1
+	vim.defer_fn(function()
+		vim.o.cmdheight = 0
+	end, 3000)
 end
 
 local original_notify = vim.notify
 vim.notify = function(msg, ...)
-  adjust_cmdheight()
-  original_notify(msg, ...)
+	adjust_cmdheight()
+	original_notify(msg, ...)
 end
