@@ -20,6 +20,10 @@ alias td='cd $(mktemp -d /tmp/$1.XXX)'
 alias glb='git shortlog -nse'
 alias git_clean='git branch | grep -v "main" | grep -v "master" | xargs git branch -D'
 
+
+# fix annoying bug where the service does not restart correctly when switching between users
+alias restart_anydesk='sudo killall anydesk && (tmux has-session -t anydesk_session 2>/dev/null || tmux new-session -d -s anydesk_session) && tmux send-keys -t anydesk_session "sudo anydesk --service" C-m && tmux attach -t anydesk_session'
+
 # Think this is zsh default
 alias ~='cd ~'
 
