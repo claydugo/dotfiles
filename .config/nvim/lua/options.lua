@@ -35,11 +35,9 @@ vim.o.scrolloff = 6
 vim.o.visualbell = true
 vim.o.showmatch = true
 
--- revisit this tabbing
-local indent = 4
-vim.o.tabstop = indent
-vim.o.softtabstop = indent
-vim.o.shiftwidth = indent
+vim.o.tabstop = 4
+vim.o.softtabstop = 4
+vim.o.shiftwidth = 4
 vim.o.smartindent = true
 vim.o.autoindent = true
 vim.o.expandtab = true
@@ -49,10 +47,29 @@ vim.o.ttimeout = true
 vim.o.ttimeoutlen = 5
 vim.o.timeoutlen = 1000
 
--- vim.g.loaded_python3_provider = 0
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_node_provider = 0
+
+-- local cache_file = vim.fn.stdpath("cache") .. "/python3_host_prog"
+-- local function get_conda_python_path()
+-- 	if vim.fn.filereadable(cache_file) == 1 then
+-- 		return vim.fn.readfile(cache_file)[1]
+-- 	end
+-- 	if vim.fn.executable("conda") == 1 then
+-- 		local handle = io.popen("conda run which python")
+-- 		local result = handle:read("*a"):gsub("\n", "")
+-- 		handle:close()
+-- 		vim.fn.writefile({ result }, cache_file)
+-- 		return result
+-- 	end
+-- 	return nil
+-- end
+--
+-- local python3_host_prog = get_conda_python_path()
+-- if python3_host_prog then
+-- 	vim.g.python3_host_prog = python3_host_prog
+-- end
 
 -- Remove trailing whitespace
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
@@ -73,3 +90,10 @@ vim.notify = function(msg, ...)
 	adjust_cmdheight()
 	original_notify(msg, ...)
 end
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "lua",
+	callback = function()
+		vim.bo.expandtab = false
+	end,
+})

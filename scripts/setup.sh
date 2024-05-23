@@ -52,7 +52,8 @@ curl -sS https://starship.rs/install.sh | sh
 ln -sfn ~/dotfiles/.config/starship.toml ~/.config/
 
 cd ~/dotfiles
-git checkout -b $(hostname)
+git checkout -b "$(hostname)"
+
 
 os=$(uname -s)
 
@@ -73,8 +74,8 @@ if [ "$os" = "Linux" ]; then
     echo -e "fs.inotify.max_user_watches=100000\nfs.inotify.max_queued_events=100000" | sudo tee -a /etc/sysctl.conf
     dconf write /org/gnome/desktop/input-sources/xkb-options "['caps:escape']"
     fonts_dir="$HOME/.fonts"
-    mkdir -p $fonts_dir
-    cd $fonts_dir
+    mkdir -p "$fonts_dir"
+    cd "$fonts_dir"
 fi
 if [ "$os" = "Darwin" ]; then
     echo -e "\e[31mmac detected\e[0m"
@@ -97,7 +98,7 @@ if [ "$os" = "Darwin" ]; then
 fi
 
 echo -e "\e[32minstalling nerd font...\e[0m"
-wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FiraCode.zip && unzip "FiraCode" -d $fonts_dir && fc-cache -fv
+wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FiraCode.zip && unzip "FiraCode" -d "$fonts_dir" && fc-cache -fv
 
 echo -e "\e[32minstalling conda...\e[0m"
 mkdir -p ~/Downloads

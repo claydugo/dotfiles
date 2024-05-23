@@ -9,7 +9,6 @@ HISTFILESIZE=2000
 
 set -o vi
 set editing-mode vi
-set keymap vi
 
 if hash nvim 2>/dev/null; then
   export EDITOR=nvim
