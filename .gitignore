@@ -38,8 +38,6 @@ __pycache__/
 *.bak
 nvimstartup.log
 .config/nvim/plugin
-# Ignore so I dont merge gpg key
-.gitconfig
 
 # lazy.nvim
 lazy-lock.json
