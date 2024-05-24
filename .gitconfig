@@ -1,0 +1,42 @@
+[user]
+	email = claydugo@gmail.com
+	name = Clay Dugo
+
+[core]
+	editor = nvim
+	excludesfile = /home/clay/.gitignore
+    sshCommand = ssh -i ~/.ssh/id_ed25519.pub
+
+[alias]
+  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+
+[pull]
+	rebase = true
+
+[merge]
+	tool = nvim
+
+[mergetool]
+	keepBackup = false
+
+[init]
+	defaultBranch = main
+    colorMoved = default
+
+[push]
+	autoSetupRemote = true
+
+[commit]
+	verbose = true
+
+[submodule]
+	recurse = true
+
+[branch]
+	sort = -committerdate
+
+[includeIf "gitdir:~/projects/ramona/"]
+    path = ~/.gitrconfig
+
+[url "git@github.com:"]
+	insteadOf = "https://github.com/"
