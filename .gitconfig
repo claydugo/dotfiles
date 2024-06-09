@@ -26,9 +26,6 @@
 [push]
 	autoSetupRemote = true
 
-[commit]
-	verbose = true
-
 [submodule]
 	recurse = true
 

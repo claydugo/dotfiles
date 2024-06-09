@@ -24,8 +24,16 @@ ln -sfn ~/dotfiles/.gitignore ~/.gitignore
 git config --global user.name "Clay Dugo"
 git config --global user.email "claydugo@gmail.com"
 mkdir -p ~/.config/
-ln -sf ~/dotfiles/.config/nvim/ ~/.config/
-ln -sfn ~/dotfiles/.config/.ripgreprc ~/.config/.ripgreprc
+
+# dont care about being nice here
+for item in ~/dotfiles/.config/*; do
+  base_item=$(basename "$item")
+  target="$HOME/.config/$base_item"
+  if [ -d "$target" ]; then
+    rm -rf "$target"
+  fi
+  ln -sfn "$item" "$target"
+done
 
 mkdir -p ~/.ipython/profile_default/startup/
 ln -sf ~/dotfiles/.ipython/profile_default/startup/00-conf.py ~/.ipython/profile_default/startup/00-conf.py
