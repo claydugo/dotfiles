@@ -81,6 +81,12 @@ fi
 
 source ~/dotfiles/.aliases
 
+
+# https://gist.github.com/Kenny-MWI/6b1a88ad38b5ffef347527a82becf054?permalink_comment_id=4992963#gistcomment-4992963
+# ctrl + q for force kill slack
+# ctrl + alt + i in slack to open dev tools
+export SLACK_DEVELOPER_MENU=true
+
 export PATH=/home/clay/.cargo/bin:$PATH
 
 if [[ -f "$HOME/.cargo/env" ]]; then

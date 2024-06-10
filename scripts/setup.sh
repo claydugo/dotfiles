@@ -71,10 +71,9 @@ if [ "$os" = "Linux" ]; then
     sudo add-apt-repository universe
     sudo apt-get update
     sudo apt install neovim fswatch tmux ripgrep htop cmake python3 gnome-tweaks
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-    source ~/.bashrc
-    nvm install 22
-    nvm use 22
+    # curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+    # nvm install 22
+    # nvm use 22
     # for fswatch neovim
     echo -e "fs.inotify.max_user_watches=100000\nfs.inotify.max_queued_events=100000" | sudo tee -a /etc/sysctl.conf
     dconf write /org/gnome/desktop/input-sources/xkb-options "['caps:escape']"
