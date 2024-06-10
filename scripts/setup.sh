@@ -43,8 +43,6 @@ echo -e "\e[32minstalling kitty...\e[0m"
 mkdir -p ~/.local/bin/
 mkdir -p ~/.local/share/applications/
 curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
-mkdir -p ~/.config/kitty
-ln -sf ~/dotfiles/.config/kitty/kitty.conf ~/.config/kitty/kitty.conf
 ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
 cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/applications/
 cp ~/.local/kitty.app/share/applications/kitty-open.desktop ~/.local/share/applications/
@@ -57,7 +55,6 @@ ln -sf ~/dotfiles/ramona/scripts/ws ~/.local/bin/ws
 # Replaces git bash prompt for me
 echo -e "\e[32minstalling starship...\e[0m"
 curl -sS https://starship.rs/install.sh | sh
-ln -sfn ~/dotfiles/.config/starship.toml ~/.config/
 
 cd ~/dotfiles
 git checkout -b "$(hostname)"
@@ -93,13 +90,10 @@ if [ "$os" = "Darwin" ]; then
     # mac no longer ships newest bash install with homebrew
     brew install fswatch tmux ripgrep htop cmake wget python3 openssl bash
     brew install --cask karabiner-elements
-    ln -sf ~/dotfiles/.config/karabiner/ ~/.config/
     chsh -s /bin/bash
     echo "eval \"$(/opt/homebrew/bin/brew shellenv)\"" >> ~/.bashrc
     echo "export BASH_SILENCE_DEPRECATION_WARNING=1" >> ~/.bashrc
     # kitty not working on macos for me
-    mkdir -p ~/.config/alacritty
-    ln -sf ~/dotfiles/.config/alacritty/ ~/.config/
     fonts_dir="/Library/Fonts/"
     mkdir -p $fonts_dir
     cd $fonts_dir
