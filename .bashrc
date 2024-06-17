@@ -45,6 +45,16 @@ if [[ -d "$HOME/mambaforge/" ]]; then
     conda_dir=$HOME/mambaforge/
 fi
 
+export PATH=/home/clay/.cargo/bin:$PATH
+
+if [[ -f "$HOME/.cargo/env" ]]; then
+    . "$HOME/.cargo/env"
+fi
+
+if hash starship 2>/dev/null; then
+    eval "$(starship init bash)"
+fi
+
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
 __conda_setup="$("$conda_dir/bin/conda" 'shell.bash' 'hook' 2> /dev/null)"
@@ -81,18 +91,8 @@ fi
 
 source ~/dotfiles/.aliases
 
-
 # https://gist.github.com/Kenny-MWI/6b1a88ad38b5ffef347527a82becf054?permalink_comment_id=4992963#gistcomment-4992963
 # ctrl + q for force kill slack
 # ctrl + alt + i in slack to open dev tools
 export SLACK_DEVELOPER_MENU=true
 
-export PATH=/home/clay/.cargo/bin:$PATH
-
-if [[ -f "$HOME/.cargo/env" ]]; then
-    . "$HOME/.cargo/env"
-fi
-
-if hash starship 2>/dev/null; then
-    eval "$(starship init bash)"
-fi

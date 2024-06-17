@@ -70,7 +70,7 @@ if [ "$os" = "Linux" ]; then
     sudo add-apt-repository ppa:neovim-ppa/unstable
     sudo add-apt-repository universe
     sudo apt-get update
-    sudo apt install neovim fswatch tmux ripgrep htop cmake python3 gnome-tweaks
+    sudo apt install neovim fswatch tmux ripgrep htop cmake python3 gnome-tweaks fd-find
     # curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
     # nvm install 22
     # nvm use 22
