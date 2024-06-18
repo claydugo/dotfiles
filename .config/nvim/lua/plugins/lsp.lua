@@ -10,10 +10,7 @@ local M = {
 		{ "saadparwaiz1/cmp_luasnip" },
 		{ "hrsh7th/cmp-nvim-lsp" },
 		{ "hrsh7th/cmp-nvim-lua" },
-		-- { "zbirenbaum/copilot-cmp" },
-		-- https://github.com/zbirenbaum/copilot-cmp/pull/109
-		-- not exactly handling this in a speedy manner
-		{ "tris203/copilot-cmp", branch = "0.11_compat" },
+		{ "zbirenbaum/copilot-cmp" },
 		{ "folke/neodev.nvim" },
 
 		{ "L3MON4D3/LuaSnip" },
