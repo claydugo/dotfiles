@@ -95,4 +95,3 @@ source ~/dotfiles/.aliases
 # ctrl + q for force kill slack
 # ctrl + alt + i in slack to open dev tools
 export SLACK_DEVELOPER_MENU=true
-
