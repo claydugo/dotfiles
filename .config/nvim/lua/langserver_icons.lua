@@ -9,4 +9,5 @@ return {
 	ruff_lsp = " ",
 	ruff = " ",
 	rust_analyzer = " ",
+	harper_ls = " ", -- since its language agnostic try to use a generic icon
 }

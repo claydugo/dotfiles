@@ -35,7 +35,7 @@ function M.config()
 	-- I only realized the issue when :checkhealth reported
 	-- that pyright was using $HOME as my project root_dir
 	-- unlike all the other langservers
-	-- I am constantly fixxing odd edge case bugs for this langserver
+	-- I am constantly fixing odd edge case bugs for this langserver
 	-- and having to install nodejs
 	-- all because pylsp is so slow
 
@@ -43,6 +43,7 @@ function M.config()
 		"pyright",
 		-- 'ruff_lsp',
 		"ruff",
+		"harper_ls",
 		"bashls",
 		"lua_ls",
 		"rust_analyzer",
@@ -129,8 +130,8 @@ function M.config()
 			{ name = "buffer", group_index = 2 },
 		},
 		sorting = {
-			--keep priority weight at 2 for much closer matches to appear above copilot
-			--set to 1 to make copilot always appear on top
+			-- Keep priority weight at 2 for much closer matches to appear above copilot
+			-- set to 1 to make copilot always appear on top
 			priority_weight = 1,
 			comparators = {
 				cmp.config.compare.exact,
