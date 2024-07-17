@@ -95,3 +95,8 @@ source ~/dotfiles/.aliases
 # ctrl + q for force kill slack
 # ctrl + alt + i in slack to open dev tools
 export SLACK_DEVELOPER_MENU=true
+
+if [[ -d "${HOME}/projects/ramona/rclone-credentials" ]]; then
+    export RAMONA_RCLONE_CREDENTIALS="${HOME}/projects/ramona/rclone-credentials"
+fi
+
