@@ -50,8 +50,8 @@ sed -i "s|Icon=kitty|Icon=/home/$USER/.local/kitty.app/share/icons/hicolor/256x2
 sed -i "s|Exec=kitty|Exec=/home/$USER/.local/kitty.app/bin/kitty|g" ~/.local/share/applications/kitty*.desktop
 
 ln -sf ~/dotfiles/ramona/scripts/ws ~/.local/bin/ws
-ln -sf ~/dotfiles/ramona/scripts/drop_caches /usr/sbin/drop_caches
-ln -sf ~/dotfiles/.loca/bin/build_nvim.sh ~/.local/bin/build_nvim
+ln -sf ~/dotfiles/.local/bin/build_nvim.sh ~/.local/bin/build_nvim
+sudo ln -sf ~/dotfiles/ramona/scripts/drop_caches /usr/sbin/drop_caches
 
 # Replaces git bash prompt for me
 echo -e "\e[32minstalling starship...\e[0m"
