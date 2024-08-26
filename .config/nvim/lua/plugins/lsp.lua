@@ -10,7 +10,7 @@ local M = {
 		{ "saadparwaiz1/cmp_luasnip" },
 		{ "hrsh7th/cmp-nvim-lsp" },
 		{ "hrsh7th/cmp-nvim-lua" },
-		{ "zbirenbaum/copilot-cmp" },
+		-- { "zbirenbaum/copilot-cmp" },
 		{ "folke/neodev.nvim" },
 
 		{ "L3MON4D3/LuaSnip" },
@@ -84,11 +84,11 @@ function M.config()
 
 	require("neodev").setup()
 	local cmp = require("cmp")
-	local has_copilot, copilot_cmp = pcall(require, "copilot_cmp.comparators")
+	-- local has_copilot, copilot_cmp = pcall(require, "copilot_cmp.comparators")
 	local has_copilot_suggestion, copilot_suggestion = pcall(require, "copilot.suggestion")
-	if has_copilot then
-		require("copilot_cmp").setup()
-	end
+	-- if has_copilot then
+	-- 	require("copilot_cmp").setup()
+	-- end
 	local luasnip = require("luasnip")
 	require("luasnip").filetype_extend("python", { "pydoc", "python", "debug" })
 
@@ -135,8 +135,8 @@ function M.config()
 			priority_weight = 1,
 			comparators = {
 				cmp.config.compare.exact,
-				has_copilot and copilot_cmp.prioritize or nil,
-				has_copilot and copilot_cmp.score or nil,
+				-- has_copilot and copilot_cmp.prioritize or nil,
+				-- has_copilot and copilot_cmp.score or nil,
 				cmp.config.compare.offset,
 				cmp.config.compare.score,
 				cmp.config.compare.recently_used,
