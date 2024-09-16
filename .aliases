@@ -48,4 +48,5 @@ fi
 if hash nvim 2>/dev/null; then
     alias vim='nvim'
     alias vi='nvim'
+    alias vimdiff='nvim -d'
 fi
