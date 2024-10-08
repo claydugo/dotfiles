@@ -1,117 +1,158 @@
 #!/bin/bash
-# First attempt at a quick install script for new computers
-# Mainly care about getting vim and tmux up
+# Quick install script for new computers
+# Focused on setting up vim, tmux, and other essential tools
 
-# shift+k to open man pages
-echo -e "\e[34Setting up dotfiles...\e[0m"
-# set -e  # exit on failure
-# Update submodules since this script depends on them
+set -e  # Exit on failure
+
+print_message() {
+    local color="$1"
+    local message="$2"
+    echo -e "\e[${color}m${message}\e[0m"
+}
+
+install_packages() {
+    local packages=("$@")
+    if [ "$package_manager" == "apt" ]; then
+        sudo apt-get install -y "${packages[@]}"
+    elif [ "$package_manager" == "dnf" ]; then
+        sudo dnf install -y "${packages[@]}"
+    elif [ "$package_manager" == "brew" ]; then
+        brew install "${packages[@]}"
+    fi
+}
+
+print_message "34" "Setting up dotfiles..."
 cd ~/dotfiles/
 git submodule update --remote
 
-# run as root
+# Prompt for sudo upfront
 sudo -v
 
-# Exit on fail
-set -o errexit
-
-echo -e "\e[32mSymlinking...\e[0m"
-# Symlink first so things like conda install modifying .bashrc happen
+print_message "32" "Symlinking configuration files..."
 ln -sfn ~/dotfiles/.bashrc ~/.bashrc
 ln -sfn ~/dotfiles/.tmux.conf ~/.tmux.conf
 ln -sfn ~/dotfiles/.gitignore ~/.gitignore
 
 git config --global user.name "Clay Dugo"
 git config --global user.email "claydugo@gmail.com"
-mkdir -p ~/.config/
 
-# dont care about being nice here
+mkdir -p ~/.config/
 for item in ~/dotfiles/.config/*; do
-  base_item=$(basename "$item")
-  target="$HOME/.config/$base_item"
-  if [ -d "$target" ]; then
-    rm -rf "$target"
-  fi
-  ln -sfn "$item" "$target"
+    base_item=$(basename "$item")
+    target="$HOME/.config/$base_item"
+    if [ -d "$target" ] || [ -f "$target" ]; then
+        rm -rf "$target"
+    fi
+    ln -sfn "$item" "$target"
 done
 
 mkdir -p ~/.ipython/profile_default/startup/
 ln -sf ~/dotfiles/.ipython/profile_default/startup/00-conf.py ~/.ipython/profile_default/startup/00-conf.py
 
-
-echo -e "\e[32minstalling kitty...\e[0m"
+print_message "32" "Installing Kitty terminal..."
 mkdir -p ~/.local/bin/
 mkdir -p ~/.local/share/applications/
 curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
-ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten ~/.local/bin/
+ln -sf ~/.local/kitty.app/bin/kitty ~/.local/bin/
+ln -sf ~/.local/kitty.app/bin/kitten ~/.local/bin/
 cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/applications/
 cp ~/.local/kitty.app/share/applications/kitty-open.desktop ~/.local/share/applications/
-sed -i "s|Icon=kitty|Icon=/home/$USER/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" ~/.local/share/applications/kitty*.desktop
-sed -i "s|Exec=kitty|Exec=/home/$USER/.local/kitty.app/bin/kitty|g" ~/.local/share/applications/kitty*.desktop
+sed -i "s|Icon=kitty|Icon=$HOME/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" ~/.local/share/applications/kitty*.desktop
+sed -i "s|Exec=kitty|Exec=$HOME/.local/kitty.app/bin/kitty|g" ~/.local/share/applications/kitty*.desktop
 
 ln -sf ~/dotfiles/ramona/scripts/ws ~/.local/bin/ws
 ln -sf ~/dotfiles/.local/bin/build_nvim.sh ~/.local/bin/build_nvim
 sudo ln -sf ~/dotfiles/ramona/scripts/drop_caches /usr/sbin/drop_caches
 
-# Replaces git bash prompt for me
-echo -e "\e[32minstalling starship...\e[0m"
+print_message "32" "Installing Starship prompt..."
 curl -sS https://starship.rs/install.sh | sh
 
 cd ~/dotfiles
 git checkout -b "$(hostname)"
 
-
 os=$(uname -s)
 
-if [ "$os" = "Linux" ]; then
-    echo -e "\e[31mlinux detected\e[0m"
-    echo -e "\e[32minstalling apt picks\e[0m"
-    # Use nightly nvim since most good features come after 0.7
-    # and nvim on base apt is version 4.3
-    sudo add-apt-repository ppa:neovim-ppa/unstable
-    sudo add-apt-repository universe
-    sudo apt-get update
-    sudo apt install neovim fswatch tmux ripgrep htop cmake python3 gnome-tweaks fd-find
-    # curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-    # nvm install 22
-    # nvm use 22
-    # for fswatch neovim
+package_manager=""
+common_packages=(neovim fswatch tmux ripgrep htop cmake python3 gnome-tweaks fd-find wget openssl bash)
+
+if [ "$os" == "Linux" ]; then
+    if command -v dnf &> /dev/null; then
+        print_message "31" "Fedora detected."
+        package_manager="dnf"
+        print_message "32" "Installing Fedora packages..."
+        sudo dnf upgrade -y
+        # Enable EPEL repository for additional packages if needed
+        sudo dnf install -y epel-release
+    elif command -v apt-get &> /dev/null; then
+        print_message "31" "Debian detected."
+        package_manager="apt"
+        print_message "32" "Installing Debian packages..."
+        sudo apt-get update
+    else
+        echo "Unsupported Linux distribution."
+        exit 1
+    fi
+elif [ "$os" == "Darwin" ]; then
+    print_message "31" "macOS detected."
+    package_manager="brew"
+    print_message "32" "Installing Homebrew and packages..."
+    if ! command -v brew &> /dev/null; then
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.bashrc
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    else
+        print_message "34" "Homebrew is already installed."
+    fi
+    brew update
+else
+    echo "Unsupported operating system: $os"
+    exit 1
+fi
+
+if [ "$package_manager" == "apt" ] || [ "$package_manager" == "dnf" ]; then
+    install_packages "${common_packages[@]}"
+elif [ "$package_manager" == "brew" ]; then
+    install_packages "${common_packages[@]}"
+    brew install --cask karabiner-elements
+    chsh -s /bin/bash
+    echo "export BASH_SILENCE_DEPRECATION_WARNING=1" >> ~/.bashrc
+fi
+
+if [ "$os" == "Linux" ]; then
     echo -e "fs.inotify.max_user_watches=100000\nfs.inotify.max_queued_events=100000" | sudo tee -a /etc/sysctl.conf
-    dconf write /org/gnome/desktop/input-sources/xkb-options "['caps:escape']"
+    sudo sysctl -p
+    gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
     fonts_dir="$HOME/.fonts"
     mkdir -p "$fonts_dir"
     cd "$fonts_dir"
-fi
-if [ "$os" = "Darwin" ]; then
-    echo -e "\e[31mmac detected\e[0m"
-    echo -e "\e[32minstalling brew picks\e[0m"
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    brew install neovim --HEAD
-    # mac no longer ships newest bash install with homebrew
-    brew install fswatch tmux ripgrep htop cmake wget python3 openssl bash
-    brew install --cask karabiner-elements
-    chsh -s /bin/bash
-    echo "eval \"$(/opt/homebrew/bin/brew shellenv)\"" >> ~/.bashrc
-    echo "export BASH_SILENCE_DEPRECATION_WARNING=1" >> ~/.bashrc
-    # kitty not working on macos for me
+elif [ "$os" == "Darwin" ]; then
     fonts_dir="/Library/Fonts/"
-    mkdir -p $fonts_dir
-    cd $fonts_dir
+    mkdir -p "$fonts_dir"
+    cd "$fonts_dir"
 fi
 
-echo -e "\e[32minstalling nerd font...\e[0m"
-wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FiraCode.zip && unzip "FiraCode" -d "$fonts_dir" && fc-cache -fv
+print_message "32" "Installing Nerd Fonts..."
+if command -v wget &> /dev/null; then
+    wget https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FiraCode.zip
+elif command -v curl &> /dev/null; then
+    curl -L -O https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FiraCode.zip
+else
+    echo "Neither wget nor curl is installed. Please install one to proceed."
+    exit 1
+fi
+unzip "FiraCode.zip" -d "$fonts_dir"
+fc-cache -fv
 
-echo -e "\e[32minstalling conda...\e[0m"
+print_message "32" "Installing Conda (Mambaforge)..."
 mkdir -p ~/Downloads
 cd ~/Downloads
-curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh"
-bash Mambaforge-$(uname)-$(uname -m).sh
-
-echo -e "\e[33m************************************\e[0m"
-echo -e "\e[32mfinished\e[0m"
-echo -e "\e[32mrun finish_dev_env_setup.sh after opening new shell\e[0m"
-echo -e "\e[33m************************************\e[0m"
-
-
+conda_script="Mambaforge-$(uname | tr '[:upper:]' '[:lower:]')-$(uname -m).sh"
+curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/${conda_script}"
+bash "${conda_script}" -b -p "$HOME/mambaforge"
+echo "export PATH=\"$HOME/mambaforge/bin:\$PATH\"" >> ~/.bashrc
 source ~/.bashrc
+
+print_message "33" "************************************"
+print_message "32" "Setup complete!"
+print_message "32" "Run finish_dev_env_setup.sh after opening a new shell."
+print_message "33" "************************************"
