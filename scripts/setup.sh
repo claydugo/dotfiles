@@ -121,7 +121,7 @@ fi
 if [ "$os" == "Linux" ]; then
     echo -e "fs.inotify.max_user_watches=100000\nfs.inotify.max_queued_events=100000" | sudo tee -a /etc/sysctl.conf
     sudo sysctl -p
-    dconf write /org/gnome/desktop/input-sources/xkb-options "['caps:escape']"
+    gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
     fonts_dir="$HOME/.fonts"
     mkdir -p "$fonts_dir"
     cd "$fonts_dir"
