@@ -16,7 +16,6 @@ git fetch origin
 
 if git diff --quiet origin/master; then
     echo "Already up to date. No changes to pull."
-    exit 0
 fi
 
 git pull

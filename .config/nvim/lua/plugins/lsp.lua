@@ -43,7 +43,7 @@ function M.config()
 		"pyright",
 		-- 'ruff_lsp',
 		"ruff",
-		"harper_ls",
+		-- "harper_ls",
 		"bashls",
 		"lua_ls",
 		"rust_analyzer",

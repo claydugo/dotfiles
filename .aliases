@@ -50,3 +50,11 @@ if hash nvim 2>/dev/null; then
     alias vi='nvim'
     alias vimdiff='nvim -d'
 fi
+
+if command -v ffmpeg >/dev/null 2>&1 && command -v gifski >/dev/null 2>&1; then
+    mp4togif() {
+        input_file="$1"
+        base_name="$(basename "${input_file}" .mp4)"
+        ffmpeg -i "${input_file}" -f yuv4mpegpipe - | gifski -Q 100 --extra -o "${base_name}.gif" -
+    }
+fi
