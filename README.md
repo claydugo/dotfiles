@@ -17,6 +17,8 @@ $ tree -a -I '.git|ramona|karabiner'
 │   │   └── alacritty.yml
 │   ├── kitty
 │   │   └── kitty.conf
+│   ├── MangoHud
+│   │   └── MangoHud.conf
 │   ├── nvim
 │   │   ├── init.lua
 │   │   ├── lazy-lock.json
@@ -27,30 +29,46 @@ $ tree -a -I '.git|ramona|karabiner'
 │   │       ├── maps_plugin.lua
 │   │       ├── options.lua
 │   │       └── plugins
+│   │           ├── barbecue.lua
+│   │           ├── browsher.lua
 │   │           ├── copilot.lua
-│   │           ├── github_theme.lua
 │   │           ├── gitsigns.lua
 │   │           ├── lsp.lua
 │   │           ├── lualine.lua
+│   │           ├── markdown.lua
 │   │           ├── mini.lua
 │   │           ├── telescope.lua
+│   │           ├── tip_of_my_buffer.lua
+│   │           ├── tokyonight.lua
 │   │           ├── treesitter.lua
 │   │           └── vimwiki.lua
-│   └── starship.toml
+│   ├── .ripgreprc
+│   ├── starship.toml
+│   └── warp-terminal
+│       └── keybindings.yaml
 ├── dotfiles.png
 ├── dots_macos.png
+├── .gitconfig
 ├── .gitignore
 ├── .gitmodules
+├── .ipython
+│   ├── __init__.py
+│   └── profile_default
+│       └── startup
+│           └── 00-conf.py
 ├── .linux_aliases
+├── .local
+│   └── bin
+│       └── build_nvim.sh
 ├── .mac_aliases
+├── .pre-commit-config.yaml
 ├── README.md
 ├── scripts
 │   └── setup.sh
 ├── .tmux.conf
-├── .tmux-ssh.conf
-└── .xprofile
+└── .tmux-ssh.conf
 
-8 directories, 32 files
+15 directories, 43 files
 ```
 
 #### Dependencies
