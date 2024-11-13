@@ -43,6 +43,7 @@ function M.config()
 		"pyright",
 		-- 'ruff_lsp',
 		"ruff",
+		"wgsl_analyzer",
 		-- "harper_ls",
 		"bashls",
 		"lua_ls",
@@ -156,6 +157,14 @@ function M.config()
 	vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float)
 	vim.keymap.set("n", "<leader>eq", vim.diagnostic.goto_prev)
 	vim.keymap.set("n", "<leader>ee", vim.diagnostic.goto_next)
+
+	-- https://github.com/wgsl-analyzer/wgsl-analyzer
+	vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+	  pattern = "*.wgsl",
+	  callback = function()
+		vim.bo.filetype = "wgsl"
+	  end,
+	})
 end
 
 return M

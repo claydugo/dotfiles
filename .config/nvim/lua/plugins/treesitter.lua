@@ -6,11 +6,26 @@ return {
 		require("nvim-treesitter.configs").setup({
 			ensure_installed = {
 				"python",
-				"c",
 				"lua",
+				"wgsl",
+				"cuda",
+				"rust",
+				"c",
 				"bash",
+
 				"html",
 				"json",
+				"qmldir",
+				"luadoc",
+
+				"desktop",
+				"tmux",
+				"ssh_config",
+				"git_config",
+				"git_rebase",
+				"gitattributes",
+				"gitcommit",
+				"gitignore",
 			},
 			highlight = {
 				enable = true,
