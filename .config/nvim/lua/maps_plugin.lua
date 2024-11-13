@@ -4,7 +4,7 @@ vim.keymap.set("n", "<leader>g", ":lua require'telescope.builtin'.live_grep()<CR
 vim.keymap.set("n", "<leader>d", ":lua require'telescope.builtin'.lsp_definitions()<CR>")
 vim.keymap.set("n", "<leader>t", ":lua require'telescope.builtin'.lsp_type_definitions()<CR>")
 
-vim.keymap.set("n", "<leader>gb", ":lua require'gitsigns'.toggle_current_line_blame()<CR>")
+vim.keymap.set("n", "<leader>w", ":lua require'gitsigns'.toggle_current_line_blame()<CR>")
 
 vim.api.nvim_create_augroup("startup", { clear = true })
 vim.api.nvim_create_autocmd("VimEnter", {
