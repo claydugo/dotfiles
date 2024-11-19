@@ -1,6 +1,6 @@
 return {
 	"MeanderingProgrammer/markdown.nvim",
-	main = "render-markdown",
-	opts = {},
+	event = { "BufReadPre", "BufNewFile" },
 	dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" },
+	opts = {},
 }

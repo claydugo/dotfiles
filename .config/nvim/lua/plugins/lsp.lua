@@ -5,17 +5,10 @@ local M = {
 		{ "williamboman/mason.nvim", cmd = "Mason", build = ":MasonUpdate" },
 		{ "williamboman/mason-lspconfig.nvim" },
 		{ "hrsh7th/nvim-cmp" },
-		{ "hrsh7th/cmp-buffer" },
-		{ "hrsh7th/cmp-path" },
-		{ "saadparwaiz1/cmp_luasnip" },
 		{ "hrsh7th/cmp-nvim-lsp" },
 		{ "hrsh7th/cmp-nvim-lua" },
 		{ "zbirenbaum/copilot-cmp" },
-		{ "folke/neodev.nvim" },
-
-		{ "L3MON4D3/LuaSnip" },
-		{ "rafamadriz/friendly-snippets" },
-
+		{ "folke/lazydev.nvim" },
 		{ "RRethy/vim-illuminate" },
 	},
 }
@@ -83,15 +76,12 @@ function M.config()
 		lspconfig[langserver].setup(config)
 	end
 
-	require("neodev").setup()
 	local cmp = require("cmp")
 	local has_copilot, copilot_cmp = pcall(require, "copilot_cmp.comparators")
 	local has_copilot_suggestion, copilot_suggestion = pcall(require, "copilot.suggestion")
 	if has_copilot then
 		require("copilot_cmp").setup()
 	end
-	local luasnip = require("luasnip")
-	require("luasnip").filetype_extend("python", { "pydoc", "python", "debug" })
 
 	cmp.setup({
 		mapping = {
@@ -147,11 +137,6 @@ function M.config()
 				cmp.config.compare.length,
 				cmp.config.compare.order,
 			},
-		},
-		snippet = {
-			expand = function(args)
-				luasnip.lsp_expand(args.body)
-			end,
 		},
 	})
 	vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float)

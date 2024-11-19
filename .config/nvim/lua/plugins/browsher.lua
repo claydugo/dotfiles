@@ -22,6 +22,9 @@ function M.config()
     require('browsher').setup(config_opts)
 	vim.api.nvim_set_keymap("n", "<leader>b", "<cmd>Browsher<CR>", { noremap = true, silent = true })
 	vim.api.nvim_set_keymap("v", "<leader>b", ":'<,'>Browsher<CR>gv", { noremap = true, silent = true })
+	vim.api.nvim_set_keymap("n", "<leader>B", "<cmd>Browsher tag<CR>", { noremap = true, silent = true })
+	vim.api.nvim_set_keymap("v", "<leader>B", ":'<,'>Browsher tag<CR>gv", { noremap = true, silent = true })
+	vim.api.nvim_set_keymap("n", "<leader>r", "<cmd>Browsher root<CR>", { noremap = true, silent = true })
 end
 
 return M
