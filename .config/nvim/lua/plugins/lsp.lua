@@ -49,6 +49,10 @@ function M.config()
 	local lspconfig = require("lspconfig")
 	local capabilities = require("cmp_nvim_lsp").default_capabilities()
 	local illuminate = require("illuminate")
+
+	capabilities.general = capabilities.general or {}
+	capabilities.general.positionEncodings = { "utf-16" }
+
 	local on_attach = function(client, bufnr)
 		illuminate.on_attach(client)
 		if client.name == "ruff" then

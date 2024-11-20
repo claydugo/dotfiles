@@ -4,7 +4,7 @@ local plugin_dir = home .. '/projects/browsher.nvim/'
 local is_local = vim.loop.fs_stat(plugin_dir) ~= nil
 
 local config_opts = {
-	-- default_branch = 'main',
+	commit_length = 20
 }
 
 local M = {
