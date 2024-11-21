@@ -35,16 +35,6 @@ if [ -f "$XDG_CONFIG_HOME/.ripgreprc" ]; then
     export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/.ripgreprc"
 fi
 
-conda_dir=$HOME
-
-if [[ -d "$HOME/miniforge3/" ]]; then
-    conda_dir=$HOME/miniforge3/
-fi
-
-if [[ -d "$HOME/mambaforge/" ]]; then
-    conda_dir=$HOME/mambaforge/
-fi
-
 export PATH=/home/clay/.cargo/bin:$PATH
 
 if [[ -f "$HOME/.cargo/env" ]]; then
@@ -53,6 +43,16 @@ fi
 
 if hash starship 2>/dev/null; then
     eval "$(starship init bash)"
+fi
+
+conda_dir=$HOME
+
+if [[ -d "$HOME/miniforge3/" ]]; then
+    conda_dir=$HOME/miniforge3/
+fi
+
+if [[ -d "$HOME/mambaforge/" ]]; then
+    conda_dir=$HOME/mambaforge/
 fi
 
 # >>> conda initialize >>>
@@ -90,13 +90,3 @@ if [[ "$os" = "Darwin" ]]; then
 fi
 
 source ~/dotfiles/.aliases
-
-# https://gist.github.com/Kenny-MWI/6b1a88ad38b5ffef347527a82becf054?permalink_comment_id=4992963#gistcomment-4992963
-# ctrl + q for force kill slack
-# ctrl + alt + i in slack to open dev tools
-export SLACK_DEVELOPER_MENU=true
-
-if [[ -d "${HOME}/projects/ramona/rclone-credentials" ]]; then
-    export RAMONA_RCLONE_CREDENTIALS="${HOME}/projects/ramona/rclone-credentials"
-fi
-

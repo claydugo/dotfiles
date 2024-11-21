@@ -1,5 +1,3 @@
--- make double esc clear searh highlights
--- vim.keymap.set('n', '<Esc><Esc>', '<Esc>:nohlsearch<CR><Esc>')
 -- correct Y behavior
 vim.keymap.set("n", "Y", "y$")
 
@@ -21,3 +19,6 @@ vim.keymap.set("v", ">", ">gv")
 vim.keymap.set("i", ",", ",<c-g>u")
 vim.keymap.set("i", ".", ".<c-g>u")
 vim.keymap.set("i", ";", ";<c-g>u")
+
+-- tactical nuke incoming
+vim.keymap.set("n", "XD", ":%d<CR>", { noremap = true, silent = true })
