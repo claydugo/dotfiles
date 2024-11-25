@@ -90,3 +90,5 @@ if [[ "$os" = "Darwin" ]]; then
 fi
 
 source ~/dotfiles/.aliases
+
+export PATH=$PATH:/home/clay/.spicetify

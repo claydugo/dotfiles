@@ -75,7 +75,7 @@ $ tree -a -I '.git|ramona|karabiner'
 * [neovim](https://neovim.io/)
 * [tmux](https://github.com/tmux/tmux/wiki)
 * [starship](https://starship.rs)
-* [exa](https://the.exa.website/)
+* [eza](https://eza.rocks/)
 
 #### Submodules
 

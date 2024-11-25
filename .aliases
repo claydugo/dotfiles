@@ -33,10 +33,10 @@ if [ -f ~/dotfiles/ramona/.ramona ]; then
     source ~/dotfiles/ramona/.ramona
 fi
 
-if hash exa 2>/dev/null; then
-    alias ls='exa'
-    alias ll="exa -lah --git --icons"
-    alias lll="exa -abghHliS@ --git --icons"
+if hash eza 2>/dev/null; then
+    alias ls='eza'
+    alias ll="eza -lah --git --icons"
+    alias lll="eza -abghHliS@ --git --icons"
 fi
 
 alias la='cat ~/.aliases'
