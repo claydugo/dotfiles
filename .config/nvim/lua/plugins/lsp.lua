@@ -37,6 +37,7 @@ function M.config()
 		-- 'ruff_lsp',
 		"ruff",
 		"wgsl_analyzer",
+		"biome",
 		-- "harper_ls",
 		"bashls",
 		"lua_ls",

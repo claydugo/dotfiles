@@ -21,4 +21,4 @@ vim.keymap.set("i", ".", ".<c-g>u")
 vim.keymap.set("i", ";", ";<c-g>u")
 
 -- tactical nuke incoming
-vim.keymap.set("n", "XD", ":%d<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "XD", "<Cmd>%delete _ | put +<CR>", { noremap = true, silent = true })
