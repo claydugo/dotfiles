@@ -36,6 +36,11 @@ if [ -f "$XDG_CONFIG_HOME/.ripgreprc" ]; then
 fi
 
 export PATH=/home/clay/.cargo/bin:$PATH
+export PATH=$PATH:/home/clay/.spicetify
+
+ZIGENV_ROOT="$HOME/.zigenv"
+PATH="$ZIGENV_ROOT/bin:$ZIGENV_ROOT/shims:$PATH"
+export ZIGENV_ROOT PATH
 
 if [[ -f "$HOME/.cargo/env" ]]; then
     . "$HOME/.cargo/env"
@@ -91,4 +96,3 @@ fi
 
 source ~/dotfiles/.aliases
 
-export PATH=$PATH:/home/clay/.spicetify

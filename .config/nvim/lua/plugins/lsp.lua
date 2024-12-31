@@ -38,7 +38,7 @@ function M.config()
 		"ruff",
 		"wgsl_analyzer",
 		"biome",
-		-- "harper_ls",
+		"harper_ls",
 		"bashls",
 		"lua_ls",
 		"rust_analyzer",
@@ -78,6 +78,18 @@ function M.config()
 				},
 			}
 		end
+	  if langserver == "harper_ls" then
+		config.settings = {
+		  ["harper-ls"] = {
+			userDictPath = "~/git/upstream/codespell/codespell_lib/data/dictionary.txt",
+			diagnosticSeverity = "hint",
+			linters = {
+				sentence_capitalization = false,
+				avoid_curses = false,
+			}
+		  }
+		}
+	  end
 		lspconfig[langserver].setup(config)
 	end
 
