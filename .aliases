@@ -42,7 +42,7 @@ if hash eza 2>/dev/null; then
     alias lll="eza -abghHliS@ --git --icons"
 fi
 
-alias la='cat ~/.aliases'
+alias la='cat ~/dotfiles/.aliases'
 
 if hash bat 2>/dev/null; then
     alias la='bat ~/.aliases -l bash'
