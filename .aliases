@@ -48,6 +48,9 @@ if hash bat 2>/dev/null; then
     alias la='bat ~/.aliases -l bash'
 fi
 
+
+alias lt='python3 ~/dotfiles/scripts/tmate_restore.py'
+
 if hash nvim 2>/dev/null; then
     alias vim='nvim'
     alias vi='nvim'
