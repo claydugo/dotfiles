@@ -133,17 +133,14 @@ class TmateUI:
     def _get_visible_range(self) -> Tuple[int, int]:
         height, _ = self.stdscr.getmaxyx()
         display_height = height - 6
-
         if len(self.manager.entries) <= display_height:
             return 0, len(self.manager.entries)
-
         if self.selected_idx < display_height // 2:
             start_idx = 0
         elif self.selected_idx >= len(self.manager.entries) - display_height // 2:
             start_idx = len(self.manager.entries) - display_height
         else:
             start_idx = self.selected_idx - display_height // 2
-
         return start_idx, start_idx + display_height
 
     def _get_footer_text(self, width: int) -> str:
@@ -157,15 +154,12 @@ class TmateUI:
     def _handle_mouse(self, event: int) -> None:
         _, mx, my, _, bstate = curses.getmouse()
         start_idx, _ = self._get_visible_range()
-
         if bstate & curses.BUTTON1_CLICKED:
             entry_idx = my - 3 + start_idx
             if 0 <= entry_idx < len(self.manager.entries):
                 self.selected_idx = entry_idx
                 if bstate & curses.BUTTON1_DOUBLE_CLICKED:
-                    return self._handle_connection(
-                        self.manager.entries[self.selected_idx]
-                    )
+                    return self._handle_connection(self.manager.entries[self.selected_idx])
 
     def _handle_connection(self, entry: TmateEntry) -> Optional[str]:
         return entry.connection
@@ -173,16 +167,12 @@ class TmateUI:
     def draw(self, error_message: Optional[str] = None) -> None:
         self.stdscr.clear()
         height, width = self.stdscr.getmaxyx()
-
         title = " Select a tmate Session to Connect "
         self.stdscr.attron(curses.color_pair(2) | curses.A_BOLD)
         self.stdscr.addstr(1, max((width - len(title)) // 2, 0), title)
         self.stdscr.attroff(curses.color_pair(2) | curses.A_BOLD)
-
         start_idx, end_idx = self._get_visible_range()
-        for idx, entry in enumerate(
-            self.manager.entries[start_idx:end_idx], start=start_idx
-        ):
+        for idx, entry in enumerate(self.manager.entries[start_idx:end_idx], start=start_idx):
             y = 3 + idx - start_idx
             x = 2
             entry_str = f"{idx + 1}. {str(entry)}"[: width - 6]
@@ -192,18 +182,14 @@ class TmateUI:
                 self.stdscr.attroff(curses.color_pair(1))
             else:
                 self.stdscr.addstr(y, x, entry_str.ljust(width - 4))
-
         instructions = self._get_footer_text(width)
         total_sessions = f"Total: {len(self.manager.entries)}"
-
         footer_space = width - 4
         if len(instructions) + len(total_sessions) + 2 <= footer_space:
             try:
                 self.stdscr.attron(curses.color_pair(3))
                 self.stdscr.addstr(height - 2, 2, instructions)
-                self.stdscr.addstr(
-                    height - 2, width - len(total_sessions) - 2, total_sessions
-                )
+                self.stdscr.addstr(height - 2, width - len(total_sessions) - 2, total_sessions)
                 self.stdscr.attroff(curses.color_pair(3))
             except curses.error:
                 pass
@@ -214,51 +200,52 @@ class TmateUI:
                 self.stdscr.attroff(curses.color_pair(3))
             except curses.error:
                 pass
-
         if error_message:
             try:
                 self.stdscr.attron(curses.color_pair(4) | curses.A_BOLD)
-                self.stdscr.addstr(
-                    height // 2,
-                    max((width - len(error_message)) // 2, 0),
-                    error_message,
-                )
+                self.stdscr.addstr(height // 2, max((width - len(error_message)) // 2, 0), error_message)
                 self.stdscr.attroff(curses.color_pair(4) | curses.A_BOLD)
             except curses.error:
                 pass
-
         self.stdscr.refresh()
+
+    def _show_error(self, message: str) -> None:
+        self.draw(error_message=message)
+
+    def _prompt_search(self) -> Optional[str]:
+        curses.echo()
+        self.stdscr.addstr(0, 0, "Search: ")
+        query = self.stdscr.getstr(0, 8).decode("utf-8").strip()
+        curses.noecho()
+        return query if query else None
+
+    def _filter_entries(self) -> None:
+        filtered = [entry for entry in self.manager.entries if self.search_query in entry.connection.lower()]
+        if filtered:
+            self.manager.entries = filtered
+            self.selected_idx = 0
 
     def run(self) -> Optional[str]:
         if not self.manager.entries:
             self._show_error("No tmate sessions found matching the criteria.")
             self.stdscr.getch()
             return None
-
         while True:
             self.draw()
             try:
                 key = self.stdscr.getch()
                 if key in (ord("k"), ord("K")):
-                    self.selected_idx = (self.selected_idx - 1) % len(
-                        self.manager.entries
-                    )
+                    self.selected_idx = (self.selected_idx - 1) % len(self.manager.entries)
                 elif key in (ord("j"), ord("J")):
-                    self.selected_idx = (self.selected_idx + 1) % len(
-                        self.manager.entries
-                    )
+                    self.selected_idx = (self.selected_idx + 1) % len(self.manager.entries)
                 elif key == curses.KEY_MOUSE:
                     self._handle_mouse(key)
                 elif key == curses.KEY_RESIZE:
                     curses.resize_term(*self.stdscr.getmaxyx())
                 elif key == curses.KEY_UP:
-                    self.selected_idx = (self.selected_idx - 1) % len(
-                        self.manager.entries
-                    )
+                    self.selected_idx = (self.selected_idx - 1) % len(self.manager.entries)
                 elif key == curses.KEY_DOWN:
-                    self.selected_idx = (self.selected_idx + 1) % len(
-                        self.manager.entries
-                    )
+                    self.selected_idx = (self.selected_idx + 1) % len(self.manager.entries)
                 elif key == curses.KEY_HOME:
                     self.selected_idx = 0
                 elif key == curses.KEY_END:
@@ -266,18 +253,14 @@ class TmateUI:
                 elif key == curses.KEY_PPAGE:
                     self.selected_idx = max(self.selected_idx - 10, 0)
                 elif key == curses.KEY_NPAGE:
-                    self.selected_idx = min(
-                        self.selected_idx + 10, len(self.manager.entries) - 1
-                    )
+                    self.selected_idx = min(self.selected_idx + 10, len(self.manager.entries) - 1)
                 elif key == ord("/"):
                     query = self._prompt_search()
                     if query:
                         self.search_query = query.lower()
                         self._filter_entries()
                 elif key == ord("s"):
-                    self.manager.sort_by = (
-                        "host" if self.manager.sort_by == "time" else "time"
-                    )
+                    self.manager.sort_by = "host" if self.manager.sort_by == "time" else "time"
                     self.manager.sort_entries()
                     self.selected_idx = 0
                 elif key in (ord("\n"), curses.KEY_ENTER):
@@ -343,3 +326,4 @@ if __name__ == "__main__":
         sys.exit(curses.wrapper(main, parser.parse_args()))
     except KeyboardInterrupt:
         sys.exit(0)
+
