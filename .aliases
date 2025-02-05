@@ -15,7 +15,7 @@ alias cl='clear'
 alias :q='exit'
 alias p='python3'
 alias i='ipython'
-alias ca='conda activate'
+alias gti='git'
 alias path='echo -e ${PATH//:/\\n}'
 alias t='tmux new-session -s $(hostname)'
 alias ta="tmux a"
@@ -25,7 +25,6 @@ alias git_clean='git branch | grep -v "main" | grep -v "master" | xargs git bran
 
 
 # fix annoying bug where the service does not restart correctly when switching between users
-#alias restart_anydesk='sudo killall anydesk && (tmux has-session -t anydesk_session 2>/dev/null || tmux new-session -d -s anydesk_session) && tmux send-keys -t anydesk_session "sudo anydesk --service" C-m && tmux attach -t anydesk_session'
 alias restart_anydesk='(tmux has-session -t anydesk_session 2>/dev/null || tmux new-session -d -s anydesk_session) && tmux send-keys -t anydesk_session "sudo killall anydesk && sudo anydesk --service" C-m && tmux attach -t anydesk_session'
 
 # Think this is zsh default
