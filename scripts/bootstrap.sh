@@ -4,6 +4,8 @@
 
 set -e  # Exit on failure
 
+: ${XDG_CONFIG_HOME:="$HOME/.config"}
+
 print_message() {
     local color="$1"
     local message="$2"
@@ -30,24 +32,29 @@ sudo -v
 
 print_message "32" "Symlinking configuration files..."
 ln -sfn ~/dotfiles/.bashrc ~/.bashrc
-ln -sfn ~/dotfiles/.tmux.conf ~/.tmux.conf
 ln -sfn ~/dotfiles/.gitignore ~/.gitignore
 
-git config --global user.name "Clay Dugo"
-git config --global user.email "claydugo@gmail.com"
+mkdir -p "$XDG_CONFIG_HOME/tmux"
+ln -sfn ~/dotfiles/.tmux.conf "$XDG_CONFIG_HOME/tmux/tmux.conf"
 
-mkdir -p ~/.config/
+mkdir -p "$XDG_CONFIG_HOME/git"
+ln -sfn ~/dotfiles/.gitconfig "$XDG_CONFIG_HOME/git/config"
+
+mkdir -p "$XDG_CONFIG_HOME/conda"
+ln -sfn ~/dotfiles/.condarc "$XDG_CONFIG_HOME/conda/.condarc"
+
+mkdir -p "$XDG_CONFIG_HOME"
 for item in ~/dotfiles/.config/*; do
     base_item=$(basename "$item")
-    target="$HOME/.config/$base_item"
-    if [ -d "$target" ] || [ -f "$target" ]; then
-        rm -rf "$target"
-    fi
+    target="$XDG_CONFIG_HOME/$base_item"
+    [ -e "$target" ] && rm -rf "$target"
     ln -sfn "$item" "$target"
 done
 
-mkdir -p ~/.ipython/profile_default/startup/
-ln -sf ~/dotfiles/.ipython/profile_default/startup/00-conf.py ~/.ipython/profile_default/startup/00-conf.py
+ln -sfn ~/dotfiles/.ipython "$XDG_CONFIG_HOME/ipython"
+
+git config --global user.name "Clay Dugo"
+git config --global user.email "claydugo@gmail.com"
 
 print_message "32" "Installing Kitty terminal..."
 mkdir -p ~/.local/bin/
@@ -81,7 +88,6 @@ if [ "$os" == "Linux" ]; then
         package_manager="dnf"
         print_message "32" "Installing Fedora packages..."
         sudo dnf upgrade -y
-        # Enable EPEL repository for additional packages if needed
         sudo dnf install -y epel-release
     elif command -v apt-get &> /dev/null; then
         print_message "31" "Debian detected."
