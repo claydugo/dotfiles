@@ -54,7 +54,7 @@ function M.config()
 	capabilities.general = capabilities.general or {}
 	capabilities.general.positionEncodings = { "utf-16" }
 
-	local on_attach = function(client, bufnr)
+	local on_attach = function(client)
 		illuminate.on_attach(client)
 		if client.name == "ruff" then
 			client.server_capabilities.hoverProvider = false

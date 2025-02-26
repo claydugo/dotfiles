@@ -9,7 +9,7 @@
 
 [alias]
     lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
-    sc = commit --template ~/.gitlab_ci_skip
+    sc = commit --template /home/clay/dotfiles/.gitlab_ci_skip
 
 [pull]
     rebase = true
