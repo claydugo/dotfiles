@@ -81,11 +81,12 @@ function M.config()
 	  if langserver == "harper_ls" then
 		config.settings = {
 		  ["harper-ls"] = {
-			userDictPath = "~/git/upstream/codespell/codespell_lib/data/dictionary.txt",
+			-- userDictPath = "~/git/upstream/codespell/codespell_lib/data/dictionary.txt",
+			userDictPath = vim.fn.stdpath("config") .. "/spell/en.utf-8.add",
 			diagnosticSeverity = "hint",
 			linters = {
-				sentence_capitalization = false,
-				avoid_curses = false,
+				SentenceCapitalization = true,
+				LongSentences = true,
 			}
 		  }
 		}

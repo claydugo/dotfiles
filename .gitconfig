@@ -1,39 +1,44 @@
 [user]
-	email = claydugo@gmail.com
-	name = Clay Dugo
+    email = claydugo@gmail.com
+    name = Clay Dugo
 
 [core]
-	editor = nvim
-	excludesfile = /home/clay/.gitignore
+    editor = nvim
+    excludesfile = /home/clay/.gitignore
     sshCommand = ssh -i ~/.ssh/id_ed25519.pub
 
 [alias]
-  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+    sc = commit --template ~/.gitlab_ci_skip
 
 [pull]
-	rebase = true
+    rebase = true
 
 [merge]
-	tool = nvim
+    tool = nvim
 
 [mergetool]
-	keepBackup = false
+    keepBackup = false
 
 [init]
-	defaultBranch = main
+    defaultBranch = main
     colorMoved = default
 
 [push]
-	autoSetupRemote = true
+    autoSetupRemote = true
+    followTags = true
 
 [submodule]
-	recurse = true
+    recurse = true
+
+[column]
+    ui = auto
 
 [branch]
-	sort = -committerdate
+    sort = -committerdate
 
 [includeIf "gitdir:~/projects/ramona/"]
     path = ~/.gitrconfig
 
 [url "git@github.com:"]
-	insteadOf = "https://github.com/"
+    insteadOf = "https://github.com/"
