@@ -79,6 +79,8 @@ if [ -f "$conda_dir/etc/profile.d/mamba.sh" ]; then
 fi
 # <<< conda initialize <<<
 
+export PATH="/home/clay/.pixi/bin:$PATH"
+
 # tab completion no longer case sensitive
 # needs wrapper to avoid login warning
 if [[ -t 1 ]]; then
