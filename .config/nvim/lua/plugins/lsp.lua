@@ -78,28 +78,23 @@ function M.config()
 				},
 			}
 		end
-	  if langserver == "harper_ls" then
-		config.settings = {
-		  ["harper-ls"] = {
-			-- userDictPath = "~/git/upstream/codespell/codespell_lib/data/dictionary.txt",
-			userDictPath = vim.fn.stdpath("config") .. "/spell/en.utf-8.add",
-			diagnosticSeverity = "hint",
-			linters = {
-				SentenceCapitalization = true,
-				LongSentences = true,
+		if langserver == "harper_ls" then
+			config.settings = {
+				["harper-ls"] = {
+					-- userDictPath = "~/git/upstream/codespell/codespell_lib/data/dictionary.txt",
+					userDictPath = vim.fn.stdpath("config") .. "/spell/en.utf-8.add",
+					diagnosticSeverity = "hint",
+					linters = {
+						SentenceCapitalization = true,
+						LongSentences = true,
+					},
+				},
 			}
-		  }
-		}
-	  end
+		end
 		lspconfig[langserver].setup(config)
 	end
 
 	local cmp = require("cmp")
-	local has_copilot, copilot_cmp = pcall(require, "copilot_cmp.comparators")
-	local has_copilot_suggestion, copilot_suggestion = pcall(require, "copilot.suggestion")
-	if has_copilot then
-		require("copilot_cmp").setup()
-	end
 
 	cmp.setup({
 		mapping = {
@@ -108,18 +103,6 @@ function M.config()
 			["<C-Space>"] = cmp.mapping.complete(),
 			["<C-e>"] = cmp.mapping.abort(),
 			["<CR>"] = cmp.mapping.confirm({ select = true }),
-			["<Tab>"] = cmp.mapping(function(fallback)
-				if has_copilot_suggestion and copilot_suggestion.is_visible() then
-					require("copilot.suggestion").accept()
-				elseif cmp.visible() then
-					cmp.confirm({ select = true })
-				else
-					fallback()
-				end
-			end, {
-				"i",
-				"s",
-			}),
 			["<S-Tab>"] = cmp.mapping(function()
 				if cmp.visible() then
 					cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
@@ -134,7 +117,6 @@ function M.config()
 			["<Up>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "s" }),
 		},
 		sources = {
-			{ name = "copilot", group_index = 2 },
 			{ name = "nvim_lsp", group_index = 2 },
 			{ name = "buffer", group_index = 2 },
 		},
@@ -144,8 +126,6 @@ function M.config()
 			priority_weight = 1,
 			comparators = {
 				cmp.config.compare.exact,
-				has_copilot and copilot_cmp.prioritize or nil,
-				has_copilot and copilot_cmp.score or nil,
 				cmp.config.compare.offset,
 				cmp.config.compare.score,
 				cmp.config.compare.recently_used,
@@ -163,10 +143,10 @@ function M.config()
 
 	-- https://github.com/wgsl-analyzer/wgsl-analyzer
 	vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-	  pattern = "*.wgsl",
-	  callback = function()
-		vim.bo.filetype = "wgsl"
-	  end,
+		pattern = "*.wgsl",
+		callback = function()
+			vim.bo.filetype = "wgsl"
+		end,
 	})
 end
 

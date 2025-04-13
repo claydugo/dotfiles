@@ -77,18 +77,22 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 	command = [[%s/\s\+$//e]],
 })
 
-vim.o.cmdheight = 0
-local function adjust_cmdheight()
-	vim.o.cmdheight = 1
-	vim.defer_fn(function()
-		vim.o.cmdheight = 0
-	end, 3000)
-end
+if vim.g.vscode then
+	vim.o.cmdheight = 3
+else
+	vim.o.cmdheight = 0
+	local function adjust_cmdheight()
+		vim.o.cmdheight = 1
+		vim.defer_fn(function()
+			vim.o.cmdheight = 0
+		end, 3000)
+	end
 
-local original_notify = vim.notify
-vim.notify = function(msg, ...)
-	adjust_cmdheight()
-	original_notify(msg, ...)
+	local original_notify = vim.notify
+	vim.notify = function(msg, ...)
+		adjust_cmdheight()
+		original_notify(msg, ...)
+	end
 end
 
 vim.api.nvim_create_autocmd("FileType", {

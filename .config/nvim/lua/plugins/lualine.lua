@@ -4,14 +4,16 @@ local M = {
 }
 
 local function get_LSP()
-  local clients = vim.lsp.get_clients()
-  if not next(clients) then return "" end
-  local icons = require("langserver_icons")
-  local lsp_names = {}
-  for _, client in pairs(clients) do
-    table.insert(lsp_names, icons and icons[client.name] or client.name)
-  end
-  return table.concat(lsp_names, " ")
+	local clients = vim.lsp.get_clients()
+	if not next(clients) then
+		return ""
+	end
+	local icons = require("langserver_icons")
+	local lsp_names = {}
+	for _, client in pairs(clients) do
+		table.insert(lsp_names, icons and icons[client.name] or client.name)
+	end
+	return table.concat(lsp_names, " ")
 end
 
 local function search_display()
