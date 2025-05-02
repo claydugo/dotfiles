@@ -1,6 +1,6 @@
 [user]
-    email = claydugo@gmail.com
-    name = Clay Dugo
+	email = claydugo@gmail.com
+	name = Clay Dugo
 
 [core]
     editor = nvim
@@ -39,6 +39,3 @@
 
 [includeIf "gitdir:~/projects/ramona/"]
     path = ~/.gitrconfig
-
-[url "git@github.com:"]
-    insteadOf = "https://github.com/"

@@ -17,50 +17,12 @@ alias p='python3'
 alias i='ipython'
 alias g='git'
 alias gti='git'
-alias path='echo -e ${PATH//:/\\n}'
 alias t='tmux new-session -s $(hostname)'
 alias ta="tmux a"
 alias td='cd $(mktemp -d /tmp/$1.XXX)'
 alias glb='git shortlog -nse'
 alias git_clean='git branch | grep -v "main" | grep -v "master" | xargs git branch -D'
 
-
-# fix annoying bug where the service does not restart correctly when switching between users
-alias restart_anydesk='(tmux has-session -t anydesk_session 2>/dev/null || tmux new-session -d -s anydesk_session) && tmux send-keys -t anydesk_session "sudo killall anydesk && sudo anydesk --service" C-m && tmux attach -t anydesk_session'
-
-# Think this is zsh default
-alias ~='cd ~'
-
-# Ramona Specific
-if [ -f ~/dotfiles/ramona/.ramona ]; then
-    source ~/dotfiles/ramona/.ramona
-fi
-
-if hash eza 2>/dev/null; then
-    alias ls='eza'
-    alias ll="eza -lah --git --icons"
-    alias lll="eza -abghHliS@ --git --icons"
-fi
-
 alias la='cat ~/dotfiles/.aliases'
 
-if hash bat 2>/dev/null; then
-    alias la='bat ~/.aliases -l bash'
-fi
-
-
 alias lt='python3 ~/dotfiles/scripts/tmate_restore.py'
-
-if hash nvim 2>/dev/null; then
-    alias vim='nvim'
-    alias vi='nvim'
-    alias vimdiff='nvim -d'
-fi
-
-if command -v ffmpeg >/dev/null 2>&1 && command -v gifski >/dev/null 2>&1; then
-    mp4togif() {
-        input_file="$1"
-        base_name="$(basename "${input_file}" .mp4)"
-        ffmpeg -i "${input_file}" -f yuv4mpegpipe - | gifski -Q 100 --extra -o "${base_name}.gif" -
-    }
-fi
