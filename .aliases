@@ -64,3 +64,39 @@ if command -v ffmpeg >/dev/null 2>&1 && command -v gifski >/dev/null 2>&1; then
         ffmpeg -i "${input_file}" -f yuv4mpegpipe - | gifski -Q 100 --extra -o "${base_name}.gif" -
     }
 fi
+
+mkworktrees () {
+    local base="/home/clay/projects/temp_worktrees"
+    local branch="$1"
+    [ -z "$branch" ] && { echo "Usage: mkworktrees <branch>"; return 1; }
+
+    local repo_root
+    repo_root=$(git -C "$PWD" rev-parse --show-toplevel) ||
+        { echo "Not inside a Git repo"; return 1; }
+    cd "$repo_root" || return 1
+
+    git show-ref --quiet "refs/heads/$branch" || git branch "$branch" || return 1
+
+    local parent="$base/$branch"
+    mkdir -p "$parent" || return 1
+
+    for i in 1 2 3; do
+        local dir="$parent/${branch}_$i"
+        git worktree add --detach "$dir" "$branch"
+    done
+
+    tmux has-session -t "$branch" 2>/dev/null || {
+        tmux new-session -d -s "$branch" -c "$parent/${branch}_1" -n "${branch}_1"
+        tmux send-keys  -t "$branch":1 'cursor .' C-m
+
+        tmux new-window  -t "$branch":2 -c "$parent/${branch}_2" -n "${branch}_2"
+        tmux send-keys  -t "$branch":2 'cursor .' C-m
+
+        tmux new-window  -t "$branch":3 -c "$parent/${branch}_3" -n "${branch}_3"
+        tmux send-keys  -t "$branch":3 'cursor .' C-m
+
+        echo "tmux session \"$branch\" ready with windows ${branch}_{1,2,3}"
+    }
+
+    cd "$parent"
+}
