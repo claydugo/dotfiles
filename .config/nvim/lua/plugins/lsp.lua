@@ -36,16 +36,12 @@ function M.config()
 		"pyright",
 		-- 'ruff_lsp',
 		"ruff",
-		"wgsl_analyzer",
 		"biome",
 		"harper_ls",
 		"bashls",
 		"lua_ls",
 		"rust_analyzer",
 	}
-	require("mason-lspconfig").setup({
-		ensure_installed = langservers,
-	})
 
 	local lspconfig = require("lspconfig")
 	local capabilities = require("cmp_nvim_lsp").default_capabilities()
@@ -60,28 +56,26 @@ function M.config()
 			client.server_capabilities.hoverProvider = false
 		end
 	end
-	for _, langserver in ipairs(langservers) do
-		local config = {
-			capabilities = capabilities,
-			on_attach = on_attach,
-			single_file_support = true,
-		}
-		if langserver == "pyright" then
-			config.settings = {
+
+	local server_configs = {
+		pyright = {
+			settings = {
 				pyright = {
 					disableOrganizeImports = true,
 				},
 				python = {
 					analysis = {
+						autoSearchPaths = true,
+						diagnosticMode = "openFilesOnly",
 						ignore = { "*" },
+						useLibraryCodeForTypes = true,
 					},
 				},
-			}
-		end
-		if langserver == "harper_ls" then
-			config.settings = {
+			},
+		},
+		harper_ls = {
+			settings = {
 				["harper-ls"] = {
-					-- userDictPath = "~/git/upstream/codespell/codespell_lib/data/dictionary.txt",
 					userDictPath = vim.fn.stdpath("config") .. "/spell/en.utf-8.add",
 					diagnosticSeverity = "hint",
 					linters = {
@@ -89,10 +83,29 @@ function M.config()
 						LongSentences = true,
 					},
 				},
-			}
-		end
-		lspconfig[langserver].setup(config)
-	end
+			},
+		},
+	}
+
+	require("mason-lspconfig").setup({
+		ensure_installed = langservers,
+		automatic_installation = true,
+		handlers = {
+			function(server_name)
+				local config = {
+					capabilities = capabilities,
+					on_attach = on_attach,
+					single_file_support = true,
+				}
+
+				if server_configs[server_name] then
+					config = vim.tbl_deep_extend("force", config, server_configs[server_name])
+				end
+
+				lspconfig[server_name].setup(config)
+			end,
+		},
+	})
 
 	local cmp = require("cmp")
 
