@@ -65,7 +65,7 @@ if command -v ffmpeg >/dev/null 2>&1 && command -v gifski >/dev/null 2>&1; then
     }
 fi
 
-mkworktrees () {
+mkworktrees() {
     local base="/home/clay/projects/temp_worktrees"
     local branch="$1"
     [ -z "$branch" ] && { echo "Usage: mkworktrees <branch>"; return 1; }
@@ -80,20 +80,50 @@ mkworktrees () {
     local parent="$base/$branch"
     mkdir -p "$parent" || return 1
 
+    # Create temporary prompt file
+    local temp_prompt=$(mktemp)
+    cat > "$temp_prompt" << 'EOF'
+
+
+========================================
+# Enter your prompt above this line
+# Lines starting with # will be ignored
+# Additional claude prompts:
+Please keep track of subsequent prompts to this one in .claude_prompt
+EOF
+
+    $EDITOR "$temp_prompt"
+
+    local prompt=$(grep -v '^#' "$temp_prompt" | grep -v '^[[:space:]]*$')
+    rm "$temp_prompt"
+
+    if [ -z "$prompt" ]; then
+        echo "Aborted: No prompt provided"
+        return 1
+    fi
+
+    # Base64 encode to handle quotes, newlines, and special characters
+    local encoded_prompt=$(echo "$prompt" | base64 -w 0)
+
     for i in 1 2 3; do
         local dir="$parent/${branch}_$i"
         git worktree add --detach "$dir" "$branch"
     done
 
+    # Write prompt to temp files in each worktree
+    for i in 1 2 3; do
+        echo "$prompt" > "$parent/${branch}_$i/.claude_prompt"
+    done
+
     tmux has-session -t "$branch" 2>/dev/null || {
         tmux new-session -d -s "$branch" -c "$parent/${branch}_1" -n "${branch}_1"
-        tmux send-keys  -t "$branch":1 'cursor .' C-m
+        tmux send-keys -t "$branch":1 'claude "$(cat .claude_prompt)"' C-m
 
-        tmux new-window  -t "$branch":2 -c "$parent/${branch}_2" -n "${branch}_2"
-        tmux send-keys  -t "$branch":2 'cursor .' C-m
+        tmux new-window -t "$branch":2 -c "$parent/${branch}_2" -n "${branch}_2"
+        tmux send-keys -t "$branch":2 'claude "$(cat .claude_prompt)"' C-m
 
-        tmux new-window  -t "$branch":3 -c "$parent/${branch}_3" -n "${branch}_3"
-        tmux send-keys  -t "$branch":3 'cursor .' C-m
+        tmux new-window -t "$branch":3 -c "$parent/${branch}_3" -n "${branch}_3"
+        tmux send-keys -t "$branch":3 'claude "$(cat .claude_prompt)"' C-m
 
         echo "tmux session \"$branch\" ready with windows ${branch}_{1,2,3}"
     }

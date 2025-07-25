@@ -64,3 +64,6 @@ pyrightconfig.json
 # Node modules
 node_modules/
 package.json
+
+.claude/
+CLAUDE.md
