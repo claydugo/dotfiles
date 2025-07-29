@@ -80,16 +80,13 @@ mkworktrees() {
     local parent="$base/$branch"
     mkdir -p "$parent" || return 1
 
-    # Create temporary prompt file
     local temp_prompt=$(mktemp)
     cat > "$temp_prompt" << 'EOF'
 
 
-========================================
+# ========================================
 # Enter your prompt above this line
 # Lines starting with # will be ignored
-# Additional claude prompts:
-Please keep track of subsequent prompts to this one in .claude_prompt
 EOF
 
     $EDITOR "$temp_prompt"
@@ -102,15 +99,11 @@ EOF
         return 1
     fi
 
-    # Base64 encode to handle quotes, newlines, and special characters
-    local encoded_prompt=$(echo "$prompt" | base64 -w 0)
-
     for i in 1 2 3; do
         local dir="$parent/${branch}_$i"
         git worktree add --detach "$dir" "$branch"
     done
 
-    # Write prompt to temp files in each worktree
     for i in 1 2 3; do
         echo "$prompt" > "$parent/${branch}_$i/.claude_prompt"
     done
