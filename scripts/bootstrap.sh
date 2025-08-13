@@ -62,6 +62,9 @@ ln -sfn ~/dotfiles/.gitconfig "$XDG_CONFIG_HOME/git/config"
 mkdir -p "$XDG_CONFIG_HOME/conda"
 ln -sfn ~/dotfiles/.condarc "$XDG_CONFIG_HOME/conda/.condarc"
 
+mkdir -p ~/.claude
+ln -sfn ~/dotfiles/.claude/settings.local.json ~/.claude/settings.local.json
+
 mkdir -p "$XDG_CONFIG_HOME"
 for item in ~/dotfiles/.config/*; do
     base_item=$(basename "$item")

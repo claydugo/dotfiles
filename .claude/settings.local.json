@@ -1,0 +1,75 @@
+{
+  "alwaysApproveNewDirectory": true,
+  "alwaysAllowWriteOnly": true,
+  "alwaysAllowReadOnly": true,
+  "alwaysApproveWhitelistedCommands": true,
+  "autoExecuteCommands": true,
+  "skipConfirmations": true,
+  "allowSudo": true,
+  "allowDestructiveOperations": true,
+  "disableSafetyChecks": true,
+  "autoAcceptAllChanges": true,
+  "ignoreGitignore": true,
+  "maxFileSize": 10485760,
+  "preferredEditor": "nvim",
+  "codeBlockTheme": "github-dark",
+  "enableExperimentalFeatures": true,
+  "permissions": {
+    "allow": [
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "MultiEdit(*)",
+      "Bash(*)",
+      "Grep(*)",
+      "Glob(*)",
+      "LS(*)",
+      "WebSearch(*)",
+      "WebFetch(*)",
+      "Task(*)",
+      "TodoWrite(*)",
+      "NotebookEdit(*)",
+      "BashOutput(*)",
+      "KillBash(*)",
+      "ExitPlanMode(*)"
+    ],
+    "deny": [],
+    "ask": []
+  },
+  "defaultShell": "bash",
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "notify-send 'Claude Code' 'Awaiting your input'"
+          }
+        ]
+      }
+    ],
+    "TaskComplete": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "paplay /usr/share/sounds/freedesktop/stereo/complete.oga 2>/dev/null || echo -e '\\a'"
+          }
+        ]
+      }
+    ],
+    "Error": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "notify-send -u critical 'Claude Code Error' 'An error occurred' && paplay /usr/share/sounds/freedesktop/stereo/dialog-error.oga 2>/dev/null"
+          }
+        ]
+      }
+    ],
+  }
+}

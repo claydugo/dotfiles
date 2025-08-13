@@ -34,6 +34,7 @@ function M.config()
 
 	local langservers = {
 		"pyright",
+		-- "ty",
 		-- 'ruff_lsp',
 		"ruff",
 		"biome",
@@ -108,6 +109,7 @@ function M.config()
 	})
 
 	local cmp = require("cmp")
+	local has_copilot_suggestion, copilot_suggestion = pcall(require, "copilot.suggestion")
 
 	cmp.setup({
 		mapping = {
@@ -116,6 +118,18 @@ function M.config()
 			["<C-Space>"] = cmp.mapping.complete(),
 			["<C-e>"] = cmp.mapping.abort(),
 			["<CR>"] = cmp.mapping.confirm({ select = true }),
+			["<Tab>"] = cmp.mapping(function(fallback)
+				if has_copilot_suggestion and copilot_suggestion.is_visible() then
+					require("copilot.suggestion").accept()
+				elseif cmp.visible() then
+					cmp.confirm({ select = true })
+				else
+					fallback()
+				end
+			end, {
+				"i",
+				"s",
+			}),
 			["<S-Tab>"] = cmp.mapping(function()
 				if cmp.visible() then
 					cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
@@ -130,6 +144,7 @@ function M.config()
 			["<Up>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "s" }),
 		},
 		sources = {
+			{ name = "copilot", group_index = 2 },
 			{ name = "nvim_lsp", group_index = 2 },
 			{ name = "buffer", group_index = 2 },
 		},

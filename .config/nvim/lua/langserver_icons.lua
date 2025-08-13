@@ -5,6 +5,7 @@ return {
 	lua_ls = " ",
 	pyright = " ",
 	basedpyright = " ",
+	ty = " ",
 	pylsp = " ",
 	ruff_lsp = " ",
 	ruff = " ",
