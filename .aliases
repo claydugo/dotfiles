@@ -110,13 +110,13 @@ EOF
 
     tmux has-session -t "$branch" 2>/dev/null || {
         tmux new-session -d -s "$branch" -c "$parent/${branch}_1" -n "${branch}_1"
-        tmux send-keys -t "$branch":1 'claude "$(cat .claude_prompt)"' C-m
+        tmux send-keys -t "$branch":1 'claude --dangerously-skip-permissions "$(cat .claude_prompt)"' C-m
 
         tmux new-window -t "$branch":2 -c "$parent/${branch}_2" -n "${branch}_2"
-        tmux send-keys -t "$branch":2 'claude "$(cat .claude_prompt)"' C-m
+        tmux send-keys -t "$branch":2 'codex "$(cat .claude_prompt)"' C-m
 
         tmux new-window -t "$branch":3 -c "$parent/${branch}_3" -n "${branch}_3"
-        tmux send-keys -t "$branch":3 'claude "$(cat .claude_prompt)"' C-m
+        tmux send-keys -t "$branch":3 'claude --dangerously-skip-permissions "$(cat .claude_prompt)"' C-m
 
         echo "tmux session \"$branch\" ready with windows ${branch}_{1,2,3}"
     }

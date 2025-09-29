@@ -58,7 +58,7 @@ function M.config()
 				},
 				-- normal mode mappings
 				n = {
-					["<ESC."] = actions.close,
+					["<Esc>"] = actions.close,
 				},
 			},
 			vimgrep_arguments = {

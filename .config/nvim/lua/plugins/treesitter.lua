@@ -2,7 +2,11 @@ return {
 	"nvim-treesitter/nvim-treesitter",
 	build = ":TSUpdate",
 	event = { "BufReadPre", "BufNewFile" },
+	dependencies = {
+		"windwp/nvim-ts-autotag",
+	},
 	config = function()
+		require("nvim-ts-autotag").setup()
 		require("nvim-treesitter.configs").setup({
 			ensure_installed = {
 				"python",
@@ -32,9 +36,6 @@ return {
 				additional_vim_regex_highlighting = false,
 			},
 			indent = { enable = true },
-			autotag = {
-				enable = true,
-			},
 		})
 	end,
 }
