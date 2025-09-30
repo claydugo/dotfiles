@@ -7,6 +7,7 @@ local M = {
 		{ "hrsh7th/nvim-cmp" },
 		{ "hrsh7th/cmp-nvim-lsp" },
 		{ "hrsh7th/cmp-nvim-lua" },
+		{ "hrsh7th/cmp-buffer" },
 		{ "zbirenbaum/copilot-cmp" },
 		{ "folke/lazydev.nvim" },
 		{ "RRethy/vim-illuminate" },
@@ -109,7 +110,8 @@ function M.config()
 	})
 
 	local cmp = require("cmp")
-	local has_copilot_suggestion, copilot_suggestion = pcall(require, "copilot.suggestion")
+	local has_copilot_suggestion = pcall(require, "copilot.suggestion")
+	local copilot_suggestion = has_copilot_suggestion and require("copilot.suggestion") or nil
 
 	cmp.setup({
 		mapping = {
@@ -119,8 +121,8 @@ function M.config()
 			["<C-e>"] = cmp.mapping.abort(),
 			["<CR>"] = cmp.mapping.confirm({ select = true }),
 			["<Tab>"] = cmp.mapping(function(fallback)
-				if has_copilot_suggestion and copilot_suggestion.is_visible() then
-					require("copilot.suggestion").accept()
+				if copilot_suggestion and copilot_suggestion.is_visible() then
+					copilot_suggestion.accept()
 				elseif cmp.visible() then
 					cmp.confirm({ select = true })
 				else

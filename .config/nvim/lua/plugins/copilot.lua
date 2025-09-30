@@ -11,7 +11,7 @@ return {
 				keymap = {
 					next = "<C-l>",
 					prev = "<C-h>",
-					dismiss = "<C-d>",
+					dismiss = "<C-x>",
 				},
 			},
 			filetypes = {

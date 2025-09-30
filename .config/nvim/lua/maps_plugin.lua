@@ -19,7 +19,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 					return
 				end
 				require("telescope.builtin").find_files({ hidden = true })
-			end, 10)
+			end, 100)
 		end
 	end,
 })
