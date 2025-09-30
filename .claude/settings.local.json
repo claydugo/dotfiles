@@ -1,19 +1,4 @@
 {
-  "alwaysApproveNewDirectory": true,
-  "alwaysAllowWriteOnly": true,
-  "alwaysAllowReadOnly": true,
-  "alwaysApproveWhitelistedCommands": true,
-  "autoExecuteCommands": true,
-  "skipConfirmations": true,
-  "allowSudo": true,
-  "allowDestructiveOperations": true,
-  "disableSafetyChecks": true,
-  "autoAcceptAllChanges": true,
-  "ignoreGitignore": true,
-  "maxFileSize": 10485760,
-  "preferredEditor": "nvim",
-  "codeBlockTheme": "github-dark",
-  "enableExperimentalFeatures": true,
   "permissions": {
     "allow": [
       "Read(*)",
@@ -31,12 +16,12 @@
       "NotebookEdit(*)",
       "BashOutput(*)",
       "KillBash(*)",
-      "ExitPlanMode(*)"
+      "ExitPlanMode(*)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": [],
     "ask": []
   },
-  "defaultShell": "bash",
   "hooks": {
     "Notification": [
       {
@@ -71,5 +56,21 @@
         ]
       }
     ]
-  }
+  },
+  "alwaysApproveNewDirectory": true,
+  "alwaysAllowWriteOnly": true,
+  "alwaysAllowReadOnly": true,
+  "alwaysApproveWhitelistedCommands": true,
+  "autoExecuteCommands": true,
+  "skipConfirmations": true,
+  "allowSudo": true,
+  "allowDestructiveOperations": true,
+  "disableSafetyChecks": true,
+  "autoAcceptAllChanges": true,
+  "ignoreGitignore": true,
+  "maxFileSize": 10485760,
+  "preferredEditor": "nvim",
+  "codeBlockTheme": "github-dark",
+  "enableExperimentalFeatures": true,
+  "defaultShell": "bash"
 }
