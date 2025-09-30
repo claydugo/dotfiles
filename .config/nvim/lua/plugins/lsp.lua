@@ -1,33 +1,47 @@
 local M = {
-	"neovim/nvim-lspconfig",
-	event = { "BufReadPre", "BufNewFile" },
+	"williamboman/mason.nvim",
+	cmd = "Mason",
+	build = ":MasonUpdate",
+	lazy = false,
 	dependencies = {
-		{ "williamboman/mason.nvim", cmd = "Mason", build = ":MasonUpdate" },
-		{ "williamboman/mason-lspconfig.nvim" },
-		{ "saghen/blink.cmp" },
 		{ "RRethy/vim-illuminate" },
 	},
 }
 
 function M.config()
 	require("mason").setup()
-	local langservers = {
-		"ty",
-		"ruff",
-		"biome",
-		"harper_ls",
-		"bashls",
-		"lua_ls",
-		"rust_analyzer",
-	}
 
-	local lspconfig = require("lspconfig")
+	vim.defer_fn(function()
+		local mason_packages = {
+			"ty",
+			"ruff",
+			"biome",
+			"harper-ls",
+			"bash-language-server",
+			"lua-language-server",
+			"rust-analyzer",
+		}
+
+		local ok, registry = pcall(require, "mason-registry")
+		if not ok then
+			return
+		end
+
+		registry.refresh(function()
+			for _, pkg_name in ipairs(mason_packages) do
+				local pkg_ok, package = pcall(registry.get_package, pkg_name)
+				if pkg_ok and not package:is_installed() then
+					package:install()
+				end
+			end
+		end)
+	end, 100)
+
 	local capabilities = require("blink.cmp").get_lsp_capabilities()
-	local illuminate = require("illuminate")
-
 	capabilities.general = capabilities.general or {}
 	capabilities.general.positionEncodings = { "utf-16" }
 
+	local illuminate = require("illuminate")
 	local on_attach = function(client)
 		illuminate.on_attach(client)
 		if client.name == "ruff" then
@@ -35,40 +49,96 @@ function M.config()
 		end
 	end
 
-	local server_configs = {
-		harper_ls = {
-			settings = {
-				["harper-ls"] = {
-					userDictPath = vim.fn.stdpath("config") .. "/spell/en.utf-8.add",
-					diagnosticSeverity = "hint",
-					linters = {
-						SentenceCapitalization = true,
-						LongSentences = true,
-					},
+	vim.lsp.config("ty", {
+		cmd = { "ty", "server" },
+		filetypes = { "python" },
+		root_markers = { "pyproject.toml", "setup.py", ".git" },
+		capabilities = capabilities,
+		on_attach = on_attach,
+	})
+
+	vim.lsp.config("ruff", {
+		cmd = { "ruff", "server" },
+		filetypes = { "python" },
+		root_markers = { "pyproject.toml", "ruff.toml", ".git" },
+		capabilities = capabilities,
+		on_attach = on_attach,
+	})
+
+	vim.lsp.config("biome", {
+		cmd = { "biome", "lsp-proxy" },
+		filetypes = {
+			"javascript",
+			"javascriptreact",
+			"json",
+			"jsonc",
+			"typescript",
+			"typescript.tsx",
+			"typescriptreact",
+		},
+		root_markers = { "biome.json", "biome.jsonc", ".git" },
+		capabilities = capabilities,
+		on_attach = on_attach,
+	})
+
+	vim.lsp.config("harper_ls", {
+		cmd = { "harper-ls", "--stdio" },
+		filetypes = { "markdown", "text", "gitcommit" },
+		root_markers = { ".git" },
+		capabilities = capabilities,
+		on_attach = on_attach,
+		settings = {
+			["harper-ls"] = {
+				userDictPath = vim.fn.stdpath("config") .. "/spell/en.utf-8.add",
+				diagnosticSeverity = "hint",
+				linters = {
+					SentenceCapitalization = true,
+					LongSentences = true,
 				},
 			},
 		},
-	}
-
-	require("mason-lspconfig").setup({
-		ensure_installed = langservers,
-		automatic_installation = true,
-		handlers = {
-			function(server_name)
-				local config = {
-					capabilities = capabilities,
-					on_attach = on_attach,
-					single_file_support = true,
-				}
-
-				if server_configs[server_name] then
-					config = vim.tbl_deep_extend("force", config, server_configs[server_name])
-				end
-
-				lspconfig[server_name].setup(config)
-			end,
-		},
 	})
+
+	vim.lsp.config("bashls", {
+		cmd = { "bash-language-server", "start" },
+		filetypes = { "sh", "bash" },
+		root_markers = { ".git" },
+		capabilities = capabilities,
+		on_attach = on_attach,
+	})
+
+	vim.lsp.config("lua_ls", {
+		cmd = { "lua-language-server" },
+		filetypes = { "lua" },
+		root_markers = {
+			".luarc.json",
+			".luarc.jsonc",
+			".luacheckrc",
+			".stylua.toml",
+			"stylua.toml",
+			"selene.toml",
+			"selene.yml",
+			".git",
+		},
+		capabilities = capabilities,
+		on_attach = on_attach,
+	})
+
+	vim.lsp.config("rust_analyzer", {
+		cmd = { "rust-analyzer" },
+		filetypes = { "rust" },
+		root_markers = { "Cargo.toml", "rust-project.json", ".git" },
+		capabilities = capabilities,
+		on_attach = on_attach,
+	})
+
+	vim.lsp.enable("ty")
+	vim.lsp.enable("ruff")
+	vim.lsp.enable("biome")
+	vim.lsp.enable("harper_ls")
+	vim.lsp.enable("bashls")
+	vim.lsp.enable("lua_ls")
+	vim.lsp.enable("rust_analyzer")
 
 	vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic" })
 	vim.keymap.set("n", "<leader>eq", function()
