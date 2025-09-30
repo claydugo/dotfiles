@@ -53,25 +53,25 @@ vim.g.loaded_node_provider = 0
 
 -- Remove trailing whitespace
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
-	pattern = { "*" },
-	callback = function()
-		local save_cursor = vim.fn.getpos(".")
-		vim.cmd([[keeppatterns %s/\s\+$//e]])
-		vim.fn.setpos(".", save_cursor)
-	end,
+  pattern = { "*" },
+  callback = function()
+    local save_cursor = vim.fn.getpos(".")
+    vim.cmd([[keeppatterns %s/\s\+$//e]])
+    vim.fn.setpos(".", save_cursor)
+  end,
 })
 
 if vim.g.vscode then
-	vim.o.cmdheight = 3
+  vim.o.cmdheight = 3
 else
-	vim.o.cmdheight = 0
+  vim.o.cmdheight = 0
 end
 
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = "lua",
-	callback = function()
-		vim.bo.expandtab = false
-	end,
+  pattern = "lua",
+  callback = function()
+    vim.bo.expandtab = false
+  end,
 })
 
 vim.cmd([[

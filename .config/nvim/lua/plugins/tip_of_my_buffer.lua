@@ -4,23 +4,23 @@ local plugin_dir = home .. "/projects/tip_of_my_buffer.nvim/"
 local is_local = vim.loop.fs_stat(plugin_dir) ~= nil
 
 local config_opts = {
-	-- debug = is_local,
-	debug = false,
+  -- debug = is_local,
+  debug = false,
 }
 
 local M = {
-	event = "VeryLazy",
+  event = "VeryLazy",
 }
 if is_local then
-	M.dir = plugin_dir
-	M.dev = true
+  M.dir = plugin_dir
+  M.dev = true
 else
-	M.url = "https://github.com/claydugo/tip_of_my_buffer.nvim"
-	M.dev = false
+  M.url = "https://github.com/claydugo/tip_of_my_buffer.nvim"
+  M.dev = false
 end
 
 function M.config()
-	require("tip_of_my_buffer").setup(config_opts)
+  require("tip_of_my_buffer").setup(config_opts)
 end
 
 return M

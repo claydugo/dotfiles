@@ -20,12 +20,12 @@
       "Write(*)",
       "Edit(*)",
       "MultiEdit(*)",
-      "Bash(*)",
+      "Bash",
       "Grep(*)",
       "Glob(*)",
       "LS(*)",
-      "WebSearch(*)",
-      "WebFetch(*)",
+      "WebSearch",
+      "WebFetch(domain:*)",
       "Task(*)",
       "TodoWrite(*)",
       "NotebookEdit(*)",
@@ -49,7 +49,7 @@
         ]
       }
     ],
-    "TaskComplete": [
+    "Stop": [
       {
         "matcher": "",
         "hooks": [
@@ -60,16 +60,16 @@
         ]
       }
     ],
-    "Error": [
+    "SubagentStop": [
       {
         "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "notify-send -u critical 'Claude Code Error' 'An error occurred' && paplay /usr/share/sounds/freedesktop/stereo/dialog-error.oga 2>/dev/null"
+            "command": "paplay /usr/share/sounds/freedesktop/stereo/complete.oga 2>/dev/null || echo -e '\\a'"
           }
         ]
       }
-    ],
+    ]
   }
 }
