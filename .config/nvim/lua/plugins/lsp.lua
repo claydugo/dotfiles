@@ -6,10 +6,8 @@ local M = {
 		{ "williamboman/mason-lspconfig.nvim" },
 		{ "hrsh7th/nvim-cmp" },
 		{ "hrsh7th/cmp-nvim-lsp" },
-		{ "hrsh7th/cmp-nvim-lua" },
 		{ "hrsh7th/cmp-buffer" },
 		{ "zbirenbaum/copilot-cmp" },
-		{ "folke/lazydev.nvim" },
 		{ "RRethy/vim-illuminate" },
 	},
 }
@@ -133,9 +131,23 @@ function M.config()
 			},
 		},
 	})
-	vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float)
-	vim.keymap.set("n", "<leader>eq", vim.diagnostic.goto_prev)
-	vim.keymap.set("n", "<leader>ee", vim.diagnostic.goto_next)
+	vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic" })
+	vim.keymap.set("n", "<leader>eq", function()
+		vim.diagnostic.jump({
+			count = -1,
+			on_jump = function()
+				vim.diagnostic.open_float()
+			end,
+		})
+	end, { desc = "Previous diagnostic" })
+	vim.keymap.set("n", "<leader>ee", function()
+		vim.diagnostic.jump({
+			count = 1,
+			on_jump = function()
+				vim.diagnostic.open_float()
+			end,
+		})
+	end, { desc = "Next diagnostic" })
 
 	-- https://github.com/wgsl-analyzer/wgsl-analyzer
 	vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {

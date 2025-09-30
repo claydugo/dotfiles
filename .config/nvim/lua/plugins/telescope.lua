@@ -1,6 +1,5 @@
 local M = {
 	"nvim-telescope/telescope.nvim",
-	-- dir = "~/projects/telescope.nvim/",
 	cmd = { "Telescope" },
 	dependencies = {
 		{ "nvim-lua/plenary.nvim" },
@@ -24,7 +23,6 @@ function M.config()
 				},
 			},
 			prompt_prefix = "🔬 ",
-			-- selection_caret = " ",
 			file_ignore_patterns = {
 				"%.jpg",
 				"%.jpeg",
@@ -45,7 +43,6 @@ function M.config()
 				".git/",
 			},
 			mappings = {
-				-- insert mode mappings
 				i = {
 					["<RightMouse>"] = actions.close,
 					["<LeftMouse>"] = actions.select_default,
@@ -55,7 +52,6 @@ function M.config()
 					["<C-k>"] = actions.move_selection_previous,
 					["<ESC>"] = actions.close,
 				},
-				-- normal mode mappings
 				n = {
 					["<Esc>"] = actions.close,
 				},
@@ -72,7 +68,6 @@ function M.config()
 			},
 			color_devicons = false,
 			shorten_path = true,
-			-- borderchars = { " ", " ", " ", " ", " ", " ", " ", " " },
 		},
 		pickers = {
 			find_files = {

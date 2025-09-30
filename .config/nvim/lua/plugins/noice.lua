@@ -11,6 +11,7 @@ return {
 			render = "compact",
 			timeout = 3000,
 			top_down = true,
+			merge_duplicates = true,
 		})
 
 		require("noice").setup({
@@ -22,7 +23,7 @@ return {
 				},
 			},
 			presets = {
-				bottom_search = true,
+				bottom_search = false,
 				command_palette = true,
 				long_message_to_split = true,
 			},
