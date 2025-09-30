@@ -10,12 +10,19 @@ return {
 			["<CR>"] = { "accept", "fallback" },
 			["<Tab>"] = {
 				function(cmp)
-					local has_copilot_suggestion = pcall(require, "copilot.suggestion")
-					if has_copilot_suggestion then
-						local copilot_suggestion = require("copilot.suggestion")
-						if copilot_suggestion.is_visible() then
-							copilot_suggestion.accept()
-							return true
+					if vim.fn.exists("*copilot#Accept") == 1 then
+						local suggestion = vim.fn["copilot#GetDisplayedSuggestion"]()
+						if suggestion and suggestion.text and suggestion.text ~= "" then
+							local accept_keys = vim.fn["copilot#Accept"]("")
+							if accept_keys and accept_keys ~= "" then
+								vim.api.nvim_feedkeys(accept_keys, "n", true)
+								-- Go to next line with proper indentation
+								vim.schedule(function()
+									local esc = vim.api.nvim_replace_termcodes("<Esc>o", true, false, true)
+									vim.api.nvim_feedkeys(esc, "n", false)
+								end)
+								return true
+							end
 						end
 					end
 					if cmp.is_visible() then

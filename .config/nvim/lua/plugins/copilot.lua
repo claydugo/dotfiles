@@ -1,28 +1,8 @@
 return {
-	"zbirenbaum/copilot.lua",
-	event = { "BufReadPre", "BufNewFile" },
-	cmd = { "Copilot" },
-	config = function()
-		require("copilot").setup({
-			panel = { enabled = false },
-			suggestion = {
-				enabled = true,
-				auto_trigger = true,
-				keymap = {
-					next = "<C-l>",
-					prev = "<C-h>",
-					dismiss = "<C-x>",
-				},
-			},
-			filetypes = {
-				markdown = false,
-				gitcommit = false,
-				gitrebase = false,
-				yaml = false,
-				help = false,
-			},
-			-- copilot_node_command = "node",
-			server_opts_overrides = {},
-		})
+	"github/copilot.vim",
+	lazy = false,
+	init = function()
+		-- Disable default Tab mapping, setup in blink-cmp
+		vim.g.copilot_no_tab_map = true
 	end,
 }
