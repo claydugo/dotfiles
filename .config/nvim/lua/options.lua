@@ -73,3 +73,12 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.bo.expandtab = false
 	end,
 })
+
+vim.cmd([[
+	command! Q q
+	command! Qa qa
+	command! QA qa
+	command! W w
+	command! Wq wq
+	command! WQ wq
+]])
