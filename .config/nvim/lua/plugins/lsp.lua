@@ -4,10 +4,7 @@ local M = {
 	dependencies = {
 		{ "williamboman/mason.nvim", cmd = "Mason", build = ":MasonUpdate" },
 		{ "williamboman/mason-lspconfig.nvim" },
-		{ "hrsh7th/nvim-cmp" },
-		{ "hrsh7th/cmp-nvim-lsp" },
-		{ "hrsh7th/cmp-buffer" },
-		{ "zbirenbaum/copilot-cmp" },
+		{ "saghen/blink.cmp" },
 		{ "RRethy/vim-illuminate" },
 	},
 }
@@ -25,7 +22,7 @@ function M.config()
 	}
 
 	local lspconfig = require("lspconfig")
-	local capabilities = require("cmp_nvim_lsp").default_capabilities()
+	local capabilities = require("blink.cmp").get_lsp_capabilities()
 	local illuminate = require("illuminate")
 
 	capabilities.general = capabilities.general or {}
@@ -73,64 +70,6 @@ function M.config()
 		},
 	})
 
-	local cmp = require("cmp")
-	local has_copilot_suggestion = pcall(require, "copilot.suggestion")
-	local copilot_suggestion = has_copilot_suggestion and require("copilot.suggestion") or nil
-
-	cmp.setup({
-		mapping = {
-			["<C-d>"] = cmp.mapping.scroll_docs(-4),
-			["<C-f>"] = cmp.mapping.scroll_docs(4),
-			["<C-Space>"] = cmp.mapping.complete(),
-			["<C-e>"] = cmp.mapping.abort(),
-			["<CR>"] = cmp.mapping.confirm({ select = true }),
-			["<Tab>"] = cmp.mapping(function(fallback)
-				if copilot_suggestion and copilot_suggestion.is_visible() then
-					copilot_suggestion.accept()
-				elseif cmp.visible() then
-					cmp.confirm({ select = true })
-				else
-					fallback()
-				end
-			end, {
-				"i",
-				"s",
-			}),
-			["<S-Tab>"] = cmp.mapping(function()
-				if cmp.visible() then
-					cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
-				end
-			end, {
-				"i",
-				"s",
-			}),
-			["<C-j>"] = cmp.mapping(cmp.mapping.select_next_item(), { "i", "s" }),
-			["<C-k>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "s" }),
-			["<Down>"] = cmp.mapping(cmp.mapping.select_next_item(), { "i", "s" }),
-			["<Up>"] = cmp.mapping(cmp.mapping.select_prev_item(), { "i", "s" }),
-		},
-		sources = {
-			{ name = "copilot", group_index = 2 },
-			{ name = "nvim_lsp", group_index = 2 },
-			{ name = "buffer", group_index = 2 },
-		},
-		sorting = {
-			-- Keep priority weight at 2 for much closer matches to appear above copilot
-			-- set to 1 to make copilot always appear on top
-			priority_weight = 1,
-			comparators = {
-				cmp.config.compare.exact,
-				cmp.config.compare.offset,
-				cmp.config.compare.score,
-				cmp.config.compare.recently_used,
-				cmp.config.compare.locality,
-				cmp.config.compare.kind,
-				cmp.config.compare.sort_text,
-				cmp.config.compare.length,
-				cmp.config.compare.order,
-			},
-		},
-	})
 	vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic" })
 	vim.keymap.set("n", "<leader>eq", function()
 		vim.diagnostic.jump({
