@@ -1,7 +1,7 @@
-local home = vim.loop.os_homedir()
+local home = vim.uv.os_homedir()
 
 local plugin_dir = home .. "/projects/tip_of_my_buffer.nvim/"
-local is_local = vim.loop.fs_stat(plugin_dir) ~= nil
+local is_local = vim.uv.fs_stat(plugin_dir) ~= nil
 
 local config_opts = {
   -- debug = is_local,

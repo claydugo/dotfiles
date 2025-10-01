@@ -15,6 +15,9 @@ return {
     })
 
     require("noice").setup({
+      cmdline = {
+        view = "cmdline",
+      },
       lsp = {
         override = {
           ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
@@ -23,7 +26,6 @@ return {
         },
       },
       presets = {
-        bottom_search = false,
         command_palette = true,
         long_message_to_split = true,
       },
@@ -42,6 +44,8 @@ return {
               { find = "lines changed" },
               { find = "lines deleted" },
               { find = "less lines" },
+              { find = "search hit BOTTOM" },
+              { find = "search hit TOP" },
             },
           },
           opts = { skip = true },

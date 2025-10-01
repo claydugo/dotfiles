@@ -20,6 +20,7 @@ vim.o.ignorecase = true
 vim.o.incsearch = true
 vim.o.smartcase = true
 vim.o.hlsearch = true
+vim.o.shortmess = vim.o.shortmess .. "S"
 
 vim.o.history = 1000
 vim.o.ruler = true

@@ -42,8 +42,13 @@ function M.config()
   capabilities.general.positionEncodings = { "utf-16" }
 
   local illuminate = require("illuminate")
-  local on_attach = function(client)
+  local on_attach = function(client, bufnr)
     illuminate.on_attach(client)
+
+    if client.server_capabilities.inlayHintProvider then
+      vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+    end
+
     if client.name == "ruff" then
       client.server_capabilities.hoverProvider = false
     end
@@ -157,6 +162,10 @@ function M.config()
       end,
     })
   end, { desc = "Next diagnostic" })
+
+  vim.keymap.set("n", "<leader>ih", function()
+    vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+  end, { desc = "Toggle inlay hints" })
 
   -- https://github.com/wgsl-analyzer/wgsl-analyzer
   vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {

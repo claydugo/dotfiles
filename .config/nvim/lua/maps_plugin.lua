@@ -11,10 +11,10 @@ vim.api.nvim_create_autocmd("VimEnter", {
   group = "startup",
   pattern = "*",
   callback = function()
-    local arg = vim.api.nvim_eval("argv(0)")
+    local arg = vim.fn.argv(0)
     if arg and (vim.fn.isdirectory(arg) ~= 0 or arg == "") then
       vim.defer_fn(function()
-        local buf_ft = vim.api.nvim_buf_get_option(0, "filetype")
+        local buf_ft = vim.bo[0].filetype
         if buf_ft == "netrw" then
           return
         end

@@ -1,8 +1,10 @@
+export XDG_CONFIG_HOME="$HOME/.config"
+
 shopt -s histappend
 HISTIGNORE="&:[ ]*:exit:e:R:tmux.*:cd:la:ls:ll:lll:c:history:clear:cl:v:t:p:\:..:...:....:q"
 HISTCONTROL=ignoreboth
-HISTSIZE=1000
-HISTFILESIZE=2000
+HISTSIZE=50000
+HISTFILESIZE=100000
 
 set -o vi
 set editing-mode vi
@@ -32,12 +34,22 @@ if [ -f "$XDG_CONFIG_HOME/.ripgreprc" ]; then
     export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/.ripgreprc"
 fi
 
-export PATH=/home/clay/.cargo/bin:$PATH
-export PATH="/usr/lib/qt6/bin:$PATH"
+path_prepend() {
+    local dir="$1"
+    [[ -n "$dir" ]] || return
+    case ":$PATH:" in
+        *:"$dir":*) ;;
+        *) PATH="$dir${PATH:+:$PATH}" ;;
+    esac
+}
+
+path_prepend "$HOME/.cargo/bin"
+path_prepend "/usr/lib/qt6/bin"
 
 ZIGENV_ROOT="$HOME/.zigenv"
-PATH="$ZIGENV_ROOT/bin:$ZIGENV_ROOT/shims:$PATH"
-export ZIGENV_ROOT PATH
+path_prepend "$ZIGENV_ROOT/bin"
+path_prepend "$ZIGENV_ROOT/shims"
+export ZIGENV_ROOT
 
 if [[ -f "$HOME/.cargo/env" ]]; then
     . "$HOME/.cargo/env"
@@ -81,7 +93,8 @@ fi
 unset __mamba_setup
 # <<< mamba initialize <<<
 
-export PATH="/home/clay/.pixi/bin:$PATH"
+path_prepend "$HOME/.pixi/bin"
+export PATH
 
 # tab completion no longer case sensitive
 # needs wrapper to avoid login warning

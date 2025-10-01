@@ -1,6 +1,6 @@
 alias ls='ls --color=auto'
 alias f='nautilus .'
-alias v='/bin/env nvim'
+alias v='/usr/bin/env nvim'
 alias aptup='sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y'
 # https://news.ycombinator.com/reply?id=40658821&goto=item%3Fid%3D40650844%2340658821
 alias ocr='flameshot gui -s -r | convert - -colorspace Gray -scale 1191x2000 -unsharp 6.8x2.69+0 -resize 500% png:- | tesseract - - | gxmessage -title "Decoded Data" -fn "Consolas 12" -wrap -geometry 640x480 -file -'
