@@ -99,6 +99,7 @@ if [[ "$os" = "Darwin" ]]; then
 fi
 
 source ~/dotfiles/.aliases
+source ~/dotfiles/.bash_extras
 PYGFX_PRINT_WGSL_ON_COMPILATION_ERROR=1
 
 

@@ -1,5 +1,6 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 # vim: set filetype=sh
+# Shell-agnostic aliases (work in both bash and fish)
 
 alias ..='cd ../'
 alias ...='cd ../../'
@@ -17,109 +18,6 @@ alias p='python3'
 alias i='ipython'
 alias g='git'
 alias gti='git'
-alias path='echo -e ${PATH//:/\\n}'
-alias t='tmux new-session -s $(hostname)'
 alias ta="tmux a"
-alias td='cd $(mktemp -d /tmp/$1.XXX)'
 alias glb='git shortlog -nse'
-alias git_clean='git branch | grep -v "main" | grep -v "master" | xargs git branch -D'
-
-
-# fix annoying bug where the service does not restart correctly when switching between users
-alias restart_anydesk='(tmux has-session -t anydesk_session 2>/dev/null || tmux new-session -d -s anydesk_session) && tmux send-keys -t anydesk_session "sudo killall anydesk && sudo anydesk --service" C-m && tmux attach -t anydesk_session'
-
-# Think this is zsh default
-alias ~='cd ~'
-
-# Ramona Specific
-if [ -f ~/dotfiles/ramona/.ramona ]; then
-    source ~/dotfiles/ramona/.ramona
-fi
-
-if hash eza 2>/dev/null; then
-    alias ls='eza'
-    alias ll="eza -lah --git --icons"
-    alias lll="eza -abghHliS@ --git --icons"
-fi
-
-alias la='cat ~/dotfiles/.aliases'
-
-if hash bat 2>/dev/null; then
-    alias la='bat ~/.aliases -l bash'
-fi
-
-
 alias lt='python3 ~/dotfiles/scripts/tmate_restore.py'
-
-if hash nvim 2>/dev/null; then
-    alias vim='nvim'
-    alias vi='nvim'
-    alias vimdiff='nvim -d'
-fi
-
-if command -v ffmpeg >/dev/null 2>&1 && command -v gifski >/dev/null 2>&1; then
-    mp4togif() {
-        input_file="$1"
-        base_name="$(basename "${input_file}" .mp4)"
-        ffmpeg -i "${input_file}" -f yuv4mpegpipe - | gifski -Q 100 --extra -o "${base_name}.gif" -
-    }
-fi
-
-mkworktrees() {
-    local base="/home/clay/projects/temp_worktrees"
-    local branch="$1"
-    [ -z "$branch" ] && { echo "Usage: mkworktrees <branch>"; return 1; }
-
-    local repo_root
-    repo_root=$(git -C "$PWD" rev-parse --show-toplevel) ||
-        { echo "Not inside a Git repo"; return 1; }
-    cd "$repo_root" || return 1
-
-    git show-ref --quiet "refs/heads/$branch" || git branch "$branch" || return 1
-
-    local parent="$base/$branch"
-    mkdir -p "$parent" || return 1
-
-    local temp_prompt=$(mktemp)
-    cat > "$temp_prompt" << 'EOF'
-
-
-# ========================================
-# Enter your prompt above this line
-# Lines starting with # will be ignored
-EOF
-
-    $EDITOR "$temp_prompt"
-
-    local prompt=$(grep -v '^#' "$temp_prompt" | grep -v '^[[:space:]]*$')
-    rm "$temp_prompt"
-
-    if [ -z "$prompt" ]; then
-        echo "Aborted: No prompt provided"
-        return 1
-    fi
-
-    for i in 1 2 3; do
-        local dir="$parent/${branch}_$i"
-        git worktree add --detach "$dir" "$branch"
-    done
-
-    for i in 1 2 3; do
-        echo "$prompt" > "$parent/${branch}_$i/.claude_prompt"
-    done
-
-    tmux has-session -t "$branch" 2>/dev/null || {
-        tmux new-session -d -s "$branch" -c "$parent/${branch}_1" -n "${branch}_1"
-        tmux send-keys -t "$branch":1 'claude --dangerously-skip-permissions "$(cat .claude_prompt)"' C-m
-
-        tmux new-window -t "$branch":2 -c "$parent/${branch}_2" -n "${branch}_2"
-        tmux send-keys -t "$branch":2 'codex "$(cat .claude_prompt)"' C-m
-
-        tmux new-window -t "$branch":3 -c "$parent/${branch}_3" -n "${branch}_3"
-        tmux send-keys -t "$branch":3 'claude --dangerously-skip-permissions "$(cat .claude_prompt)"' C-m
-
-        echo "tmux session \"$branch\" ready with windows ${branch}_{1,2,3}"
-    }
-
-    cd "$parent"
-}

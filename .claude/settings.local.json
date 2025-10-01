@@ -17,7 +17,8 @@
       "BashOutput(*)",
       "KillBash(*)",
       "ExitPlanMode(*)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Read(//home/clay/.config/fish/**)"
     ],
     "deny": [],
     "ask": []
