@@ -6,6 +6,9 @@ vim.keymap.set("n", "<leader>t", ":lua require'telescope.builtin'.lsp_type_defin
 
 vim.keymap.set("n", "<leader>w", ":lua require'gitsigns'.toggle_current_line_blame()<CR>")
 
+vim.keymap.set("n", "<leader>s", ":lua require'gitsigns'.next_hunk()<CR>")
+vim.keymap.set("n", "<leader>S", ":lua require'gitsigns'.prev_hunk()<CR>")
+
 vim.api.nvim_create_augroup("startup", { clear = true })
 vim.api.nvim_create_autocmd("VimEnter", {
   group = "startup",

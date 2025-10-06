@@ -45,9 +45,9 @@ function M.config()
   local on_attach = function(client, bufnr)
     illuminate.on_attach(client)
 
-    if client.server_capabilities.inlayHintProvider then
-      vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-    end
+    -- if client.server_capabilities.inlayHintProvider then
+    --   vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+    -- end
 
     if client.name == "ruff" then
       client.server_capabilities.hoverProvider = false
