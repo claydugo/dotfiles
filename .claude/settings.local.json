@@ -18,7 +18,8 @@
       "KillBash(*)",
       "ExitPlanMode(*)",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Read(//home/clay/Pictures/Screenshots/**)"
     ],
     "deny": [],
     "ask": []
@@ -58,6 +59,7 @@
       }
     ]
   },
+  "outputStyle": "direct-action",
   "alwaysApproveNewDirectory": true,
   "alwaysAllowWriteOnly": true,
   "alwaysAllowReadOnly": true,

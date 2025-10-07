@@ -42,15 +42,21 @@ function M.config()
   capabilities.general.positionEncodings = { "utf-16" }
 
   local illuminate = require("illuminate")
-  local on_attach = function(client, bufnr)
+  -- local on_attach = function(client, bufnr)
+  local on_attach = function(client)
     illuminate.on_attach(client)
 
     -- if client.server_capabilities.inlayHintProvider then
     --   vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
     -- end
 
+    if client.name == "ty" then
+      client.server_capabilities.semanticTokensProvider = nil
+    end
+
     if client.name == "ruff" then
       client.server_capabilities.hoverProvider = false
+      client.server_capabilities.semanticTokensProvider = nil
     end
   end
 

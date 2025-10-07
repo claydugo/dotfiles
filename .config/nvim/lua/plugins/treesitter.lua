@@ -32,7 +32,7 @@ return {
         "gitcommit",
         "gitignore",
       },
-      sync_install = false,
+      sync_install = true,
       auto_install = true,
       ignore_install = {},
       modules = {},
@@ -86,6 +86,13 @@ return {
           },
         },
       },
+    })
+
+    -- Force treesitter re-highlight after external file changes
+    vim.api.nvim_create_autocmd("FileChangedShellPost", {
+      callback = function()
+        vim.cmd("edit")
+      end,
     })
   end,
 }
