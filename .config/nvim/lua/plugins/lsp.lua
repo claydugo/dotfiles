@@ -4,7 +4,8 @@ local M = {
   build = ":MasonUpdate",
   lazy = false,
   dependencies = {
-    { dir = "/home/clay/git/forks/vim-illuminate" },
+    -- TODO: Revert to RRethy/vim-illuminate after PR #250 is merged
+    { "claydugo/vim-illuminate", branch = "fixup_supports_method" },
   },
 }
 
