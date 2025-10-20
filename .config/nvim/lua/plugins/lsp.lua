@@ -12,6 +12,20 @@ local M = {
 function M.config()
   require("mason").setup()
 
+  vim.diagnostic.config({
+    virtual_text = { spacing = 4, prefix = "●" },
+    signs = true,
+    underline = true,
+    update_in_insert = false,
+    severity_sort = true,
+    float = {
+      border = "rounded",
+      source = true,
+      header = "",
+      prefix = "",
+    },
+  })
+
   vim.defer_fn(function()
     local mason_packages = {
       "ty",

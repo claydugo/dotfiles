@@ -80,7 +80,8 @@ mkworktrees() {
     local parent="$base/$branch"
     mkdir -p "$parent" || return 1
 
-    local temp_prompt=$(mktemp)
+    local temp_prompt
+    temp_prompt=$(mktemp)
     cat > "$temp_prompt" << 'EOF'
 
 
@@ -91,7 +92,8 @@ EOF
 
     $EDITOR "$temp_prompt"
 
-    local prompt=$(grep -v '^#' "$temp_prompt" | grep -v '^[[:space:]]*$')
+    local prompt
+    prompt=$(grep -v '^#' "$temp_prompt" | grep -v '^[[:space:]]*$')
     rm "$temp_prompt"
 
     if [ -z "$prompt" ]; then
@@ -110,16 +112,16 @@ EOF
 
     tmux has-session -t "$branch" 2>/dev/null || {
         tmux new-session -d -s "$branch" -c "$parent/${branch}_1" -n "${branch}_1"
-        tmux send-keys -t "$branch":1 'claude --dangerously-skip-permissions "$(cat .claude_prompt)"' C-m
+        tmux send-keys -t "$branch":1 "claude --dangerously-skip-permissions --model opus \"\$(cat .claude_prompt)\"" C-m
 
         tmux new-window -t "$branch":2 -c "$parent/${branch}_2" -n "${branch}_2"
-        tmux send-keys -t "$branch":2 'codex "$(cat .claude_prompt)"' C-m
+        tmux send-keys -t "$branch":2 "codex \"\$(cat .claude_prompt)\"" C-m
 
         tmux new-window -t "$branch":3 -c "$parent/${branch}_3" -n "${branch}_3"
-        tmux send-keys -t "$branch":3 'claude --dangerously-skip-permissions "$(cat .claude_prompt)"' C-m
+        tmux send-keys -t "$branch":3 "claude --dangerously-skip-permissions --model sonnet \"\$(cat .claude_prompt)\"" C-m
 
         echo "tmux session \"$branch\" ready with windows ${branch}_{1,2,3}"
     }
 
-    cd "$parent"
+    cd "$parent" || return 1
 }

@@ -48,6 +48,10 @@ vim.o.ttimeout = true
 vim.o.ttimeoutlen = 5
 vim.o.timeoutlen = 1000
 
+vim.o.winborder = 'rounded'
+vim.o.pumheight = 5;
+vim.o.pumblend = 20;
+
 vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_node_provider = 0
