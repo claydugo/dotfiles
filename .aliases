@@ -78,22 +78,27 @@ mkworktrees() {
     git show-ref --quiet "refs/heads/$branch" || git branch "$branch" || return 1
 
     local parent="$base/$branch"
+
+    if [ -d "$parent/${branch}_1" ]; then
+        echo "Warning: Worktrees for branch '$branch' already exist"
+        read -p "Remove and recreate? (y/N) " -n 1 -r
+        echo
+        [[ $REPLY =~ ^[Yy]$ ]] || return 1
+        rm -rf "$parent"
+    fi
+
     mkdir -p "$parent" || return 1
 
     local temp_prompt
-    temp_prompt=$(mktemp)
+    temp_prompt=$(mktemp --suffix=.md)
     cat > "$temp_prompt" << 'EOF'
-
-
-# ========================================
-# Enter your prompt above this line
-# Lines starting with # will be ignored
+<!-- Enter your prompt below, will be stripped before passing to tool -->
 EOF
 
     $EDITOR "$temp_prompt"
 
     local prompt
-    prompt=$(grep -v '^#' "$temp_prompt" | grep -v '^[[:space:]]*$')
+    prompt=$(sed '/^<!--/,/-->$/d' "$temp_prompt" | grep -v '^[[:space:]]*$')
     rm "$temp_prompt"
 
     if [ -z "$prompt" ]; then
@@ -107,21 +112,63 @@ EOF
     done
 
     for i in 1 2 3; do
-        echo "$prompt" > "$parent/${branch}_$i/.claude_prompt"
+        echo "$prompt" > "$parent/${branch}_$i/.prompt"
     done
 
     tmux has-session -t "$branch" 2>/dev/null || {
         tmux new-session -d -s "$branch" -c "$parent/${branch}_1" -n "${branch}_1"
-        tmux send-keys -t "$branch":1 "claude --dangerously-skip-permissions --model opus \"\$(cat .claude_prompt)\"" C-m
+        tmux send-keys -t "$branch":1 "claude --dangerously-skip-permissions --model opus \"\$(cat .prompt)\"" C-m
 
         tmux new-window -t "$branch":2 -c "$parent/${branch}_2" -n "${branch}_2"
         tmux send-keys -t "$branch":2 "codex \"\$(cat .claude_prompt)\"" C-m
 
         tmux new-window -t "$branch":3 -c "$parent/${branch}_3" -n "${branch}_3"
-        tmux send-keys -t "$branch":3 "claude --dangerously-skip-permissions --model sonnet \"\$(cat .claude_prompt)\"" C-m
+        tmux send-keys -t "$branch":3 "claude --dangerously-skip-permissions --model sonnet \"\$(cat .prompt)\"" C-m
 
         echo "tmux session \"$branch\" ready with windows ${branch}_{1,2,3}"
     }
 
     cd "$parent" || return 1
+}
+
+apply-worktree() {
+    local target_repo="$1"
+    local source_dir
+    source_dir="$(pwd)"
+
+    if [[ -z "$target_repo" ]]; then
+        if ! command -v fzf >/dev/null 2>&1; then
+            echo "Usage: apply-worktree <target-repo>"
+            return 1
+        fi
+        target_repo=$(find ~/projects ~/projects/ramona ~/git/forks -maxdepth 1 -type d 2>/dev/null | fzf --prompt="Select target repo: ")
+        if [[ -z "$target_repo" ]]; then
+            echo "No repository selected"
+            return 1
+        fi
+    fi
+
+    if ! git rev-parse --git-dir >/dev/null 2>&1; then
+        echo "Error: Not in a git repository"
+        return 1
+    fi
+
+    if ! (cd "$target_repo" && git rev-parse --git-dir >/dev/null 2>&1); then
+        echo "Error: Target is not a git repository: $target_repo"
+        return 1
+    fi
+
+    git diff | (cd "$target_repo" && git apply) || {
+        echo "Warning: Some unstaged changes failed to apply"
+    }
+
+    git diff --cached | (cd "$target_repo" && git apply --cached) || {
+        echo "Warning: Some staged changes failed to apply"
+    }
+
+    git ls-files --others --exclude-standard | while IFS= read -r file; do
+        local target_file="$target_repo/$file"
+        mkdir -p "$(dirname "$target_file")"
+        cp -p "$source_dir/$file" "$target_file"
+    done
 }
