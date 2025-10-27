@@ -98,13 +98,16 @@ EOF
     $EDITOR "$temp_prompt"
 
     local prompt
-    prompt=$(sed '/^<!--/,/-->$/d' "$temp_prompt" | grep -v '^[[:space:]]*$')
+    # Remove HTML comments and empty lines
+    prompt=$(sed '/^<!--.*-->$/d' "$temp_prompt" | grep -v '^[[:space:]]*$')
     rm "$temp_prompt"
 
     if [ -z "$prompt" ]; then
         echo "Aborted: No prompt provided"
         return 1
     fi
+
+    git worktree prune
 
     for i in 1 2 3; do
         local dir="$parent/${branch}_$i"
@@ -120,7 +123,7 @@ EOF
         tmux send-keys -t "$branch":1 "claude --dangerously-skip-permissions --model opus \"\$(cat .prompt)\"" C-m
 
         tmux new-window -t "$branch":2 -c "$parent/${branch}_2" -n "${branch}_2"
-        tmux send-keys -t "$branch":2 "codex \"\$(cat .claude_prompt)\"" C-m
+        tmux send-keys -t "$branch":2 "codex \"\$(cat .prompt)\"" C-m
 
         tmux new-window -t "$branch":3 -c "$parent/${branch}_3" -n "${branch}_3"
         tmux send-keys -t "$branch":3 "claude --dangerously-skip-permissions --model sonnet \"\$(cat .prompt)\"" C-m

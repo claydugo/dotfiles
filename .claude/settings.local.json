@@ -19,7 +19,10 @@
       "ExitPlanMode(*)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "Read(//home/clay/Pictures/Screenshots/**)"
+      "Read(//home/clay/Pictures/Screenshots/**)",
+      "Read(//home/clay/.config/nvim/lua/plugins/**)",
+      "Read(//home/clay/projects/prompt.nvim/plugin/**)",
+      "Read(//home/clay/projects/prompt.nvim/lua/prompt/**)"
     ],
     "deny": [],
     "ask": []
