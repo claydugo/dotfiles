@@ -22,7 +22,8 @@
       "Read(//home/clay/Pictures/Screenshots/**)",
       "Read(//home/clay/.config/nvim/lua/plugins/**)",
       "Read(//home/clay/projects/prompt.nvim/plugin/**)",
-      "Read(//home/clay/projects/prompt.nvim/lua/prompt/**)"
+      "Read(//home/clay/projects/prompt.nvim/lua/prompt/**)",
+      "Read(//home/clay/.config/nvim/**)"
     ],
     "deny": [],
     "ask": []
