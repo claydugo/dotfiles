@@ -1,8 +1,6 @@
 #!/bin/bash
-# Quick install script for new computers
-# Focused on setting up vim, tmux, and other essential tools
 
-set -e  # Exit on failure
+set -e
 
 : ${XDG_CONFIG_HOME:="$HOME/.config"}
 
@@ -16,9 +14,7 @@ install_pixi() {
     print_message "32" "Installing Pixi package manager..."
     if ! command -v pixi &> /dev/null; then
         curl -fsSL https://pixi.sh/install.sh | bash
-        # Add pixi to PATH for current session
         export PATH="$HOME/.pixi/bin:$PATH"
-        # Add to bashrc for future sessions
         echo 'export PATH="$HOME/.pixi/bin:$PATH"' >> ~/.bashrc
     else
         print_message "34" "Pixi is already installed."
@@ -28,7 +24,6 @@ install_pixi() {
 install_with_pixi() {
     local packages=("$@")
     print_message "32" "Installing packages with Pixi: ${packages[*]}"
-    # Create a pixi.toml file if it doesn't exist
     if [ ! -f ~/dotfiles/pixi.toml ]; then
         cat > ~/dotfiles/pixi.toml << EOF
 [project]
@@ -63,7 +58,7 @@ mkdir -p "$XDG_CONFIG_HOME/conda"
 ln -sfn ~/dotfiles/.condarc "$XDG_CONFIG_HOME/conda/.condarc"
 
 mkdir -p ~/.claude
-ln -sfn ~/dotfiles/.claude/settings.local.json ~/.claude/settings.local.json
+ln -sfn ~/dotfiles/.claude/settings.json ~/.claude/settings.json
 
 mkdir -p "$XDG_CONFIG_HOME"
 for item in ~/dotfiles/.config/*; do
@@ -96,7 +91,6 @@ sudo ln -sf ~/dotfiles/ramona/scripts/drop_caches /usr/sbin/drop_caches
 cd ~/dotfiles
 git checkout -b "$(hostname)"
 
-# List of all packages to install with pixi
 common_packages=(
     neovim
     fswatch
@@ -115,13 +109,9 @@ common_packages=(
     starship
 )
 
-# Install Pixi package manager
 install_pixi
-
-# Install common packages with Pixi
 install_with_pixi "${common_packages[@]}"
 
-# OS-specific setup for Linux
 if [ "$(uname -s)" == "Linux" ]; then
     # Set up inotify and caps lock as escape
     echo -e "fs.inotify.max_user_watches=100000\nfs.inotify.max_queued_events=100000" | sudo tee -a /etc/sysctl.conf
