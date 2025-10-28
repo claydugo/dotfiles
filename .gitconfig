@@ -1,6 +1,7 @@
 [user]
     email = claydugo@gmail.com
     name = Clay Dugo
+    signingkey = /home/clay/.ssh/id_ed25519.pub
 
 [core]
     editor = nvim
@@ -42,8 +43,17 @@
 [branch]
     sort = -committerdate
 
-[includeIf "gitdir:~/projects/ramona/"]
-    path = ~/.gitrconfig
+[gpg]
+    format = ssh
+
+[commit]
+    gpgsign = true
+
+[fetch]
+    writeCommitGraph = true
 
 [url "git@github.com:"]
     insteadOf = "https://github.com/"
+
+[includeIf "gitdir:~/projects/ramona/"]
+    path = ~/.gitrconfig

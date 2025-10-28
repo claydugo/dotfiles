@@ -161,13 +161,21 @@ apply-worktree() {
         return 1
     fi
 
-    git diff | (cd "$target_repo" && git apply) || {
-        echo "Warning: Some unstaged changes failed to apply"
-    }
+    local unstaged_diff
+    unstaged_diff=$(git diff)
+    if [[ -n "$unstaged_diff" ]]; then
+        echo "$unstaged_diff" | (cd "$target_repo" && git apply) || {
+            echo "Warning: Some unstaged changes failed to apply"
+        }
+    fi
 
-    git diff --cached | (cd "$target_repo" && git apply --cached) || {
-        echo "Warning: Some staged changes failed to apply"
-    }
+    local staged_diff
+    staged_diff=$(git diff --cached)
+    if [[ -n "$staged_diff" ]]; then
+        echo "$staged_diff" | (cd "$target_repo" && git apply --cached) || {
+            echo "Warning: Some staged changes failed to apply"
+        }
+    fi
 
     git ls-files --others --exclude-standard | while IFS= read -r file; do
         local target_file="$target_repo/$file"
