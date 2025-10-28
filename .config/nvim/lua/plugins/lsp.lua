@@ -35,6 +35,7 @@ function M.config()
       "bash-language-server",
       "lua-language-server",
       "rust-analyzer",
+      "shellcheck",
     }
 
     local ok, registry = pcall(require, "mason-registry")
@@ -131,6 +132,11 @@ function M.config()
     root_markers = { ".git" },
     capabilities = capabilities,
     on_attach = on_attach,
+    settings = {
+      bashIde = {
+        shellcheckArguments = { "-e", "SC1090", "-e", "SC1091" },
+      },
+    },
   })
 
   vim.lsp.config("lua_ls", {

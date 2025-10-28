@@ -1,13 +1,21 @@
-export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 
 shopt -s histappend
 HISTIGNORE="&:[ ]*:exit:e:R:tmux.*:cd:la:ls:ll:lll:c:history:clear:cl:v:t:p:\:..:...:....:q"
 HISTCONTROL=ignoreboth
 HISTSIZE=50000
 HISTFILESIZE=100000
+HISTFILE="$XDG_STATE_HOME/bash/history"
+
+shopt -s checkwinsize
+shopt -s cdspell
+shopt -s dirspell
+shopt -s globstar 2>/dev/null
 
 set -o vi
-set editing-mode vi
 
 if hash nvim 2>/dev/null; then
   export EDITOR=nvim
@@ -20,9 +28,9 @@ export USE_EDITOR="$EDITOR"
 export VISUAL="$EDITOR"
 
 # Try new ssh specific leader
-if [[ -n $SSH_CONNECTION ]] ; then
+if [[ -n $SSH_CONNECTION ]] && command -v tmux >/dev/null 2>&1; then
 #     tmux attach || tmux new
-    tmux source-file ~/dotfiles/.tmux-ssh.conf
+    [[ -f ~/dotfiles/.tmux-ssh.conf ]] && tmux source-file ~/dotfiles/.tmux-ssh.conf 2>/dev/null
 fi
 
 # kitty doesnt work well with tmux
@@ -32,6 +40,12 @@ fi
 
 if [ -f "$XDG_CONFIG_HOME/.ripgreprc" ]; then
     export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/.ripgreprc"
+fi
+
+# tab completion no longer case sensitive
+# needs wrapper to avoid login warning
+if [[ -t 1 ]]; then
+    bind 'set completion-ignore-case on'
 fi
 
 path_prepend() {
@@ -46,11 +60,6 @@ path_prepend() {
 path_prepend "$HOME/.cargo/bin"
 path_prepend "/usr/lib/qt6/bin"
 
-ZIGENV_ROOT="$HOME/.zigenv"
-path_prepend "$ZIGENV_ROOT/bin"
-path_prepend "$ZIGENV_ROOT/shims"
-export ZIGENV_ROOT
-
 if [[ -f "$HOME/.cargo/env" ]]; then
     . "$HOME/.cargo/env"
 fi
@@ -59,62 +68,40 @@ if hash starship 2>/dev/null; then
     eval "$(starship init bash)"
 fi
 
-conda_dir=$HOME
-
-if [[ -d "$HOME/miniforge3/" ]]; then
-    conda_dir=$HOME/miniforge3/
-fi
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/clay/miniforge3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/clay/miniforge3/etc/profile.d/conda.sh" ]; then
-        . "/home/clay/miniforge3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/clay/miniforge3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
-#
-# >>> mamba initialize >>>
-# !! Contents within this block are managed by 'mamba shell init' !!
-export MAMBA_EXE='/home/clay/miniforge3/condabin/mamba';
-export MAMBA_ROOT_PREFIX='/home/clay/miniforge3';
-__mamba_setup="$("$MAMBA_EXE" shell hook --shell bash --root-prefix "$MAMBA_ROOT_PREFIX" 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__mamba_setup"
-else
-    alias mamba="$MAMBA_EXE"  # Fallback on help from mamba activate
-fi
-unset __mamba_setup
-# <<< mamba initialize <<<
-
 path_prepend "$HOME/.pixi/bin"
-export PATH
-
-# tab completion no longer case sensitive
-# needs wrapper to avoid login warning
-if [[ -t 1 ]]; then
-    bind 'set completion-ignore-case on'
-fi
 
 os=$(uname -s)
 
 if [[ "$os" = "Linux" ]]; then
-    source ~/dotfiles/.linux_aliases
+    source "$HOME/dotfiles/.linux_aliases"
 fi
 if [[ "$os" = "Darwin" ]]; then
-    source ~/dotfiles/.mac_aliases
+    source "$HOME/dotfiles/.mac_aliases"
 fi
 
-source ~/dotfiles/.aliases
-PYGFX_PRINT_WGSL_ON_COMPILATION_ERROR=1
+source "$HOME/dotfiles/.aliases"
 
+export NVM_DIR="$XDG_DATA_HOME/nvm"
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+    node() {
+        unset -f node npm nvm
+        [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+        [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+        node "$@"
+    }
+    npm() {
+        unset -f node npm nvm
+        [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+        [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+        npm "$@"
+    }
+    nvm() {
+        unset -f node npm nvm
+        [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+        [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+        nvm "$@"
+    }
+fi
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+export PYGFX_PRINT_WGSL_ON_COMPILATION_ERROR=1
+export PATH
