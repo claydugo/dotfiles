@@ -69,7 +69,7 @@ fi
 # Clean build if requested
 if [ "$CLEAN_BUILD" = true ]; then
     echo "Running clean build..."
-    make distclean
+    pixi run with-compilers "cd '$NEOVIM_DIR' && make distclean"
 fi
 
 # Show version info
@@ -82,7 +82,7 @@ echo "Building version: $NEW_VERSION"
 
 # Build without sudo (parallel using all CPU cores)
 echo "Building Neovim..."
-make CMAKE_BUILD_TYPE=RelWithDebInfo -j$(nproc)
+pixi run with-compilers "cd '$NEOVIM_DIR' && make CMAKE_BUILD_TYPE=RelWithDebInfo -j\$(nproc)"
 
 # Only use sudo for installation
 echo "Installing Neovim (requires sudo)..."
