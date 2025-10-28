@@ -98,17 +98,17 @@ git checkout -b "$(hostname)"
 
 # List of all packages to install with pixi
 common_packages=(
-    neovim 
-    fswatch 
-    tmux 
-    ripgrep 
-    htop 
-    cmake 
-    python 
-    gnome-tweaks 
-    fd-find 
-    wget 
-    openssl 
+    neovim
+    fswatch
+    tmux
+    ripgrep
+    htop
+    cmake
+    python
+    gnome-tweaks
+    fd-find
+    wget
+    openssl
     bash
     curl
     unzip
