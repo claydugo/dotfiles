@@ -10,6 +10,8 @@ local M = {
 }
 
 function M.config()
+  vim.env.PATH = vim.fn.expand("~/.pixi/envs/default/bin") .. ":" .. vim.env.PATH
+
   require("mason").setup()
 
   vim.diagnostic.config({
