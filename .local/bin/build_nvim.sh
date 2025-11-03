@@ -6,6 +6,7 @@ NEOVIM_DIR="$HOME/git/upstream/neovim"
 NEOVIM_REPO="https://github.com/neovim/neovim.git"
 FORCE_REBUILD=false
 CLEAN_BUILD=false
+EXPECTED_PIXI_ENV="$HOME/.pixi/envs/default"
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -32,6 +33,28 @@ while [[ $# -gt 0 ]]; do
             ;;
     esac
 done
+
+# Verify we're using the global pixi environment to avoid RPATH issues
+if [ -z "${CONDA_PREFIX:-}" ]; then
+    echo "ERROR: No conda/pixi environment detected (CONDA_PREFIX not set)"
+    echo "Please activate the global pixi environment first"
+    exit 1
+elif [ "$CONDA_PREFIX" != "$EXPECTED_PIXI_ENV" ]; then
+    echo "WARNING: Building in non-standard pixi environment!"
+    echo "  Current:  $CONDA_PREFIX"
+    echo "  Expected: $EXPECTED_PIXI_ENV"
+    echo ""
+    echo "This will embed the current environment path into nvim's RPATH."
+    echo "If you switch environments later, nvim may fail to find libraries."
+    echo ""
+    read -p "Continue anyway? [y/N] " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "Aborted. Please activate the global pixi environment:"
+        echo "  source ~/.bashrc  # or open a fresh shell"
+        exit 1
+    fi
+fi
 
 if [ ! -d "$NEOVIM_DIR" ]; then
     echo "Neovim directory not found. Cloning repository..."
