@@ -4,7 +4,7 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 
 shopt -s histappend
-HISTIGNORE="&:[ ]*:exit:e:R:tmux.*:cd:la:ls:ll:lll:c:history:clear:cl:v:t:p:\:..:...:....:q"
+HISTIGNORE="&:[ ]*:exit:e:R:tmux.*:cd:la:ls:ll:lll:c:history:clear:cl:t:\:..:...:....:q"
 HISTCONTROL=ignoreboth
 HISTSIZE=50000
 HISTFILESIZE=100000
@@ -104,4 +104,6 @@ if [ -s "$NVM_DIR/nvm.sh" ]; then
 fi
 
 export PYGFX_PRINT_WGSL_ON_COMPILATION_ERROR=1
+export QT_QPA_PLATFORMTHEME=gtk3
+export QT_QPA_PLATFORM=wayland
 export PATH

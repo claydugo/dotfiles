@@ -196,6 +196,10 @@ function M.config()
     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
   end, { desc = "Toggle inlay hints" })
 
+  vim.keymap.set("v", "<leader>r", function()
+    vim.lsp.buf.format()
+  end, { desc = "Format selection" })
+
   -- https://github.com/wgsl-analyzer/wgsl-analyzer
   vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
     pattern = "*.wgsl",
