@@ -20,7 +20,9 @@ alias gti='git'
 alias path='echo -e ${PATH//:/\\n}'
 alias t='tmux new-session -s $(hostname)'
 alias ta="tmux a"
-alias td='cd $(mktemp -d /tmp/$1.XXX)'
+td() {
+    cd $(mktemp -d /tmp/${1:+$1.}XXX)
+}
 alias glb='git shortlog -nse'
 alias git_clean='git branch | grep -v "main" | grep -v "master" | xargs git branch -D'
 
