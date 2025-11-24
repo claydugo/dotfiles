@@ -40,6 +40,11 @@ function M.config()
       "shellcheck",
     }
 
+    -- Only install jdtls if Java is available (check for javac in PATH)
+    if vim.fn.executable("javac") == 1 then
+      table.insert(mason_packages, "jdtls")
+    end
+
     local ok, registry = pcall(require, "mason-registry")
     if not ok then
       return

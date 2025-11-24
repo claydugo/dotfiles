@@ -12,6 +12,7 @@ return {
   wgsl_analyzer = " ",
   harper_ls = " ", -- since its language agnostic try to use a generic icon
   biome = " ",
+  jdtls = "",
   copilot = " ",
   ["GitHub Copilot"] = " ",
 }

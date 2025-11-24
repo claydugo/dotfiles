@@ -45,6 +45,8 @@ function M.config()
         "%.pdf",
         "%.bin",
         ".git/",
+        "%.class", -- Java compiled files
+        "build/", -- Gradle build directory
       },
       mappings = {
         i = {

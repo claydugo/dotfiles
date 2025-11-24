@@ -8,30 +8,39 @@ return {
   },
   config = function()
     require("nvim-ts-autotag").setup()
+
+    local ensure_installed = {
+      "python",
+      "lua",
+      "wgsl",
+      "cuda",
+      "rust",
+      "c",
+      "bash",
+
+      "html",
+      "json",
+      "qmldir",
+      "luadoc",
+
+      "desktop",
+      "tmux",
+      "ssh_config",
+      "git_config",
+      "git_rebase",
+      "gitattributes",
+      "gitcommit",
+      "gitignore",
+    }
+
+    -- Only install Java/Gradle parsers if JDK is available (check for javac in PATH)
+    if vim.fn.executable("javac") == 1 then
+      table.insert(ensure_installed, "java")
+      table.insert(ensure_installed, "groovy")
+    end
+
     require("nvim-treesitter.configs").setup({
-      ensure_installed = {
-        "python",
-        "lua",
-        "wgsl",
-        "cuda",
-        "rust",
-        "c",
-        "bash",
-
-        "html",
-        "json",
-        "qmldir",
-        "luadoc",
-
-        "desktop",
-        "tmux",
-        "ssh_config",
-        "git_config",
-        "git_rebase",
-        "gitattributes",
-        "gitcommit",
-        "gitignore",
-      },
+      ensure_installed = ensure_installed,
       sync_install = true,
       auto_install = true,
       ignore_install = {},

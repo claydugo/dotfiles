@@ -21,11 +21,12 @@ alias path='echo -e ${PATH//:/\\n}'
 alias t='tmux new-session -s $(hostname)'
 alias ta="tmux a"
 td() {
-    cd $(mktemp -d /tmp/${1:+$1.}XXX)
+    local dir
+    dir=$(mktemp -d "/tmp/${1:+$1.}XXXXX") || return 1
+    cd "$dir" || return 1
 }
 alias glb='git shortlog -nse'
 alias git_clean='git branch | grep -v "main" | grep -v "master" | xargs git branch -D'
-
 
 # fix annoying bug where the service does not restart correctly when switching between users
 alias restart_anydesk='(tmux has-session -t anydesk_session 2>/dev/null || tmux new-session -d -s anydesk_session) && tmux send-keys -t anydesk_session "sudo killall anydesk && sudo anydesk --service" C-m && tmux attach -t anydesk_session'
@@ -49,7 +50,6 @@ alias la='cat ~/dotfiles/.aliases'
 if hash bat 2>/dev/null; then
     alias la='bat ~/.aliases -l bash'
 fi
-
 
 alias lt='python3 ~/dotfiles/scripts/tmate_restore.py'
 
@@ -184,4 +184,26 @@ apply-worktree() {
         mkdir -p "$(dirname "$target_file")"
         cp -p "$source_dir/$file" "$target_file"
     done
+}
+
+extract() {
+    local archive="$1"
+    if [[ -f "$archive" ]]; then
+        case "$archive" in
+            *.tar.bz2)  tar xjf "$archive" ;;
+            *.tar.gz)   tar xzf "$archive" ;;
+            *.bz2)      bunzip2 "$archive" ;;
+            *.rar)      rar x "$archive" ;;
+            *.gz)       gunzip "$archive" ;;
+            *.tar)      tar xf "$archive" ;;
+            *.tbz2)     tar xjf "$archive" ;;
+            *.tgz)      tar xzf "$archive" ;;
+            *.zip)      unzip "$archive" ;;
+            *.Z)        uncompress "$archive" ;;
+            *)          echo "'$archive' cannot be extracted via extract()" ;;
+        esac
+    else
+        echo "'$archive' is not a valid file"
+        return 1
+    fi
 }
