@@ -117,7 +117,6 @@ function M.config()
 
   vim.lsp.config("harper_ls", {
     cmd = { "harper-ls", "--stdio" },
-    filetypes = { "markdown", "text", "gitcommit" },
     root_markers = { ".git" },
     capabilities = capabilities,
     on_attach = on_attach,
@@ -126,8 +125,10 @@ function M.config()
         userDictPath = vim.fn.stdpath("config") .. "/spell/en.utf-8.add",
         diagnosticSeverity = "hint",
         linters = {
+          SpellCheck = true,
           SentenceCapitalization = true,
           LongSentences = true,
+          OrthographicConsistency = false,
         },
       },
     },

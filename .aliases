@@ -27,6 +27,7 @@ td() {
 }
 alias glb='git shortlog -nse'
 alias git_clean='git branch | grep -v "main" | grep -v "master" | xargs git branch -D'
+alias prcount="gh api 'search/issues?q=author:claydugo+type:pr+is:merged' --jq '.total_count'"
 
 # fix annoying bug where the service does not restart correctly when switching between users
 alias restart_anydesk='(tmux has-session -t anydesk_session 2>/dev/null || tmux new-session -d -s anydesk_session) && tmux send-keys -t anydesk_session "sudo killall anydesk && sudo anydesk --service" C-m && tmux attach -t anydesk_session'

@@ -95,6 +95,12 @@ if [ "$CLEAN_BUILD" = true ]; then
     pixi run with-compilers "cd '$NEOVIM_DIR' && make distclean"
 fi
 
+# Always clean .deps when pulling new commits to avoid stale CMake cache issues
+if [ "$CURRENT_COMMIT" != "$UPSTREAM_COMMIT" ] && [ -d ".deps" ]; then
+    echo "Cleaning .deps..."
+    rm -rf .deps
+fi
+
 # Show version info
 if command -v nvim &> /dev/null; then
     CURRENT_VERSION=$(nvim --version | head -n1)

@@ -1,0 +1,51 @@
+{
+  "cleanupPeriodDays": 30,
+  "includeCoAuthoredBy": false,
+  "permissions": {
+    "allow": [
+      "Read(//home/clay/**)",
+      "Write(//home/clay/**)",
+      "Edit(//home/clay/**)",
+      "MultiEdit(//home/clay/**)",
+      "Bash",
+      "Grep(//home/clay/**)",
+      "Glob(//home/clay/**)",
+      "LS(//home/clay/**)",
+      "WebSearch",
+      "WebFetch(domain:*)",
+      "Task(*)",
+      "TodoWrite(*)",
+      "NotebookEdit(//home/clay/**)",
+      "BashOutput(*)",
+      "KillBash(*)",
+      "ExitPlanMode(*)"
+    ],
+    "deny": [],
+    "ask": [],
+    "defaultMode": "bypassPermissions",
+    "additionalDirectories": [
+      "/home/clay"
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "input=$(cat); model=$(echo \"$input\" | jq -r '.model.display_name'); version=$(echo \"$input\" | jq -r '.version'); printf \"%s | %s\" \"$model\" \"$version\""
+  },
+  "sandbox": {
+    "enabled": false,
+    "autoAllowBashIfSandboxed": true,
+    "network": {
+      "allowUnixSockets": [
+        "/var/run/docker.sock",
+        "~/.ssh/ssh_auth_sock"
+      ],
+      "allowLocalBinding": true
+    },
+    "excludedCommands": [
+      "git",
+      "docker"
+    ]
+  },
+  "spinnerTipsEnabled": false,
+  "alwaysThinkingEnabled": false
+}
