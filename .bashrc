@@ -38,9 +38,10 @@ if [[ ${TERM} == "xterm-kitty" ]]; then
     export TERM=xterm-256color
 fi
 
+# adapted idea from
 # https://github.com/corygabrielsen/dotfiles/blob/master/zsh/zshrc
 is_ai_agent() {
-    [[ "$CLAUDE_AGENT" == "1" ]] || [[ "$CODEX_MANAGED_BY_NPM" == "1" ]] || [[ "$CURSOR_AGENT" == "1" ]]
+    [[ "$CLAUDE_AGENT" == "1" ]] || [[ "$CLAUDECODE" == "1" ]] || [[ "$CODEX_MANAGED_BY_NPM" == "1" ]] || [[ "$CURSOR_AGENT" == "1" ]]
 }
 
 if is_ai_agent; then
@@ -65,14 +66,14 @@ if is_ai_agent; then
     export DEBIAN_FRONTEND=noninteractive
     export PYTHONUNBUFFERED=1
 
-    if [[ "$CLAUDE_AGENT" == "1" ]]; then
-        export HISTFILE=~/.zsh_history_claude
+    if [[ "$CLAUDE_AGENT" == "1" || "$CLAUDECODE" == "1" ]]; then
+        export HISTFILE="$XDG_STATE_HOME/bash/history_claude"
     elif [[ "$CODEX_MANAGED_BY_NPM" == "1" ]]; then
-        export HISTFILE=~/.zsh_history_codex
+        export HISTFILE="$XDG_STATE_HOME/bash/history_codex"
     elif [[ "$CURSOR_AGENT" == "1" ]]; then
-        export HISTFILE=~/.zsh_history_cursor
+        export HISTFILE="$XDG_STATE_HOME/bash/history_cursor"
     else
-        export HISTFILE=~/.zsh_history_agent
+        export HISTFILE="$XDG_STATE_HOME/bash/history_ai"
     fi
 
 fi
