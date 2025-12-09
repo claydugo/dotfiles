@@ -38,46 +38,6 @@ if [[ ${TERM} == "xterm-kitty" ]]; then
     export TERM=xterm-256color
 fi
 
-# adapted idea from
-# https://github.com/corygabrielsen/dotfiles/blob/master/zsh/zshrc
-is_ai_agent() {
-    [[ "$CLAUDE_AGENT" == "1" ]] || [[ "$CLAUDECODE" == "1" ]] || [[ "$CODEX_MANAGED_BY_NPM" == "1" ]] || [[ "$CURSOR_AGENT" == "1" ]]
-}
-
-if is_ai_agent; then
-    set +H
-
-    # Set non-interactive
-    export EDITOR=nano
-    export VISUAL=nano
-    export PAGER=cat
-    export GIT_PAGER=cat
-    export LESS="-R --quit-if-one-screen --no-init"
-    alias cp="cp -f"
-    alias mv="mv -f"
-    alias rm="rm -f"
-    alias apt="apt -y"
-    alias apt-get="apt-get -y"
-    alias npm="npm --yes"
-    alias yarn="yarn --non-interactive"
-    alias git="git -c core.editor=true -c merge.tool=false"
-    alias make="make --no-print-directory"
-    alias rsync="rsync --progress"
-    export DEBIAN_FRONTEND=noninteractive
-    export PYTHONUNBUFFERED=1
-
-    if [[ "$CLAUDE_AGENT" == "1" || "$CLAUDECODE" == "1" ]]; then
-        export HISTFILE="$XDG_STATE_HOME/bash/history_claude"
-    elif [[ "$CODEX_MANAGED_BY_NPM" == "1" ]]; then
-        export HISTFILE="$XDG_STATE_HOME/bash/history_codex"
-    elif [[ "$CURSOR_AGENT" == "1" ]]; then
-        export HISTFILE="$XDG_STATE_HOME/bash/history_cursor"
-    else
-        export HISTFILE="$XDG_STATE_HOME/bash/history_ai"
-    fi
-
-fi
-
 if [ -f "$XDG_CONFIG_HOME/.ripgreprc" ]; then
     export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/.ripgreprc"
 fi
