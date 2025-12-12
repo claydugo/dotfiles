@@ -67,3 +67,8 @@ package.json
 
 CLAUDE.md
 .prompt
+
+.claude/*
+!.claude/settings.json
+!.claude/commands/
+!.claude/output-styles/

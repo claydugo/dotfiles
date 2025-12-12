@@ -1,0 +1,56 @@
+# Ghostty config - migrated from Kitty
+
+# Disable paste warning (like no_paste_warning in kitty)
+clipboard-paste-protection = false
+
+# Cursor settings
+cursor-style = block
+cursor-style-blink = false
+
+# Window decorations
+window-decoration = none
+confirm-close-surface = false
+
+# Mouse behavior
+mouse-hide-while-typing = true
+
+# Tokyo Night theme colors
+background = #1a1b26
+foreground = #c0caf5
+selection-background = #283457
+selection-foreground = #c0caf5
+cursor-color = #c0caf5
+cursor-text = #1a1b26
+
+# Normal colors (0-7)
+palette = 0=#15161e
+palette = 1=#f7768e
+palette = 2=#9ece6a
+palette = 3=#e0af68
+palette = 4=#7aa2f7
+palette = 5=#bb9af7
+palette = 6=#7dcfff
+palette = 7=#a9b1d6
+
+# Bright colors (8-15)
+palette = 8=#414868
+palette = 9=#f7768e
+palette = 10=#9ece6a
+palette = 11=#e0af68
+palette = 12=#7aa2f7
+palette = 13=#bb9af7
+palette = 14=#7dcfff
+palette = 15=#c0caf5
+
+# Extended colors
+palette = 16=#ff9e64
+palette = 17=#db4b4b
+
+# Font settings
+font-family = FiraCode Nerd Font Mono
+font-style = Regular
+font-style-bold = Bold
+font-size = 10
+
+# Keep ligatures enabled (default in Ghostty)
+# font-feature = +calt +liga
