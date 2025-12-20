@@ -52,8 +52,5 @@
 [fetch]
     writeCommitGraph = true
 
-[url "git@github.com:"]
-    insteadOf = "https://github.com/"
-
 [includeIf "gitdir:~/projects/ramona/"]
     path = ~/.gitrconfig
