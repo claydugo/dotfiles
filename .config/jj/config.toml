@@ -13,3 +13,7 @@ diff-formatter = ":color-words"
 backend = "ssh"
 behavior = "own"
 key = "/home/clay/.ssh/id_ed25519"
+
+[[--scope]]
+--when.repositories = ["~/projects/ramona"]
+user.email = "clay@ramonaoptics.com"
