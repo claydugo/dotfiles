@@ -31,6 +31,10 @@
     "type": "command",
     "command": "input=$(cat); model=$(echo \"$input\" | jq -r '.model.display_name'); version=$(echo \"$input\" | jq -r '.version'); printf \"%s | %s\" \"$model\" \"$version\""
   },
+  "enabledPlugins": {
+    "pyright-lsp@claude-plugins-official": true,
+    "lua-lsp@claude-plugins-official": true
+  },
   "sandbox": {
     "enabled": false,
     "autoAllowBashIfSandboxed": true,
