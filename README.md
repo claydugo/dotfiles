@@ -32,6 +32,8 @@ cd ~/dotfiles
 │   │   └── alacritty.yml
 │   ├── ghostty
 │   │   └── config
+│   ├── jj
+│   │   └── config.toml
 │   ├── kitty
 │   │   └── kitty.conf
 │   ├── nvim
