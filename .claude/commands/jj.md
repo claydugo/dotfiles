@@ -49,22 +49,24 @@ For each logical commit, provide:
 - path/to/file1
 - path/to/file2
 
-**Message:**
-```
-<type>(<scope>): <description>
-
-<body explaining the what and why>
-```
-
 **Commands:**
 ```bash
 jj split -r @ ...
 # ^ What this does: <explain what the command does and why we're using it here>
 
-jj describe -m "..."
-# ^ What this does: <explain what the command does>
+jj describe
+# ^ Opens $EDITOR to write commit message. Use the message below:
+```
+
+**Commit message:**
+```
+<type>(<scope>): <description>
+
+<body explaining the what and why>
 ```
 ```
+
+**IMPORTANT**: Never use `jj describe -m "..."`. Always use `jj describe` (no -m flag) to open the editor, then provide the commit message in a separate code block for easy copy-paste.
 
 ## jj concepts to explain
 
