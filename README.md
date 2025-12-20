@@ -1,27 +1,44 @@
 # Dotfiles
 
-![20221228](dotfiles.png)
+![dotfiles](dotfiles.png)
 
-![20221228](dots_macos.png)
-
-My auto-installer is located at `scripts/setup.sh`
+## Installation
 
 ```bash
+git clone --recurse-submodules git@github.com:claydugo/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+./scripts/bootstrap.sh
+```
 
-$ tree -a -I '.git|ramona|karabiner'
+<details>
+<summary>Structure</summary>
+
+```
 .
 ├── .aliases
 ├── .bashrc
+├── .claude
+│   ├── commands
+│   │   ├── jj.md
+│   │   └── remove_slop.md
+│   ├── output-styles
+│   │   └── direct-action.md
+│   └── settings.json
 ├── .config
-│   ├── alacritty
-│   │   └── alacritty.yml
-│   ├── kitty
-│   │   └── kitty.conf
+│   ├── .ripgreprc
 │   ├── MangoHud
 │   │   └── MangoHud.conf
+│   ├── alacritty
+│   │   └── alacritty.yml
+│   ├── ghostty
+│   │   └── config
+│   ├── kitty
+│   │   └── kitty.conf
 │   ├── nvim
+│   │   ├── ftplugin
+│   │   │   ├── gradle.lua
+│   │   │   └── java.lua
 │   │   ├── init.lua
-│   │   ├── lazy-lock.json
 │   │   └── lua
 │   │       ├── langserver_icons.lua
 │   │       ├── lazy_manager.lua
@@ -29,73 +46,103 @@ $ tree -a -I '.git|ramona|karabiner'
 │   │       ├── maps_plugin.lua
 │   │       ├── options.lua
 │   │       └── plugins
-│   │           ├── barbecue.lua
+│   │           ├── blink-cmp.lua
 │   │           ├── browsher.lua
 │   │           ├── copilot.lua
+│   │           ├── dropbar.lua
 │   │           ├── gitsigns.lua
+│   │           ├── jdtls.lua
+│   │           ├── lazydev.lua
 │   │           ├── lsp.lua
 │   │           ├── lualine.lua
 │   │           ├── markdown.lua
 │   │           ├── mini.lua
+│   │           ├── noice.lua
 │   │           ├── telescope.lua
 │   │           ├── tip_of_my_buffer.lua
 │   │           ├── tokyonight.lua
 │   │           ├── treesitter.lua
 │   │           └── vimwiki.lua
-│   ├── .ripgreprc
 │   ├── starship.toml
 │   └── warp-terminal
 │       └── keybindings.yaml
-├── dotfiles.png
-├── dots_macos.png
 ├── .gitconfig
 ├── .gitignore
+├── .gitlab_ci_skip
 ├── .gitmodules
 ├── .ipython
 │   ├── __init__.py
 │   └── profile_default
 │       └── startup
 │           └── 00-conf.py
-├── .linux_aliases
 ├── .local
 │   └── bin
 │       └── build_nvim.sh
-├── .mac_aliases
+├── .luacheckrc
+├── .luarc.json
 ├── .pre-commit-config.yaml
-├── README.md
-├── scripts
-│   └── setup.sh
+├── .stylua.toml
+├── .tmux-ssh.conf
 ├── .tmux.conf
-└── .tmux-ssh.conf
-
-15 directories, 43 files
+├── README.md
+└── scripts
+    ├── bootstrap.sh
+    ├── generate_readme.sh
+    ├── install_google_sans_code.sh
+    └── tmate_restore.py
 ```
 
-#### Dependencies
-* [neovim](https://neovim.io/)
-* [tmux](https://github.com/tmux/tmux/wiki)
-* [starship](https://starship.rs)
-* [eza](https://eza.rocks/)
+</details>
 
-#### Submodules
+## Dependencies
 
-Clone with submodules:
+Installed via `scripts/bootstrap.sh`:
 
-`git clone --recurse-submodules -j8 git@github.com:claydugo/dotfiles.git`
+### Cargo Packages
+- `jj-cli`
+- `hyperfine`
+- `stylua`
+- `gifski`
 
-after cloning:
+### Pixi
+- `git`
+- `neovim`
+- `tmux`
+- `starship`
+- `eza`
+- `bat`
+- `fzf`
+- `ripgrep`
+- `fd-find`
+- `cmake`
+- `make`
+- `python`
+- `htop`
+- `wget`
+- `curl`
+- `unzip`
+- `openssl`
+- `xclip`
+- `fswatch`
+- `rattler-build`
+- `fastfetch`
 
-`git submodule update --init`
+### Linux Desktop Packages (apt)
+- `gnome-tweaks`
 
-after updates
+### Other
+- [Pixi](https://pixi.sh/)
+- [rustup](https://rustup.rs/)
+- [NVM](https://github.com/nvm-sh/nvm)
+- [Kitty](https://sw.kovidgoyal.net/kitty/)
+- [Google Sans Code Nerd Font](https://github.com/AliApg/GoogleSansCode-Nerd)
 
-`git submodule update --remote`
+## Submodules
 
-#### Old NVIM configurations
+```bash
+# After cloning
+git submodule update --init
 
-[Custom Bubble Theme](https://github.com/claydugo/dotfiles/tree/c3a7fd79d0722f6af88129d9861a21a8f20ef223)
-
-[Switch from init.vim to init.lua](https://github.com/claydugo/dotfiles/commit/9803e70ab5df4f5db7f9da858a3c670d378daf0b)
-
-[Switch from packer.nvim to lazy.nvim](https://github.com/claydugo/dotfiles/commit/00000000a6b60527c21ba36515c93c71869ae253)
-
+# To update submodules
+git submodule update --remote
+```

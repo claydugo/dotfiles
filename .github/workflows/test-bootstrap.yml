@@ -1,0 +1,117 @@
+name: Test Bootstrap
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/bootstrap.sh'
+      - '.github/workflows/test-bootstrap.yml'
+  pull_request:
+    paths:
+      - 'scripts/bootstrap.sh'
+  workflow_dispatch:
+
+jobs:
+  test-bootstrap:
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:24.04
+
+    steps:
+      - name: Install prerequisites
+        run: |
+          apt-get update
+          apt-get install -y git curl sudo tree xz-utils fontconfig
+
+      - name: Create test user
+        run: |
+          useradd -m -s /bin/bash clay
+          echo "clay ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+      - name: Clone dotfiles
+        run: |
+          su - clay -c "git clone https://github.com/claydugo/dotfiles.git ~/dotfiles"
+
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+        with:
+          path: dotfiles-pr
+
+      - name: Copy PR changes
+        run: |
+          cp -r dotfiles-pr/* /home/clay/dotfiles/ 2>/dev/null || true
+          cp -r dotfiles-pr/.* /home/clay/dotfiles/ 2>/dev/null || true
+          chown -R clay:clay /home/clay/dotfiles
+
+      - name: Run bootstrap
+        run: |
+          su - clay -c "cd ~/dotfiles && ./scripts/bootstrap.sh"
+
+      - name: Verify symlinks
+        run: |
+          su - clay -c '
+            set -e
+            echo "Checking symlinks..."
+            [ -L ~/.bashrc ] && echo "✓ .bashrc"
+            [ -L ~/.gitignore ] && echo "✓ .gitignore"
+            [ -L ~/.gitlab_ci_skip ] && echo "✓ .gitlab_ci_skip"
+            [ -L ~/.claude ] && echo "✓ .claude"
+            [ -L ~/.config/nvim ] && echo "✓ .config/nvim"
+            [ -L ~/.config/kitty ] && echo "✓ .config/kitty"
+            [ -L ~/.config/starship.toml ] && echo "✓ .config/starship.toml"
+          '
+
+      - name: Verify cargo packages
+        run: |
+          su - clay -c '
+            source ~/.cargo/env
+            set -e
+            echo "Checking cargo packages..."
+            command -v jj && echo "✓ jj"
+            command -v hyperfine && echo "✓ hyperfine"
+            command -v stylua && echo "✓ stylua"
+            # gifski skipped - requires compilation from source
+          '
+
+      - name: Verify pixi packages
+        run: |
+          su - clay -c '
+            export PATH="$HOME/.pixi/bin:$PATH"
+            set -e
+            echo "Checking pixi packages..."
+            command -v pixi && echo "✓ pixi"
+            command -v nvim && echo "✓ neovim"
+            command -v tmux && echo "✓ tmux"
+            command -v starship && echo "✓ starship"
+            command -v eza && echo "✓ eza"
+            command -v bat && echo "✓ bat"
+            command -v fzf && echo "✓ fzf"
+            command -v rg && echo "✓ ripgrep"
+            command -v fd && echo "✓ fd-find"
+            command -v fastfetch && echo "✓ fastfetch"
+          '
+
+      - name: Verify NVM and Node
+        run: |
+          su - clay -c '
+            export NVM_DIR="$HOME/.local/share/nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+            set -e
+            echo "Checking NVM..."
+            command -v nvm && echo "✓ nvm"
+            command -v node && echo "✓ node"
+          '
+
+      - name: Verify kitty
+        run: |
+          su - clay -c '
+            set -e
+            echo "Checking kitty..."
+            [ -x ~/.local/kitty.app/bin/kitty ] && echo "✓ kitty installed"
+            [ -L ~/.local/bin/kitty ] && echo "✓ kitty symlink"
+          '
+
+      - name: Summary
+        run: |
+          echo "Bootstrap completed successfully!"
+          su - clay -c 'ls -la ~/'
