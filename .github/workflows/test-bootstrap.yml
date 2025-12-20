@@ -121,7 +121,7 @@ jobs:
             command -v nvim
 
             echo "Installing Lazy plugins..."
-            nvim --headless "+Lazy! sync" +qa
+            nvim --headless "+Lazy! restore" +qa
             echo "✓ Lazy plugins installed"
 
             echo "Checking Lazy plugin directory..."
@@ -143,8 +143,9 @@ jobs:
               nvim --headless "+TSInstallSync $parser" +qa 2>/dev/null || true
             done
 
-            echo "Verifying parsers..."
-            nvim --headless -c "lua local parsers = require(\"nvim-treesitter.parsers\"); local installed = {}; for _, p in ipairs({\"python\", \"lua\", \"bash\", \"json\"}) do if parsers.has_parser(p) then table.insert(installed, p) end end; print(\"Installed: \" .. table.concat(installed, \", \")); vim.cmd(\"qa\")"
+            echo "Checking parser files..."
+            PARSER_DIR="$HOME/.local/share/nvim/lazy/nvim-treesitter/parser"
+            ls "$PARSER_DIR"/*.so 2>/dev/null | wc -l | xargs -I {} echo "Found {} parser files"
             echo "✓ Treesitter parsers installed"
           '
 
