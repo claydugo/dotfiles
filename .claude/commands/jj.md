@@ -22,7 +22,9 @@ Example:
 ```
 ## Commit 1: Add user validation
 
-**Files:** src/validate.ts, src/validate.test.ts
+**Files:**
+- src/validate.ts
+- src/validate.test.ts
 
 **Commands:**
 ```bash
@@ -47,8 +49,8 @@ After all commits, output (replacing `BOOKMARK` with the actual bookmark from st
 
 ```bash
 jj git fetch
-jj rebase -d BOOKMARK@origin   # sync with remote
-jj bookmark set BOOKMARK -r @  # like: git branch -f BOOKMARK
+jj rebase -d BOOKMARK@origin
+jj bookmark set BOOKMARK
 jj git push
 ```
 
@@ -59,7 +61,7 @@ jj git push
 | `jj split` | Interactively split current change | `git add -p && git commit` |
 | `jj new` | Create empty change on top of current | `git commit --allow-empty` + working on it |
 | `jj describe` | Set commit message (opens editor) | `git commit --amend` (message only) |
-| `jj bookmark set X -r @` | Move bookmark to current commit | `git branch -f X` |
+| `jj bookmark set X` | Move bookmark to current commit | `git branch -f X` |
 
 **Key concept:** In jj, your working directory IS a commit (`@`). No staging—you split existing commits rather than staging pieces.
 
@@ -67,5 +69,5 @@ jj git push
 
 - Prefer smaller, focused commits over large ones
 - Order commits so dependencies come before dependents
-- Write clear, succinct commit messages: short summary line, then details if needed
+- Write simple commit messages (no conventional commit prefixes like `feat:` or `fix:`)
 - Never use `jj describe -m "..."` — always open the editor
