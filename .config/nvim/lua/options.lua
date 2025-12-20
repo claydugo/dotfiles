@@ -20,7 +20,7 @@ vim.o.ignorecase = true
 vim.o.incsearch = true
 vim.o.smartcase = true
 vim.o.hlsearch = true
-vim.o.shortmess = vim.o.shortmess .. "S"
+vim.opt.shortmess:append("S")
 
 vim.o.history = 1000
 vim.o.ruler = true
@@ -71,16 +71,6 @@ if vim.g.vscode then
 else
   vim.o.cmdheight = 0
 end
-
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "lua",
-  callback = function()
-    vim.bo.expandtab = true
-    vim.bo.shiftwidth = 2
-    vim.bo.tabstop = 2
-    vim.bo.softtabstop = 2
-  end,
-})
 
 vim.cmd([[
 	command! Q q
