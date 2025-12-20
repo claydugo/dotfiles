@@ -1,10 +1,11 @@
 return {
   "nvim-treesitter/nvim-treesitter",
+  branch = "master", -- pin to master for old API (main branch has breaking changes)
   build = ":TSUpdate",
   event = { "BufReadPre", "BufNewFile" },
   dependencies = {
     "windwp/nvim-ts-autotag",
-    "nvim-treesitter/nvim-treesitter-textobjects",
+    { "nvim-treesitter/nvim-treesitter-textobjects", branch = "master" },
   },
   config = function()
     require("nvim-ts-autotag").setup()
