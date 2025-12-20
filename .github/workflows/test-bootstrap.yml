@@ -115,13 +115,13 @@ jobs:
         run: |
           su - clay -c '
             set -e
-            NVIM="$HOME/.pixi/bin/nvim"
+            export PATH="$HOME/.pixi/bin:$PATH"
 
             echo "Checking nvim location..."
-            ls -la $NVIM
+            command -v nvim
 
             echo "Installing Lazy plugins..."
-            $NVIM --headless "+Lazy! sync" +qa
+            nvim --headless "+Lazy! sync" +qa
             echo "✓ Lazy plugins installed"
 
             echo "Checking Lazy plugin directory..."
@@ -134,17 +134,17 @@ jobs:
         run: |
           su - clay -c '
             set -e
-            NVIM="$HOME/.pixi/bin/nvim"
+            export PATH="$HOME/.pixi/bin:$PATH"
             echo "Installing Treesitter parsers..."
 
             PARSERS="python lua rust c bash html json gitcommit gitignore"
             for parser in $PARSERS; do
               echo "Installing $parser parser..."
-              $NVIM --headless "+TSInstallSync $parser" +qa 2>/dev/null || true
+              nvim --headless "+TSInstallSync $parser" +qa 2>/dev/null || true
             done
 
             echo "Verifying parsers..."
-            $NVIM --headless -c "lua local parsers = require(\"nvim-treesitter.parsers\"); local installed = {}; for _, p in ipairs({\"python\", \"lua\", \"bash\", \"json\"}) do if parsers.has_parser(p) then table.insert(installed, p) end end; print(\"Installed: \" .. table.concat(installed, \", \")); vim.cmd(\"qa\")"
+            nvim --headless -c "lua local parsers = require(\"nvim-treesitter.parsers\"); local installed = {}; for _, p in ipairs({\"python\", \"lua\", \"bash\", \"json\"}) do if parsers.has_parser(p) then table.insert(installed, p) end end; print(\"Installed: \" .. table.concat(installed, \", \")); vim.cmd(\"qa\")"
             echo "✓ Treesitter parsers installed"
           '
 
@@ -152,14 +152,14 @@ jobs:
         run: |
           su - clay -c '
             set -e
-            NVIM="$HOME/.pixi/bin/nvim"
+            export PATH="$HOME/.pixi/bin:$PATH"
             echo "Installing Mason packages..."
 
             # Install core LSPs (skip jdtls since no JDK in CI)
             MASON_PKGS="lua-language-server bash-language-server ruff shellcheck"
             for pkg in $MASON_PKGS; do
               echo "Installing $pkg..."
-              $NVIM --headless "+MasonInstall $pkg" +qa 2>/dev/null &
+              nvim --headless "+MasonInstall $pkg" +qa 2>/dev/null &
             done
             wait
 
@@ -175,14 +175,14 @@ jobs:
         run: |
           su - clay -c '
             set -e
-            NVIM="$HOME/.pixi/bin/nvim"
+            export PATH="$HOME/.pixi/bin:$PATH"
             echo "Running nvim health checks..."
 
             # Check that nvim starts without errors
-            $NVIM --headless -c "qa" && echo "✓ nvim starts cleanly"
+            nvim --headless -c "qa" && echo "✓ nvim starts cleanly"
 
             # Run checkhealth for key components
-            $NVIM --headless -c "checkhealth lazy" -c "qa" 2>&1 | head -20 || true
+            nvim --headless -c "checkhealth lazy" -c "qa" 2>&1 | head -20 || true
             echo "✓ Health checks completed"
           '
 
