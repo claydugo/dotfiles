@@ -5,7 +5,7 @@ name = "Clay Dugo"
 email = "claydugo@gmail.com"
 
 [ui]
-editor = "nvim"
+editor = ["nvim", "-c", "set filetype=jj"]
 merge-editor = "nvim"
 diff-formatter = ":color-words"
 

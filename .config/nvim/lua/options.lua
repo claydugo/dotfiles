@@ -66,6 +66,17 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   end,
 })
 
+-- Strip leading whitespace for commit messages
+vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+  callback = function()
+    if vim.bo.filetype == "jj" or vim.bo.filetype == "gitcommit" then
+      local save_cursor = vim.fn.getpos(".")
+      vim.cmd([[keeppatterns %s/^\s\+//e]])
+      vim.fn.setpos(".", save_cursor)
+    end
+  end,
+})
+
 if vim.g.vscode then
   vim.o.cmdheight = 3
 else
