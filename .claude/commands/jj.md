@@ -4,7 +4,7 @@ Analyze uncommitted changes and organize them into logical, atomic commits using
 
 ## Steps
 
-1. **Understand the codebase**: Use the Explore agent to understand project structure and module boundaries. Check recent commit style with `jj log -n 20`.
+1. **Understand the codebase**: Use the Explore agent to understand project structure and module boundaries. Check recent commit style with `jj log -n 20`. If this fails with "not a jj repo", run `jj git init --colocate` first.
 
 2. **Examine changes**: Run `jj diff` to see all uncommitted changes.
 
@@ -48,9 +48,7 @@ For subsequent commits: after `jj split`, the remaining changes stay in the work
 After all commits, output (replacing `BOOKMARK` with the actual bookmark from step 4):
 
 ```bash
-jj git fetch
-jj rebase -d BOOKMARK@origin
-jj bookmark set BOOKMARK
+jj git fetch && jj rebase -d BOOKMARK@origin && jj bookmark set BOOKMARK
 jj git push
 ```
 
