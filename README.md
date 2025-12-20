@@ -110,7 +110,7 @@ Installed via `scripts/bootstrap.sh`:
 
 ### Pixi
 - `git`
-- `neovim`
+- `nvim`
 - `tmux`
 - `starship`
 - `eza`
