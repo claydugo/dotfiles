@@ -32,7 +32,7 @@ jj describe
 
 **Commit message:**
 ```
-feat(validation): add email format validation
+Add email format validation
 
 Validates email format before submission to prevent
 malformed entries in the database.
@@ -67,5 +67,5 @@ jj git push
 
 - Prefer smaller, focused commits over large ones
 - Order commits so dependencies come before dependents
-- Use conventional commits: feat, fix, refactor, docs, test, chore
+- Write clear, succinct commit messages: short summary line, then details if needed
 - Never use `jj describe -m "..."` — always open the editor
