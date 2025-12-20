@@ -130,6 +130,8 @@ Installed via `scripts/bootstrap.sh`:
 - `rattler-build`
 - `fastfetch`
 
+### Linux Desktop Packages (apt)
+
 ### Other
 - [Pixi](https://pixi.sh/)
 - [rustup](https://rustup.rs/)
