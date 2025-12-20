@@ -143,7 +143,7 @@ git checkout "$(hostname)" 2>/dev/null || git checkout -b "$(hostname)" 2>/dev/n
 
 global_cli_tools=(
     git
-    neovim
+    nvim
     tmux
     starship
     eza

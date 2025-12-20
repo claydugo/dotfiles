@@ -73,25 +73,6 @@ jobs:
             # gifski skipped - requires compilation from source
           '
 
-      - name: Debug pixi installation
-        run: |
-          su - clay -c '
-            echo "=== pixi global list ==="
-            $HOME/.pixi/bin/pixi global list || true
-
-            echo ""
-            echo "=== Contents of ~/.pixi/bin/ ==="
-            ls -la $HOME/.pixi/bin/ || true
-
-            echo ""
-            echo "=== Contents of ~/.pixi/envs/ ==="
-            ls -la $HOME/.pixi/envs/ || true
-
-            echo ""
-            echo "=== Looking for nvim binary ==="
-            find $HOME/.pixi -name "nvim" -type f 2>/dev/null || true
-          '
-
       - name: Verify pixi packages
         run: |
           su - clay -c '
