@@ -1,4 +1,5 @@
 {
+  "companyAnnouncements": ["https://github.com/claydugo/dotfiles"],
   "cleanupPeriodDays": 30,
   "includeCoAuthoredBy": false,
   "permissions": {
