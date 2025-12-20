@@ -99,11 +99,13 @@ After providing the commands, include:
 
 1. **Git equivalent**: For each jj command used, show what you would have done in git
    ```
-   jj split            → git add -p && git commit (repeated)
-   jj describe         → git commit --amend (for message only)
-   jj rebase -r X -d Y → git rebase -i (manual reordering)
-   jj bookmark set     → git branch -f <name> (move branch pointer)
-   jj git push         → git push
+   jj split              → git add -p && git commit (repeated)
+   jj describe           → git commit --amend (for message only)
+   jj rebase -r X -d Y   → git rebase -i (manual reordering)
+   jj rebase -d main@origin → git pull --rebase origin main
+   jj bookmark set       → git branch -f <name> (move branch pointer)
+   jj git fetch          → git fetch
+   jj git push           → git push
    ```
 
 2. **Mental model tip**: One insight about how jj thinks differently than git
@@ -115,6 +117,15 @@ After providing the commands, include:
 After all commits are described, always include:
 
 ```bash
+jj git fetch
+# ^ What this does: Fetches latest changes from remote. ALWAYS do this before pushing to avoid
+#   "stale info" errors when remote has moved (e.g., CI auto-commits, pushes from other machines).
+
+jj rebase -d main@origin
+# ^ What this does: Rebases your current work onto the fetched remote main.
+#   This ensures your commits go on top of any new remote commits.
+#   If main@origin hasn't moved, this is a no-op.
+
 jj bookmark set main -r @
 # ^ What this does: Moves the 'main' bookmark to point to the current commit (@).
 #   jj uses "bookmarks" instead of git's "branches". Without this, push won't know what to push.
