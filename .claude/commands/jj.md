@@ -4,15 +4,17 @@ Analyze uncommitted changes and organize them into logical, atomic commits using
 
 ## Steps
 
-1. **Understand the codebase**: Use the Explore agent to understand project structure and module boundaries. Check recent commit style with `jj log -n 20`. If this fails with "not a jj repo", run `jj git init --colocate` first.
+1. **Initialize jj if needed**: Run `jj log -n 20` to check recent commit style. If it fails with "not a jj repo", run `jj git init --colocate` first, then retry.
 
-2. **Examine changes**: Run `jj diff` to see all uncommitted changes.
+2. **Understand the codebase**: Use the Explore agent to understand project structure and module boundaries.
 
-3. **Identify logical groupings**: Separate into atomic units by feature, bugfix, refactor, docs, tests, or config. Keep related changes together (e.g., implementation + tests).
+3. **Examine changes**: Run `jj diff` to see all uncommitted changes.
 
-4. **Determine current bookmark**: Run `jj bookmark list` to identify which bookmark to push (e.g., `main`, `feature-x`).
+4. **Identify logical groupings**: Separate into atomic units by feature, bugfix, refactor, docs, tests, or config. Keep related changes together (e.g., implementation + tests).
 
-5. **Generate commands**: Output the exact jj commands to run. DO NOT execute them.
+5. **Determine current bookmark**: Run `jj bookmark list` to identify which bookmark to push (e.g., `main`, `feature-x`).
+
+6. **Generate commands**: Output the exact jj commands to run. DO NOT execute them.
 
 ## Output format
 
