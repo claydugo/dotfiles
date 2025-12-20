@@ -43,7 +43,7 @@ malformed entries in the database.
 ```
 ```
 
-For subsequent commits: after `jj split`, the remaining changes stay in the working copy commit (`@`). Just run `jj split` again to select the next batch of files, then `jj describe`. Only use `jj new` after describing the final commit.
+For subsequent commits: after `jj split`, the remaining changes stay in the working copy commit (`@`). Just run `jj split` again to select the next batch of files. After the final split, run `jj describe` to set the message for the remaining commit in `@`.
 
 ## Push sequence
 
