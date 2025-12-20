@@ -47,7 +47,6 @@ cd ~/dotfiles
 │   │       │   └── lazy.lua
 │   │       ├── langserver_icons.lua
 │   │       ├── maps.lua
-│   │       ├── maps_plugin.lua
 │   │       ├── options.lua
 │   │       └── plugins
 │   │           ├── blink-cmp.lua
