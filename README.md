@@ -26,8 +26,6 @@ cd ~/dotfiles
 │   └── settings.json
 ├── .config
 │   ├── .ripgreprc
-│   ├── MangoHud
-│   │   └── MangoHud.conf
 │   ├── alacritty
 │   │   └── alacritty.yml
 │   ├── ghostty
@@ -66,9 +64,7 @@ cd ~/dotfiles
 │   │           ├── tokyonight.lua
 │   │           ├── treesitter.lua
 │   │           └── vimwiki.lua
-│   ├── starship.toml
-│   └── warp-terminal
-│       └── keybindings.yaml
+│   └── starship.toml
 ├── .gitconfig
 ├── .gitignore
 ├── .gitlab_ci_skip
