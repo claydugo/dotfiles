@@ -99,6 +99,7 @@ return {
 
     -- Force treesitter re-highlight after external file changes
     vim.api.nvim_create_autocmd("FileChangedShellPost", {
+      group = vim.api.nvim_create_augroup("treesitter_external_changes", { clear = true }),
       callback = function()
         vim.cmd("edit")
       end,
