@@ -35,6 +35,11 @@ alias restart_anydesk='(tmux has-session -t anydesk_session 2>/dev/null || tmux 
 # Think this is zsh default
 alias ~='cd ~'
 
+# Linux desktop
+alias f='nautilus .'
+alias v='/usr/bin/env nvim'
+alias aptup='sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y'
+
 # Ramona Specific
 if [ -f ~/dotfiles/ramona/.ramona ]; then
     source ~/dotfiles/ramona/.ramona

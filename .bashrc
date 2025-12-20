@@ -70,15 +70,6 @@ fi
 
 path_prepend "$HOME/.pixi/bin"
 
-os=$(uname -s)
-
-if [[ "$os" = "Linux" ]]; then
-    source "$HOME/dotfiles/.linux_aliases"
-fi
-if [[ "$os" = "Darwin" ]]; then
-    source "$HOME/dotfiles/.mac_aliases"
-fi
-
 source "$HOME/dotfiles/.aliases"
 
 export NVM_DIR="$XDG_DATA_HOME/nvm"
