@@ -34,6 +34,9 @@ Provide the exact jj commands I should run to:
 - Split the working copy into separate commits
 - Reorder commits if needed for a clean history
 - Write meaningful commit messages following conventional commits format
+- Push the commits to the remote
+
+**Always end with `jj git push`** - include this command at the end of your output.
 
 ## Output format
 
@@ -85,6 +88,8 @@ Use these commands as needed:
 - `jj rebase -r <rev> -d <destination>` - reorder commits
 - `jj log` - show commit graph
 - `jj diff` - show current changes
+- `jj bookmark set <name> -r <rev>` - move/create a bookmark (branch) to point at a revision
+- `jj git push` - push commits to the remote (makes them immutable)
 
 ## Learning aids
 
@@ -92,14 +97,31 @@ After providing the commands, include:
 
 1. **Git equivalent**: For each jj command used, show what you would have done in git
    ```
-   jj split          → git add -p && git commit (repeated)
-   jj describe       → git commit --amend (for message only)
+   jj split            → git add -p && git commit (repeated)
+   jj describe         → git commit --amend (for message only)
    jj rebase -r X -d Y → git rebase -i (manual reordering)
+   jj bookmark set     → git branch -f <name> (move branch pointer)
+   jj git push         → git push
    ```
 
 2. **Mental model tip**: One insight about how jj thinks differently than git
 
 3. **What to check**: Suggest running `jj log` after to verify the result looks right
+
+## Final step: Push
+
+After all commits are described, always include:
+
+```bash
+jj bookmark set main -r @
+# ^ What this does: Moves the 'main' bookmark to point to the current commit (@).
+#   jj uses "bookmarks" instead of git's "branches". Without this, push won't know what to push.
+
+jj git push
+# ^ What this does: Pushes all new commits to the remote. This makes them immutable in jj.
+```
+
+Note: If working on a feature branch, replace `main` with the appropriate bookmark name.
 
 ## Important notes
 
