@@ -1,0 +1,15 @@
+#:schema https://docs.jj-vcs.dev/latest/config-schema.json
+
+[user]
+name = "Clay Dugo"
+email = "claydugo@gmail.com"
+
+[ui]
+editor = "nvim"
+merge-editor = "nvim"
+diff-formatter = ":color-words"
+
+[signing]
+backend = "ssh"
+sign-all = true
+key = "/home/clay/.ssh/id_ed25519"
