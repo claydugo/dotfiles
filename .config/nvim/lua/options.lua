@@ -7,13 +7,13 @@ vim.o.grepformat = "%f:%l:%c:%m"
 vim.o.encoding = "utf-8"
 vim.o.backspace = "indent,eol,start"
 
-vim.o.completeopt = "menu,menuone,noselect"
+vim.opt.completeopt = { "menu", "menuone", "noselect" }
 
 vim.o.hidden = true
 vim.o.backup = false
 vim.o.writebackup = false
 vim.o.swapfile = false
-vim.o.clipboard = "unnamed,unnamedplus"
+vim.opt.clipboard = { "unnamed", "unnamedplus" }
 
 vim.o.updatetime = 300
 vim.o.ignorecase = true
