@@ -11,5 +11,5 @@ diff-formatter = ":color-words"
 
 [signing]
 backend = "ssh"
-sign-all = true
+behavior = "own"
 key = "/home/clay/.ssh/id_ed25519"
