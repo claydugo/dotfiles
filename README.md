@@ -37,11 +37,13 @@ cd ~/dotfiles
 │   ├── nvim
 │   │   ├── ftplugin
 │   │   │   ├── gradle.lua
-│   │   │   └── java.lua
+│   │   │   ├── java.lua
+│   │   │   └── lua.lua
 │   │   ├── init.lua
 │   │   └── lua
+│   │       ├── config
+│   │       │   └── lazy.lua
 │   │       ├── langserver_icons.lua
-│   │       ├── lazy_manager.lua
 │   │       ├── maps.lua
 │   │       ├── maps_plugin.lua
 │   │       ├── options.lua
