@@ -165,10 +165,6 @@ global_cli_tools=(
     fastfetch
 )
 
-linux_desktop_packages=(
-    gnome-tweaks
-)
-
 install_rustup
 install_cargo_packages
 install_nvm
@@ -180,10 +176,6 @@ install_with_pixi_global "${global_cli_tools[@]}"
 ln -sfn ~/dotfiles/.gitconfig "$XDG_CONFIG_HOME/git/config"
 
 if [ "$(uname -s)" == "Linux" ]; then
-    print_message "32" "Installing Linux desktop packages..."
-    sudo apt-get update
-    sudo apt-get install -y "${linux_desktop_packages[@]}"
-
     if ! grep -q "fs.inotify.max_user_watches=100000" /etc/sysctl.conf; then
         echo -e "fs.inotify.max_user_watches=100000\nfs.inotify.max_queued_events=100000" | sudo tee -a /etc/sysctl.conf
         sudo sysctl -p
