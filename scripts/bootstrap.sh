@@ -1,20 +1,25 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
 
 : "${XDG_CONFIG_HOME:="$HOME/.config"}"
+
+cleanup() {
+    :
+}
+trap cleanup EXIT
 
 print_message() {
     local color="$1"
     local message="$2"
-    echo -e "\e[${color}m${message}\e[0m"
+    printf '\e[%sm%s\e[0m\n' "$color" "$message"
 }
 
 install_rustup() {
     print_message "32" "Installing Rust toolchain..."
-    if ! command -v rustup &> /dev/null; then
+    if ! command -v rustup >/dev/null 2>&1; then
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-        source "$HOME/.cargo/env"
+        . "$HOME/.cargo/env"
     else
         print_message "34" "Rustup is already installed."
         rustup update
@@ -24,7 +29,7 @@ install_rustup() {
 install_cargo_packages() {
     print_message "32" "Installing Cargo packages..."
 
-    if ! command -v cargo-binstall &> /dev/null; then
+    if ! command -v cargo-binstall >/dev/null 2>&1; then
         print_message "34" "Installing cargo-binstall..."
         curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
     fi
@@ -50,7 +55,7 @@ install_nvm() {
 
 install_pixi() {
     print_message "32" "Installing Pixi package manager..."
-    if ! command -v pixi &> /dev/null; then
+    if ! command -v pixi >/dev/null 2>&1; then
         curl -fsSL https://pixi.sh/install.sh | bash
         export PATH="$HOME/.pixi/bin:$PATH"
     else
@@ -62,7 +67,7 @@ install_with_pixi_global() {
     local packages=("$@")
     print_message "32" "Installing global CLI tools with Pixi: ${packages[*]}"
     for pkg in "${packages[@]}"; do
-        if ! pixi global list 2>/dev/null | grep -q "^$pkg "; then
+        if ! pixi global list 2>/dev/null | grep -Fq "$pkg"; then
             pixi global install "$pkg"
         else
             print_message "34" "$pkg is already installed globally."
@@ -71,74 +76,74 @@ install_with_pixi_global() {
 }
 
 setup_pixi_environment() {
-    if [ -f ~/dotfiles/ramona/pixi.toml ]; then
+    if [ -f "$HOME/dotfiles/ramona/pixi.toml" ]; then
         print_message "32" "Setting up pixi environment from ramona..."
-        ln -sfn ~/dotfiles/ramona/pixi.toml ~/pixi.toml
-        ln -sfn ~/dotfiles/ramona/pixi.lock ~/pixi.lock 2>/dev/null || true
+        ln -sfn "$HOME/dotfiles/ramona/pixi.toml" "$HOME/pixi.toml"
+        ln -sfn "$HOME/dotfiles/ramona/pixi.lock" "$HOME/pixi.lock" 2>/dev/null || true
         print_message "34" "Symlinked ~/pixi.toml -> ~/dotfiles/ramona/pixi.toml"
     fi
 }
 
 print_message "34" "Setting up dotfiles..."
-cd ~/dotfiles/
+cd "$HOME/dotfiles/"
 git submodule update --remote
 
 sudo -v
 
 print_message "32" "Symlinking configuration files..."
-ln -sfn ~/dotfiles/.bashrc ~/.bashrc
-ln -sfn ~/dotfiles/.gitignore ~/.gitignore
-ln -sfn ~/dotfiles/.gitlab_ci_skip ~/.gitlab_ci_skip
+ln -sfn "$HOME/dotfiles/.bashrc" "$HOME/.bashrc"
+ln -sfn "$HOME/dotfiles/.gitignore" "$HOME/.gitignore"
+ln -sfn "$HOME/dotfiles/.gitlab_ci_skip" "$HOME/.gitlab_ci_skip"
 
 mkdir -p "$XDG_CONFIG_HOME/tmux"
-ln -sfn ~/dotfiles/.tmux.conf "$XDG_CONFIG_HOME/tmux/tmux.conf"
+ln -sfn "$HOME/dotfiles/.tmux.conf" "$XDG_CONFIG_HOME/tmux/tmux.conf"
 
 mkdir -p "$XDG_CONFIG_HOME/git"
 # gitconfig symlinked after network installs (has insteadOf HTTPS→SSH)
 
-if [ -f ~/dotfiles/.condarc ]; then
+if [ -f "$HOME/dotfiles/.condarc" ]; then
     mkdir -p "$XDG_CONFIG_HOME/conda"
-    ln -sfn ~/dotfiles/.condarc "$XDG_CONFIG_HOME/conda/.condarc"
+    ln -sfn "$HOME/dotfiles/.condarc" "$XDG_CONFIG_HOME/conda/.condarc"
 fi
 
-[ -e ~/.claude ] && rm -rf ~/.claude
-ln -sfn ~/dotfiles/.claude ~/.claude
+[ -e "$HOME/.claude" ] && rm -rf "$HOME/.claude"
+ln -sfn "$HOME/dotfiles/.claude" "$HOME/.claude"
 
 mkdir -p "$XDG_CONFIG_HOME"
-for item in ~/dotfiles/.config/*; do
+for item in "$HOME/dotfiles/.config"/*; do
     base_item=$(basename "$item")
     target="$XDG_CONFIG_HOME/$base_item"
     [ -e "$target" ] && rm -rf "$target"
     ln -sfn "$item" "$target"
 done
 
-ln -sfn ~/dotfiles/.ipython "$XDG_CONFIG_HOME/ipython"
+ln -sfn "$HOME/dotfiles/.ipython" "$XDG_CONFIG_HOME/ipython"
 
 git config --global user.name "Clay Dugo"
 git config --global user.email "claydugo@gmail.com"
 
 print_message "32" "Installing Kitty terminal..."
-mkdir -p ~/.local/bin/
-mkdir -p ~/.local/share/applications/
+mkdir -p "$HOME/.local/bin/"
+mkdir -p "$HOME/.local/share/applications/"
 curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
-ln -sf ~/.local/kitty.app/bin/kitty ~/.local/bin/
-ln -sf ~/.local/kitty.app/bin/kitten ~/.local/bin/
-cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/applications/
-cp ~/.local/kitty.app/share/applications/kitty-open.desktop ~/.local/share/applications/
-sed -i "s|Icon=kitty|Icon=$HOME/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" ~/.local/share/applications/kitty*.desktop
-sed -i "s|Exec=kitty|Exec=$HOME/.local/kitty.app/bin/kitty|g" ~/.local/share/applications/kitty*.desktop
+ln -sf "$HOME/.local/kitty.app/bin/kitty" "$HOME/.local/bin/"
+ln -sf "$HOME/.local/kitty.app/bin/kitten" "$HOME/.local/bin/"
+cp "$HOME/.local/kitty.app/share/applications/kitty.desktop" "$HOME/.local/share/applications/"
+cp "$HOME/.local/kitty.app/share/applications/kitty-open.desktop" "$HOME/.local/share/applications/"
+sed -i "s|Icon=kitty|Icon=$HOME/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" "$HOME/.local/share/applications"/kitty*.desktop
+sed -i "s|Exec=kitty|Exec=$HOME/.local/kitty.app/bin/kitty|g" "$HOME/.local/share/applications"/kitty*.desktop
 
 print_message "32" "Installing Google Sans Code Nerd Font..."
-~/dotfiles/scripts/install_google_sans_code.sh
+"$HOME/dotfiles/scripts/install_google_sans_code.sh"
 
-ln -sf ~/dotfiles/.local/bin/build_nvim.sh ~/.local/bin/build_nvim
+ln -sf "$HOME/dotfiles/.local/bin/build_nvim.sh" "$HOME/.local/bin/build_nvim"
 
-if [ -d ~/dotfiles/ramona/scripts ]; then
-    [ -f ~/dotfiles/ramona/scripts/ws ] && ln -sf ~/dotfiles/ramona/scripts/ws ~/.local/bin/ws
-    [ -f ~/dotfiles/ramona/scripts/drop_caches ] && sudo ln -sf ~/dotfiles/ramona/scripts/drop_caches /usr/sbin/drop_caches
+if [ -d "$HOME/dotfiles/ramona/scripts" ]; then
+    [ -f "$HOME/dotfiles/ramona/scripts/ws" ] && ln -sf "$HOME/dotfiles/ramona/scripts/ws" "$HOME/.local/bin/ws"
+    [ -f "$HOME/dotfiles/ramona/scripts/drop_caches" ] && sudo ln -sf "$HOME/dotfiles/ramona/scripts/drop_caches" /usr/sbin/drop_caches
 fi
 
-cd ~/dotfiles
+cd "$HOME/dotfiles"
 git checkout "$(hostname)" 2>/dev/null || git checkout -b "$(hostname)" 2>/dev/null || true
 
 global_cli_tools=(
@@ -165,23 +170,23 @@ global_cli_tools=(
     fastfetch
 )
 
-install_rustup
-install_cargo_packages
-install_nvm
-install_pixi
+install_rustup || { print_message "31" "Failed to install Rust"; exit 1; }
+install_cargo_packages || { print_message "31" "Failed to install Cargo packages"; exit 1; }
+install_nvm || { print_message "31" "Failed to install NVM"; exit 1; }
+install_pixi || { print_message "31" "Failed to install Pixi"; exit 1; }
 setup_pixi_environment
-install_with_pixi_global "${global_cli_tools[@]}"
+install_with_pixi_global "${global_cli_tools[@]}" || { print_message "31" "Failed to install global CLI tools"; exit 1; }
 
 # Symlink gitconfig after network installs (has insteadOf HTTPS→SSH)
-ln -sfn ~/dotfiles/.gitconfig "$XDG_CONFIG_HOME/git/config"
+ln -sfn "$HOME/dotfiles/.gitconfig" "$XDG_CONFIG_HOME/git/config"
 
-if [ "$(uname -s)" == "Linux" ]; then
+if [ "$(uname -s)" = "Linux" ]; then
     if ! grep -q "fs.inotify.max_user_watches=100000" /etc/sysctl.conf; then
-        echo -e "fs.inotify.max_user_watches=100000\nfs.inotify.max_queued_events=100000" | sudo tee -a /etc/sysctl.conf
+        printf 'fs.inotify.max_user_watches=100000\nfs.inotify.max_queued_events=100000\n' | sudo tee -a /etc/sysctl.conf
         sudo sysctl -p
     fi
 
-    if command -v gsettings &>/dev/null && [ -n "$DISPLAY" ] || [ -n "$WAYLAND_DISPLAY" ]; then
+    if command -v gsettings >/dev/null 2>&1 && { [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; }; then
         gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']" 2>/dev/null || true
     fi
 fi
