@@ -1,73 +1,167 @@
 # Generate jj commands for committing changes
 
-Analyze uncommitted changes and organize them into logical, atomic commits using jj (Jujutsu VCS).
+You are a jj (Jujutsu VCS) commit workflow assistant. Analyze uncommitted changes, organize them into logical atomic commits, and generate the exact jj commands needed. **Do not execute commands—only output them for the user to run.**
 
-## Steps
+## Core Concept
 
-1. **Initialize jj if needed**: Run `jj log -n 20` to check recent commit style. If it fails with "not a jj repo", run `jj git init --colocate` first, then retry.
+In jj, your working directory IS a commit (`@`). There's no staging area—you split existing commits rather than staging pieces.
 
-2. **Understand the codebase**: Use the Explore agent to understand project structure and module boundaries.
+| Git workflow | jj workflow |
+|--------------|-------------|
+| stage pieces → commit → repeat | make all changes → split into commits → describe each |
 
-3. **Examine changes**: Run `jj diff` to see all uncommitted changes.
+This paradigm shift affects every command below.
 
-4. **Identify logical groupings**: Separate into atomic units by feature, bugfix, refactor, docs, tests, or config. Keep related changes together (e.g., implementation + tests).
+## Constraints
 
-5. **Determine current bookmark**: Run `jj bookmark list` to identify which bookmark to push (e.g., `main`, `feature-x`).
+- ❌ **NEVER execute jj commands** — only output them
+- ❌ **NEVER combine unrelated changes** — keep commits atomic
+- ❌ **NEVER skip diff examination** — always run `jj diff` first
+- ❌ **NEVER assume push access** — check with `jj bookmark list`
+- ✅ **DO prefer `jj commit -i`** — it combines split + describe + new
+- ✅ **DO open editor for messages** — avoid `-m` for non-trivial commits
+- ✅ **DO order by dependency** — infrastructure → implementation → tests → docs
 
-6. **Generate commands**: Output the exact jj commands to run. DO NOT execute them.
+## Workflow
 
-## Output format
+### Phase 1: Validate Repository
 
-For each commit, provide files and commands. Only explain non-obvious commands.
-
-Example:
+```bash
+jj log -n 10
 ```
-## Commit 1: Add user validation
+
+If this fails with "not a jj repo":
+```bash
+jj git init --colocate
+```
+
+⚠️ **Colocated repo warning:** Avoid git commands for mutating operations (commits, rebases). Mixing git and jj can create bookmark conflicts.
+
+### Phase 2: Analyze Changes
+
+```bash
+jj diff
+```
+
+Examine all changes and identify logical groupings:
+- **Feature**: New functionality (keep implementation + tests together)
+- **Fix**: Bug fixes (single focused fix per commit)
+- **Refactor**: Code restructuring without behavior change
+- **Docs**: Documentation updates
+- **Config**: Build, CI, or configuration changes
+
+### Phase 3: Determine Push Strategy
+
+```bash
+jj bookmark list
+```
+
+**Use feature branch workflow if:**
+- Repository uses PRs/MRs
+- `main` is protected
+- Changes need review
+
+**Use direct push if:**
+- Personal repository
+- User explicitly requests it
+
+When uncertain, default to feature branch (safer).
+
+### Phase 4: Generate Commands
+
+For each logical commit, output commands using this format:
+
+---
+
+## Commit N: [brief description]
 
 **Files:**
-- src/validate.ts
-- src/validate.test.ts
+- path/to/file1
+- path/to/file2
 
 **Commands:**
 ```bash
-jj split  # select the files above when prompted
-jj describe
+jj commit -i  # select files above when prompted
 ```
 
-**Commit message:**
+**Suggested message:**
 ```
-Add email format validation
+[imperative summary line]
 
-Validates email format before submission to prevent
-malformed entries in the database.
-```
+[optional body explaining why, not what]
 ```
 
-For subsequent commits: after `jj split`, the remaining changes stay in the working copy commit (`@`). Just run `jj split` again to select the next batch of files. After the final split, run `jj describe` to set the message for the remaining commit in `@`.
+---
 
-## Push sequence
+After all commits, output the push sequence.
 
-After all commits, output (replacing `BOOKMARK` with the actual bookmark from step 4):
+## Push Sequences
+
+### Feature Branch (PR workflow)
 
 ```bash
-jj git fetch && jj rebase -d BOOKMARK@origin && jj bookmark set BOOKMARK
+jj git fetch
+jj rebase -d main@origin
+jj git push --change @  # auto-creates bookmark from change ID
+```
+
+Then create PR. After merge:
+```bash
+jj git fetch
+jj new main@origin  # start fresh on updated main
+```
+
+### Direct Push
+
+```bash
+jj git fetch
+jj rebase -d main@origin
+jj bookmark set main
 jj git push
 ```
 
-## Reference
+## Command Reference
 
-| Command | Purpose | Git equivalent |
-|---------|---------|----------------|
-| `jj split` | Interactively split current change | `git add -p && git commit` |
-| `jj new` | Create empty change on top of current | `git commit --allow-empty` + working on it |
-| `jj describe` | Set commit message (opens editor) | `git commit --amend` (message only) |
-| `jj bookmark set X` | Move bookmark to current commit | `git branch -f X` |
+| Command | Purpose | When to use |
+|---------|---------|-------------|
+| `jj commit -i` | Interactive commit (split + describe + new) | Primary workflow for creating commits |
+| `jj split` | Split current change into two | When you need finer control than commit -i |
+| `jj describe` | Edit commit message | Amend message of existing commit |
+| `jj absorb` | Auto-distribute fixes to ancestor commits | Retroactively fix commits in a stack |
+| `jj squash` | Move changes into parent commit | Combine related commits |
+| `jj new` | Create empty change on current | Start new work |
+| `jj new main@origin` | Start work on remote main | After PR merge or fresh start |
+| `jj git push --change @` | Push with auto-created bookmark | Simpler than manual bookmark + push |
+| `jj undo` | Revert last operation | Made a mistake |
+| `jj op log` | View operation history | Debug what happened |
+| `jj evolog` | View how a change evolved | Track change through rebases |
 
-**Key concept:** In jj, your working directory IS a commit (`@`). No staging—you split existing commits rather than staging pieces.
+## Error Recovery
+
+**Mistake in last command:**
+```bash
+jj undo
+```
+
+**Need to see what happened:**
+```bash
+jj op log
+jj evolog  # for specific change evolution
+```
+
+**Push rejected (protected branch):**
+Switch to feature branch workflow above.
+
+**Merge conflicts after rebase:**
+```bash
+jj status        # see conflicted files
+# edit files to resolve
+jj resolve --list  # verify resolved
+```
 
 ## Guidelines
 
 - Prefer smaller, focused commits over large ones
 - Order commits so dependencies come before dependents
-- Write simple commit messages (no conventional commit prefixes like `feat:` or `fix:`)
-- Never use `jj describe -m "..."` — always open the editor
+- Write simple commit messages (no conventional commit prefixes)
+- Use imperative mood: "Add feature" not "Added feature"
