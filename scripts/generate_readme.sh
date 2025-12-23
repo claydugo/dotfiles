@@ -33,16 +33,6 @@ cat << 'HEADER'
 
 Installed via `scripts/bootstrap.sh`:
 
-### Cargo Packages
-HEADER
-
-grep "cargo binstall" scripts/bootstrap.sh | while read -r line; do
-    pkg=$(echo "$line" | sed 's/#.*//; s/||.*//' | grep -oE '[a-z][-a-z0-9]*' | tail -1)
-    echo "- \`$pkg\`"
-done
-
-cat << 'HEADER'
-
 ### Pixi
 HEADER
 
@@ -65,7 +55,6 @@ cat << 'FOOTER'
 
 ### Other
 - [Pixi](https://pixi.sh/)
-- [rustup](https://rustup.rs/)
 - [NVM](https://github.com/nvm-sh/nvm)
 - [Kitty](https://sw.kovidgoyal.net/kitty/)
 - [Google Sans Code Nerd Font](https://github.com/AliApg/GoogleSansCode-Nerd)
