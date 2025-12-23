@@ -98,6 +98,7 @@ cd ~/dotfiles
 Installed via `scripts/bootstrap.sh`:
 
 ### Pixi
+- `bash`
 - `git`
 - `nvim`
 - `tmux`
@@ -123,8 +124,6 @@ Installed via `scripts/bootstrap.sh`:
 - `gifski`
 - `jujutsu`
 - `hyperfine`
-
-### Linux Desktop Packages (apt)
 
 ### Other
 - [Pixi](https://pixi.sh/)
