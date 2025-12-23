@@ -10,12 +10,36 @@ print_message() {
     printf '\e[%sm%s\e[0m\n' "$color" "$message"
 }
 
+# Download and execute with retry logic
+download_and_execute() {
+    local url="$1"
+    local max_retries=3
+    local retry_count=0
+    local retry_delay=5
+
+    while [ $retry_count -lt $max_retries ]; do
+        if curl -fsSL --max-time 120 "$url" | bash; then
+            return 0
+        fi
+
+        retry_count=$((retry_count + 1))
+        if [ $retry_count -lt $max_retries ]; then
+            print_message "33" "Download failed, retrying in ${retry_delay}s (attempt $retry_count/$max_retries)..."
+            sleep "$retry_delay"
+        fi
+    done
+
+    print_message "31" "Failed to download and execute from $url after $max_retries attempts"
+    return 1
+}
+
 install_nvm() {
     print_message "32" "Installing NVM (Node Version Manager)..."
     export NVM_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/nvm"
     if [ ! -d "$NVM_DIR" ]; then
         mkdir -p "$NVM_DIR"
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+        download_and_execute "https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh"
+        # shellcheck source=/dev/null
         [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
         nvm install --lts
     else
@@ -26,7 +50,7 @@ install_nvm() {
 install_pixi() {
     print_message "32" "Installing Pixi package manager..."
     if ! command -v pixi >/dev/null 2>&1; then
-        curl -fsSL https://pixi.sh/install.sh | bash
+        download_and_execute "https://pixi.sh/install.sh"
         export PATH="$HOME/.pixi/bin:$PATH"
     else
         print_message "34" "Pixi is already installed."
@@ -43,6 +67,31 @@ install_with_pixi_global() {
             print_message "34" "$pkg is already installed globally."
         fi
     done
+}
+
+setup_modern_bash() {
+    local pixi_bash="$HOME/.pixi/bin/bash"
+
+    # Verify pixi bash exists and is executable
+    if [ ! -x "$pixi_bash" ]; then
+        print_message "33" "Pixi bash not found, skipping shell setup"
+        return 0
+    fi
+
+    # Add to /etc/shells if not present
+    if ! grep -qxF "$pixi_bash" /etc/shells 2>/dev/null; then
+        print_message "32" "Adding $pixi_bash to /etc/shells..."
+        echo "$pixi_bash" | sudo tee -a /etc/shells >/dev/null
+    fi
+
+    # Switch shell if not already using pixi bash
+    if [ "$SHELL" != "$pixi_bash" ]; then
+        print_message "32" "Switching default shell to modern bash..."
+        sudo chsh -s "$pixi_bash" "$USER"
+        print_message "32" "Shell changed to $pixi_bash (logout/login to take effect)"
+    else
+        print_message "34" "Already using pixi bash as default shell."
+    fi
 }
 
 setup_pixi_environment() {
@@ -89,7 +138,17 @@ ln -sfn "$HOME/dotfiles/.ipython" "$XDG_CONFIG_HOME/ipython"
 
 print_message "32" "Installing Kitty terminal..."
 mkdir -p "$HOME/.local/bin/"
-curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n
+# Kitty installer uses 'sh /dev/stdin' with args, so use inline retry
+kitty_installed=false
+for attempt in 1 2 3; do
+    if curl -fsSL --max-time 120 https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n; then
+        kitty_installed=true
+        break
+    fi
+    print_message "33" "Kitty install failed, attempt $attempt/3..."
+    sleep 5
+done
+$kitty_installed || { print_message "31" "Failed to install Kitty"; exit 1; }
 
 print_message "32" "Installing Google Sans Code Nerd Font..."
 "$HOME/dotfiles/scripts/install_google_sans_code.sh"
@@ -105,6 +164,7 @@ cd "$HOME/dotfiles"
 git checkout "$(hostname)" 2>/dev/null || git checkout -b "$(hostname)" 2>/dev/null || true
 
 global_cli_tools=(
+    bash
     git
     nvim
     tmux
@@ -136,6 +196,7 @@ install_nvm || { print_message "31" "Failed to install NVM"; exit 1; }
 install_pixi || { print_message "31" "Failed to install Pixi"; exit 1; }
 setup_pixi_environment
 install_with_pixi_global "${global_cli_tools[@]}" || { print_message "31" "Failed to install global CLI tools"; exit 1; }
+setup_modern_bash
 
 ln -sfn "$HOME/dotfiles/.gitconfig" "$XDG_CONFIG_HOME/git/config"
 

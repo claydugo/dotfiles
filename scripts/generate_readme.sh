@@ -1,7 +1,16 @@
 #!/bin/bash
 
-set -e
-cd "$(dirname "$0")/.."
+set -euo pipefail
+
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+cd "$SCRIPT_DIR/.." || exit 1
+
+for cmd in tree sed grep awk; do
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+        printf 'Error: %s not found\n' "$cmd" >&2
+        exit 1
+    fi
+done
 
 cat << 'HEADER'
 # Dotfiles

@@ -8,7 +8,7 @@ TEMP_DIR=$(mktemp -d)
 print_message() {
     local color="$1"
     local message="$2"
-    echo -e "\e[${color}m${message}\e[0m"
+    printf '\e[%sm%s\e[0m\n' "$color" "$message"
 }
 
 cleanup() {
@@ -18,8 +18,20 @@ trap cleanup EXIT
 
 print_message "32" "Installing Google Sans Code Nerd Font..."
 
-API_RESPONSE=$(curl -fsSL --max-time 30 https://api.github.com/repos/E-Vertin/GoogleSansCode-NerdFont/releases/latest)
-DOWNLOAD_URL=$(echo "$API_RESPONSE" | grep -o '"browser_download_url": *"[^"]*"' | head -1 | cut -d'"' -f4)
+API_RESPONSE=""
+for attempt in 1 2 3; do
+    if API_RESPONSE=$(curl -fsSL --max-time 30 https://api.github.com/repos/E-Vertin/GoogleSansCode-NerdFont/releases/latest 2>/dev/null); then
+        [ -n "$API_RESPONSE" ] && break
+    fi
+    print_message "33" "API fetch failed, attempt $attempt/3..."
+    sleep 5
+done
+
+if command -v jq >/dev/null 2>&1; then
+    DOWNLOAD_URL=$(echo "$API_RESPONSE" | jq -r '.assets[0].browser_download_url // empty')
+else
+    DOWNLOAD_URL=$(echo "$API_RESPONSE" | grep -o '"browser_download_url": *"[^"]*"' | head -1 | cut -d'"' -f4)
+fi
 
 if [[ -z "${DOWNLOAD_URL:-}" ]]; then
     print_message "31" "Failed to get download URL from GitHub API"
@@ -27,7 +39,17 @@ if [[ -z "${DOWNLOAD_URL:-}" ]]; then
 fi
 
 print_message "34" "Downloading from: $DOWNLOAD_URL"
-curl -fsSL --max-time 300 -o "$TEMP_DIR/font.tar.xz" "$DOWNLOAD_URL"
+
+download_success=false
+for attempt in 1 2 3; do
+    if curl -fsSL --max-time 300 -o "$TEMP_DIR/font.tar.xz" "$DOWNLOAD_URL"; then
+        download_success=true
+        break
+    fi
+    print_message "33" "Download failed, attempt $attempt/3..."
+    sleep 5
+done
+$download_success || { print_message "31" "Failed to download font"; exit 1; }
 
 print_message "34" "Extracting fonts..."
 mkdir -p "$FONT_DIR"
