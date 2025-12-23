@@ -202,7 +202,10 @@ ln -sfn "$HOME/dotfiles/.gitconfig" "$XDG_CONFIG_HOME/git/config"
 
 print_message "32" "Setting up Neovim plugins..."
 nvim --headless "+Lazy! restore" +qa
-timeout 120 nvim --headless "+sleep 90" +qa || true
+
+# Give async installers (Mason, Treesitter) time to complete
+print_message "34" "Waiting for async installations (Mason, Treesitter)..."
+timeout 180 nvim --headless "+Lazy load mason.nvim" "+sleep 150" +qa 2>/dev/null || true
 
 if [ "$(uname -s)" = "Linux" ]; then
     if ! grep -q "fs.inotify.max_user_watches=100000" /etc/sysctl.conf; then
