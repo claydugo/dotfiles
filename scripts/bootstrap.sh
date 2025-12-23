@@ -4,11 +4,6 @@ set -euo pipefail
 
 : "${XDG_CONFIG_HOME:="$HOME/.config"}"
 
-cleanup() {
-    :
-}
-trap cleanup EXIT
-
 print_message() {
     local color="$1"
     local message="$2"
@@ -109,7 +104,6 @@ fi
 [ -e "$HOME/.claude" ] && rm -rf "$HOME/.claude"
 ln -sfn "$HOME/dotfiles/.claude" "$HOME/.claude"
 
-mkdir -p "$XDG_CONFIG_HOME"
 for item in "$HOME/dotfiles/.config"/*; do
     base_item=$(basename "$item")
     target="$XDG_CONFIG_HOME/$base_item"
@@ -119,19 +113,9 @@ done
 
 ln -sfn "$HOME/dotfiles/.ipython" "$XDG_CONFIG_HOME/ipython"
 
-git config --global user.name "Clay Dugo"
-git config --global user.email "claydugo@gmail.com"
-
 print_message "32" "Installing Kitty terminal..."
 mkdir -p "$HOME/.local/bin/"
-mkdir -p "$HOME/.local/share/applications/"
-curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
-ln -sf "$HOME/.local/kitty.app/bin/kitty" "$HOME/.local/bin/"
-ln -sf "$HOME/.local/kitty.app/bin/kitten" "$HOME/.local/bin/"
-cp "$HOME/.local/kitty.app/share/applications/kitty.desktop" "$HOME/.local/share/applications/"
-cp "$HOME/.local/kitty.app/share/applications/kitty-open.desktop" "$HOME/.local/share/applications/"
-sed -i "s|Icon=kitty|Icon=$HOME/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" "$HOME/.local/share/applications"/kitty*.desktop
-sed -i "s|Exec=kitty|Exec=$HOME/.local/kitty.app/bin/kitty|g" "$HOME/.local/share/applications"/kitty*.desktop
+curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n
 
 print_message "32" "Installing Google Sans Code Nerd Font..."
 "$HOME/dotfiles/scripts/install_google_sans_code.sh"
@@ -177,8 +161,11 @@ install_pixi || { print_message "31" "Failed to install Pixi"; exit 1; }
 setup_pixi_environment
 install_with_pixi_global "${global_cli_tools[@]}" || { print_message "31" "Failed to install global CLI tools"; exit 1; }
 
-# Symlink gitconfig after network installs (has insteadOf HTTPS→SSH)
 ln -sfn "$HOME/dotfiles/.gitconfig" "$XDG_CONFIG_HOME/git/config"
+
+print_message "32" "Setting up Neovim plugins..."
+nvim --headless "+Lazy! restore" +qa
+timeout 120 nvim --headless "+sleep 90" +qa || true
 
 if [ "$(uname -s)" = "Linux" ]; then
     if ! grep -q "fs.inotify.max_user_watches=100000" /etc/sysctl.conf; then
