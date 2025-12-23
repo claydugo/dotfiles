@@ -5,10 +5,12 @@ on:
     branches: [main]
     paths:
       - 'scripts/bootstrap.sh'
+      - '.config/nvim/**'
       - '.github/workflows/test-bootstrap.yml'
   pull_request:
     paths:
       - 'scripts/bootstrap.sh'
+      - '.config/nvim/**'
   workflow_dispatch:
 
 jobs:

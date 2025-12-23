@@ -20,8 +20,6 @@ function M.run()
 
   print("Installing Mason packages...")
   vim.cmd("MasonInstall " .. table.concat(mason_packages, " "))
-
-  print("Headless installation complete!")
 end
 
 return M
