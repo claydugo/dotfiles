@@ -43,9 +43,11 @@ cd ~/dotfiles
 │   │   └── lua
 │   │       ├── config
 │   │       │   └── lazy.lua
+│   │       ├── headless_install.lua
 │   │       ├── langserver_icons.lua
 │   │       ├── maps.lua
 │   │       ├── options.lua
+│   │       ├── packages.lua
 │   │       └── plugins
 │   │           ├── blink-cmp.lua
 │   │           ├── browsher.lua
