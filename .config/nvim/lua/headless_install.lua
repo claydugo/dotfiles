@@ -19,7 +19,7 @@ function M.run()
   end
 
   print("Installing Mason packages...")
-  vim.cmd("MasonInstall " .. table.concat(mason_packages, " "))
+  vim.cmd("silent! MasonInstall " .. table.concat(mason_packages, " "))
 end
 
 return M
