@@ -10,31 +10,6 @@ print_message() {
     printf '\e[%sm%s\e[0m\n' "$color" "$message"
 }
 
-install_rustup() {
-    print_message "32" "Installing Rust toolchain..."
-    if ! command -v rustup >/dev/null 2>&1; then
-        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-        . "$HOME/.cargo/env"
-    else
-        print_message "34" "Rustup is already installed."
-        rustup update
-    fi
-}
-
-install_cargo_packages() {
-    print_message "32" "Installing Cargo packages..."
-
-    if ! command -v cargo-binstall >/dev/null 2>&1; then
-        print_message "34" "Installing cargo-binstall..."
-        curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
-    fi
-
-    cargo binstall --no-confirm --strategies crate-meta-data jj-cli
-    cargo binstall --no-confirm hyperfine
-    cargo binstall --no-confirm stylua
-    cargo binstall --no-confirm gifski || true  # optional, requires compilation
-}
-
 install_nvm() {
     print_message "32" "Installing NVM (Node Version Manager)..."
     export NVM_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/nvm"
@@ -94,7 +69,6 @@ mkdir -p "$XDG_CONFIG_HOME/tmux"
 ln -sfn "$HOME/dotfiles/.tmux.conf" "$XDG_CONFIG_HOME/tmux/tmux.conf"
 
 mkdir -p "$XDG_CONFIG_HOME/git"
-# gitconfig symlinked after network installs (has insteadOf HTTPS→SSH)
 
 if [ -f "$HOME/dotfiles/.condarc" ]; then
     mkdir -p "$XDG_CONFIG_HOME/conda"
@@ -152,10 +126,12 @@ global_cli_tools=(
     fswatch
     rattler-build
     fastfetch
+    stylua
+    gifski
+    jujutsu
+    hyperfine
 )
 
-install_rustup || { print_message "31" "Failed to install Rust"; exit 1; }
-install_cargo_packages || { print_message "31" "Failed to install Cargo packages"; exit 1; }
 install_nvm || { print_message "31" "Failed to install NVM"; exit 1; }
 install_pixi || { print_message "31" "Failed to install Pixi"; exit 1; }
 setup_pixi_environment

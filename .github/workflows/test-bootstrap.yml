@@ -61,18 +61,6 @@ jobs:
             [ -L ~/.config/starship.toml ] && echo "✓ .config/starship.toml"
           '
 
-      - name: Verify cargo packages
-        run: |
-          su - clay -c '
-            source ~/.cargo/env
-            set -e
-            echo "Checking cargo packages..."
-            command -v jj && echo "✓ jj"
-            command -v hyperfine && echo "✓ hyperfine"
-            command -v stylua && echo "✓ stylua"
-            # gifski skipped - requires compilation from source
-          '
-
       - name: Verify pixi packages
         run: |
           su - clay -c '
@@ -89,6 +77,9 @@ jobs:
             command -v rg && echo "✓ ripgrep"
             command -v fd && echo "✓ fd-find"
             command -v fastfetch && echo "✓ fastfetch"
+            command -v stylua && echo "✓ stylua"
+            command -v jj && echo "✓ jujutsu"
+            command -v hyperfine && echo "✓ hyperfine"
           '
 
       - name: Verify NVM and Node
