@@ -28,28 +28,30 @@ function M.config()
     },
   })
 
-  vim.defer_fn(function()
-    local packages = require("packages")
-    local mason_packages = vim.list_extend({}, packages.mason)
+  if #vim.api.nvim_list_uis() > 0 then
+    vim.defer_fn(function()
+      local packages = require("packages")
+      local mason_packages = vim.list_extend({}, packages.mason)
 
-    if vim.fn.executable("javac") == 1 then
-      vim.list_extend(mason_packages, packages.mason_java)
-    end
-
-    local ok, registry = pcall(require, "mason-registry")
-    if not ok then
-      return
-    end
-
-    registry.refresh(function()
-      for _, pkg_name in ipairs(mason_packages) do
-        local pkg_ok, package = pcall(registry.get_package, pkg_name)
-        if pkg_ok and not package:is_installed() then
-          package:install()
-        end
+      if vim.fn.executable("javac") == 1 then
+        vim.list_extend(mason_packages, packages.mason_java)
       end
-    end)
-  end, 100)
+
+      local ok, registry = pcall(require, "mason-registry")
+      if not ok then
+        return
+      end
+
+      registry.refresh(function()
+        for _, pkg_name in ipairs(mason_packages) do
+          local pkg_ok, package = pcall(registry.get_package, pkg_name)
+          if pkg_ok and not package:is_installed() then
+            package:install()
+          end
+        end
+      end)
+    end, 100)
+  end
 
   local capabilities = require("blink.cmp").get_lsp_capabilities()
   capabilities.general = capabilities.general or {}

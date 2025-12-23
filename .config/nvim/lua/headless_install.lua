@@ -11,7 +11,7 @@ function M.run()
   end
 
   print("Installing Treesitter parsers...")
-  vim.cmd("TSInstallSync " .. table.concat(parsers, " "))
+  vim.cmd("TSUpdateSync " .. table.concat(parsers, " "))
 
   local mason_packages = vim.list_extend({}, packages.mason)
   if vim.fn.executable("javac") == 1 then
