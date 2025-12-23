@@ -202,7 +202,9 @@ ln -sfn "$HOME/dotfiles/.gitconfig" "$XDG_CONFIG_HOME/git/config"
 
 print_message "32" "Setting up Neovim plugins..."
 nvim --headless "+Lazy! restore" +qa
-timeout 120 nvim --headless "+sleep 90" +qa || true
+
+print_message "32" "Installing Treesitter parsers and Mason packages..."
+nvim --headless -c "lua require('headless_install').run()" -c "qall"
 
 if [ "$(uname -s)" = "Linux" ]; then
     if ! grep -q "fs.inotify.max_user_watches=100000" /etc/sysctl.conf; then

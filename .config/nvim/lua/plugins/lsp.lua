@@ -29,20 +29,11 @@ function M.config()
   })
 
   vim.defer_fn(function()
-    local mason_packages = {
-      "ty",
-      "ruff",
-      "biome",
-      "harper-ls",
-      "bash-language-server",
-      "lua-language-server",
-      "rust-analyzer",
-      "shellcheck",
-    }
+    local packages = require("packages")
+    local mason_packages = vim.list_extend({}, packages.mason)
 
-    -- Only install jdtls if Java is available (check for javac in PATH)
     if vim.fn.executable("javac") == 1 then
-      table.insert(mason_packages, "jdtls")
+      vim.list_extend(mason_packages, packages.mason_java)
     end
 
     local ok, registry = pcall(require, "mason-registry")
