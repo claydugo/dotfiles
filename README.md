@@ -98,10 +98,6 @@ cd ~/dotfiles
 Installed via `scripts/bootstrap.sh`:
 
 ### Cargo Packages
-- `jj-cli`
-- `hyperfine`
-- `stylua`
-- `gifski`
 
 ### Pixi
 - `git`
@@ -125,6 +121,10 @@ Installed via `scripts/bootstrap.sh`:
 - `fswatch`
 - `rattler-build`
 - `fastfetch`
+- `stylua`
+- `gifski`
+- `jujutsu`
+- `hyperfine`
 
 ### Linux Desktop Packages (apt)
 
