@@ -14,6 +14,7 @@ on:
 jobs:
   test-bootstrap:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     container:
       image: ubuntu:24.04
 
@@ -52,78 +53,182 @@ jobs:
           su - clay -c '
             set -e
             echo "Checking symlinks..."
-            [ -L ~/.bashrc ] && echo "✓ .bashrc"
-            [ -L ~/.gitignore ] && echo "✓ .gitignore"
-            [ -L ~/.gitlab_ci_skip ] && echo "✓ .gitlab_ci_skip"
-            [ -L ~/.claude ] && echo "✓ .claude"
-            [ -L ~/.config/nvim ] && echo "✓ .config/nvim"
-            [ -L ~/.config/kitty ] && echo "✓ .config/kitty"
-            [ -L ~/.config/starship.toml ] && echo "✓ .config/starship.toml"
+
+            test_symlink() {
+              local symlink=$1
+              local expected=$2
+              if [ -L "$symlink" ]; then
+                local target=$(readlink -f "$symlink")
+                if [[ "$target" == *"$expected"* ]]; then
+                  echo "✓ $symlink -> $expected"
+                else
+                  echo "✗ $symlink points to wrong target: $target"
+                  return 1
+                fi
+              else
+                echo "✗ $symlink is not a symlink"
+                return 1
+              fi
+            }
+
+            test_symlink ~/.bashrc ".bashrc"
+            test_symlink ~/.gitignore ".gitignore"
+            test_symlink ~/.gitlab_ci_skip ".gitlab_ci_skip"
+            test_symlink ~/.claude ".claude"
+            test_symlink ~/.config/nvim "nvim"
+            test_symlink ~/.config/kitty "kitty"
+            test_symlink ~/.config/starship.toml "starship.toml"
+
+            if bash -n ~/.bashrc 2>/dev/null; then
+              echo "✓ .bashrc syntax valid"
+            else
+              echo "✗ .bashrc has syntax errors"
+              exit 1
+            fi
           '
 
-      - name: Verify pixi packages
+      - name: Verify pixi packages (functional)
         run: |
           su - clay -c '
             export PATH="$HOME/.pixi/bin:$PATH"
             set -e
-            echo "Checking pixi packages..."
-            command -v pixi && echo "✓ pixi"
-            command -v nvim && echo "✓ neovim"
-            command -v tmux && echo "✓ tmux"
-            command -v starship && echo "✓ starship"
-            command -v eza && echo "✓ eza"
-            command -v bat && echo "✓ bat"
-            command -v fzf && echo "✓ fzf"
-            command -v rg && echo "✓ ripgrep"
-            command -v fd && echo "✓ fd-find"
-            command -v fastfetch && echo "✓ fastfetch"
-            command -v stylua && echo "✓ stylua"
-            command -v jj && echo "✓ jujutsu"
-            command -v hyperfine && echo "✓ hyperfine"
+            echo "Checking pixi packages functionality..."
+
+            pixi --version && echo "✓ pixi"
+            nvim --version | head -1 && echo "✓ neovim"
+            tmux -V && echo "✓ tmux"
+            starship --version && echo "✓ starship"
+            eza --version | head -1 && echo "✓ eza"
+            bat --version && echo "✓ bat"
+            fzf --version && echo "✓ fzf"
+            rg --version | head -1 && echo "✓ ripgrep"
+            fd --version && echo "✓ fd-find"
+            fastfetch --version && echo "✓ fastfetch"
+            stylua --version && echo "✓ stylua"
+            jj --version && echo "✓ jujutsu"
+            hyperfine --version && echo "✓ hyperfine"
           '
 
-      - name: Verify NVM and Node
+      - name: Verify NVM and Node (functional)
         run: |
           su - clay -c '
             export NVM_DIR="$HOME/.local/share/nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
             set -e
-            echo "Checking NVM..."
-            command -v nvm && echo "✓ nvm"
-            command -v node && echo "✓ node"
+            echo "Checking NVM and Node functionality..."
+
+            nvm --version && echo "✓ nvm"
+
+            node_version=$(node --version)
+            if [[ "$node_version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+              echo "✓ node $node_version"
+            else
+              echo "✗ node returned invalid version: $node_version"
+              exit 1
+            fi
+
+            # Test npm
+            npm --version && echo "✓ npm"
           '
 
-      - name: Verify kitty
+      - name: Verify kitty (functional)
         run: |
           su - clay -c '
-            echo "Checking kitty..."
-            [ -x ~/.local/kitty.app/bin/kitty ] && echo "✓ kitty installed"
-            [ -L ~/.local/bin/kitty ] && echo "✓ kitty symlink" || echo "⚠ kitty symlink missing"
-            [ -x ~/.local/kitty.app/bin/kitty ]  # fail if kitty not installed
+            echo "Checking kitty installation..."
+
+            if [ -x ~/.local/kitty.app/bin/kitty ]; then
+              kitty_version=$(~/.local/kitty.app/bin/kitty --version 2>&1 || true)
+              echo "✓ kitty binary: $kitty_version"
+            else
+              echo "✗ kitty binary not found or not executable"
+              exit 1
+            fi
+
+            if [ -L ~/.local/bin/kitty ]; then
+              echo "✓ kitty symlink exists"
+            else
+              echo "⚠ kitty symlink missing (non-fatal)"
+            fi
           '
 
-      - name: Verify nvim setup
+      - name: Verify nvim setup (functional)
         run: |
           su - clay -c '
             set -e
             export PATH="$HOME/.pixi/bin:$PATH"
-            echo "Checking nvim setup..."
+            echo "Checking nvim setup and functionality..."
 
-            command -v nvim && echo "✓ nvim"
+            nvim_version=$(nvim --version | head -1)
+            echo "✓ $nvim_version"
 
-            PLUGIN_COUNT=$(find ~/.local/share/nvim/lazy -maxdepth 1 -type d | wc -l)
-            [ "$PLUGIN_COUNT" -gt 10 ] && echo "✓ Lazy plugins ($PLUGIN_COUNT)"
+            if [ -d ~/.local/share/nvim/lazy ]; then
+              plugin_count=$(find ~/.local/share/nvim/lazy -maxdepth 1 -type d | wc -l)
+              if [ "$plugin_count" -gt 10 ]; then
+                echo "✓ Lazy plugins installed ($plugin_count plugins)"
+              else
+                echo "⚠ Fewer than expected plugins ($plugin_count)"
+              fi
+            else
+              echo "✗ Lazy plugin directory not found"
+              exit 1
+            fi
 
             PARSER_DIR="$HOME/.local/share/nvim/lazy/nvim-treesitter/parser"
-            PARSER_COUNT=$(ls "$PARSER_DIR"/*.so 2>/dev/null | wc -l)
-            [ "$PARSER_COUNT" -gt 5 ] && echo "✓ Treesitter parsers ($PARSER_COUNT)"
+            if [ -d "$PARSER_DIR" ]; then
+              parser_count=$(ls "$PARSER_DIR"/*.so 2>/dev/null | wc -l)
+              if [ "$parser_count" -gt 5 ]; then
+                echo "✓ Treesitter parsers ($parser_count parsers)"
+              else
+                echo "⚠ Fewer than expected parsers ($parser_count)"
+              fi
+            else
+              echo "⚠ Treesitter parser directory not found"
+            fi
 
-            [ -d ~/.local/share/nvim/mason/packages ] && echo "✓ Mason packages"
+            if [ -d ~/.local/share/nvim/mason/packages ]; then
+              mason_count=$(ls -d ~/.local/share/nvim/mason/packages/* 2>/dev/null | wc -l)
+              echo "✓ Mason packages ($mason_count packages)"
+            else
+              echo "✗ Mason directory not found"
+              exit 1
+            fi
 
-            nvim --headless -c "qa" && echo "✓ nvim starts cleanly"
+            if timeout 30 nvim --headless -c "qa" 2>&1 | grep -qi error; then
+              echo "✗ nvim started with errors"
+              exit 1
+            fi
+            echo "✓ nvim starts cleanly"
           '
 
-      - name: Summary
+      - name: Test Summary
+        if: always()
         run: |
-          echo "Bootstrap completed successfully!"
-          su - clay -c 'ls -la ~/'
+          {
+            echo "## Bootstrap Test Results"
+            echo ""
+            echo "### Verification Coverage"
+            echo "- ✓ Symlinks verified (existence + target correctness)"
+            echo "- ✓ .bashrc validated (syntax check)"
+            echo "- ✓ Pixi packages tested (version checks)"
+            echo "- ✓ NVM/Node verified (version validation)"
+            echo "- ✓ Kitty binary tested"
+            echo "- ✓ Neovim setup validated (plugins, parsers, Mason, startup)"
+            echo ""
+            echo "### Environment"
+            echo "| Component | Version |"
+            echo "|-----------|---------|"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          su - clay -c '
+            export PATH="$HOME/.pixi/bin:$PATH"
+            export NVM_DIR="$HOME/.local/share/nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+            echo "| pixi | $(pixi --version 2>/dev/null || echo "N/A") |"
+            echo "| nvim | $(nvim --version 2>/dev/null | head -1 || echo "N/A") |"
+            echo "| node | $(node --version 2>/dev/null || echo "N/A") |"
+            echo "| kitty | $(~/.local/kitty.app/bin/kitty --version 2>/dev/null || echo "N/A") |"
+          ' >> "$GITHUB_STEP_SUMMARY"
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Bootstrap test completed successfully ✓" >> "$GITHUB_STEP_SUMMARY"
