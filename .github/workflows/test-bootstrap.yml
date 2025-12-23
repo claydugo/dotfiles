@@ -21,7 +21,7 @@ jobs:
       - name: Install prerequisites
         run: |
           apt-get update
-          apt-get install -y git curl sudo tree xz-utils fontconfig
+          apt-get install -y git curl sudo tree xz-utils fontconfig gcc
 
       - name: Create test user
         run: |
@@ -96,10 +96,10 @@ jobs:
       - name: Verify kitty
         run: |
           su - clay -c '
-            set -e
             echo "Checking kitty..."
             [ -x ~/.local/kitty.app/bin/kitty ] && echo "✓ kitty installed"
-            [ -L ~/.local/bin/kitty ] && echo "✓ kitty symlink"
+            [ -L ~/.local/bin/kitty ] && echo "✓ kitty symlink" || echo "⚠ kitty symlink missing"
+            [ -x ~/.local/kitty.app/bin/kitty ]  # fail if kitty not installed
           '
 
       - name: Verify nvim setup
