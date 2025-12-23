@@ -97,8 +97,6 @@ cd ~/dotfiles
 
 Installed via `scripts/bootstrap.sh`:
 
-### Cargo Packages
-
 ### Pixi
 - `git`
 - `nvim`
@@ -130,7 +128,6 @@ Installed via `scripts/bootstrap.sh`:
 
 ### Other
 - [Pixi](https://pixi.sh/)
-- [rustup](https://rustup.rs/)
 - [NVM](https://github.com/nvm-sh/nvm)
 - [Kitty](https://sw.kovidgoyal.net/kitty/)
 - [Google Sans Code Nerd Font](https://github.com/AliApg/GoogleSansCode-Nerd)
