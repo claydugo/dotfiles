@@ -50,16 +50,6 @@ sed -n '/^global_cli_tools=(/,/^)/p' scripts/bootstrap.sh | grep -E '^\s+[a-z]' 
     echo "- \`$pkg\`"
 done
 
-cat << 'HEADER'
-
-### Linux Desktop Packages (apt)
-HEADER
-
-sed -n '/^linux_desktop_packages=(/,/^)/p' scripts/bootstrap.sh | grep -E '^\s+[a-z]' | while read -r line; do
-    pkg=$(echo "$line" | awk '{print $1}')
-    echo "- \`$pkg\`"
-done
-
 cat << 'FOOTER'
 
 ### Other
