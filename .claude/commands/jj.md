@@ -56,14 +56,12 @@ description: Generate jj commands for committing changes
      jj git fetch && jj rebase -d main@origin
      jj bookmark create <descriptive-name>
      jj git push -b <descriptive-name>
-     jj new
      ```
    - **Direct push:**
      ```bash
      jj git fetch && jj rebase -d main@origin
      jj bookmark set main
      jj git push
-     jj new
      ```
 
 ## Quick Reference
