@@ -27,34 +27,52 @@ description: Generate jj commands for committing changes
 
 2. **Analyze changes** — group by: feature, fix, refactor, docs, config
 
-3. **For each logical commit, output:**
+3. **For each logical commit, output using `jj split`:**
    ```
    ## Commit N: [description]
    Files: [list]
-   Command: jj commit -i  # select files when prompted
-   Message: [imperative summary]
+   Command: jj split
+   Message:
+   [imperative summary]
+
+   [optional body]
+   ```
+   (Repeat for each commit except the last)
+
+4. **For the final commit:**
+   ```
+   ## Commit N: [description]
+   Files: [remaining files already in @]
+   Command: jj describe
+   Message:
+   [imperative summary]
+
+   [optional body]
    ```
 
-4. **Output push sequence:**
+5. **Output push sequence:**
    - **Feature branch:**
      ```bash
      jj git fetch && jj rebase -d main@origin
      jj bookmark create <descriptive-name>
      jj git push -b <descriptive-name>
+     jj new
      ```
    - **Direct push:**
      ```bash
      jj git fetch && jj rebase -d main@origin
-     jj bookmark set main && jj git push
+     jj bookmark set main
+     jj git push
+     jj new
      ```
 
 ## Quick Reference
 
 | Command | Use |
 |---------|-----|
-| `jj commit -i` | Interactive commit (primary workflow) |
-| `jj split` | Finer control than commit -i |
+| `jj split` | Interactively split @ into multiple commits |
+| `jj describe` | Set/edit commit message for @ |
+| `jj new` | Create fresh empty working copy |
 | `jj squash` | Move changes into parent commit |
-| `jj new` | Create empty change on current |
 | `jj absorb` | Auto-distribute fixes to ancestors |
 | `jj undo` | Revert last operation |
