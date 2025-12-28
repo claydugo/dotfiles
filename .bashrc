@@ -69,6 +69,7 @@ if hash starship 2>/dev/null; then
 fi
 
 path_prepend "$HOME/.pixi/bin"
+path_prepend "$HOME/.opencode/bin"
 
 source "$HOME/dotfiles/.aliases"
 
