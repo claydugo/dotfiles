@@ -52,10 +52,12 @@ description: Generate jj commands for committing changes
 
 5. **Output push sequence:**
    - **Feature branch:**
+     - Check the log for an existing bookmark on @ or @- (the parent)
+     - If a bookmark exists, use it; otherwise create a descriptive name
      ```bash
      jj git fetch && jj rebase -d main@origin
-     jj bookmark create <descriptive-name>
-     jj git push -b <descriptive-name>
+     jj bookmark set <existing-or-new-name>
+     jj git push -b <existing-or-new-name>
      ```
    - **Direct push:**
      ```bash
