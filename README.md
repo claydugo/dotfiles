@@ -19,6 +19,7 @@ cd ~/dotfiles
 ├── .bashrc
 ├── .claude
 │   ├── commands
+│   │   ├── interview.md
 │   │   ├── jj.md
 │   │   └── remove_slop.md
 │   ├── output-styles
