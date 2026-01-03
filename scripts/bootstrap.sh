@@ -129,10 +129,16 @@ ln -sfn "$HOME/dotfiles/.claude" "$HOME/.claude"
 
 for item in "$HOME/dotfiles/.config"/*; do
     base_item=$(basename "$item")
+    # Skip directories that need special handling (contain runtime data)
+    [[ "$base_item" == "opencode" ]] && continue
     target="$XDG_CONFIG_HOME/$base_item"
     [ -e "$target" ] && rm -rf "$target"
     ln -sfn "$item" "$target"
 done
+
+# OpenCode: symlink config file only (directory has plugins/node_modules)
+mkdir -p "$XDG_CONFIG_HOME/opencode"
+ln -sfn "$HOME/dotfiles/.config/opencode/opencode.json" "$XDG_CONFIG_HOME/opencode/opencode.json"
 
 ln -sfn "$HOME/dotfiles/.ipython" "$XDG_CONFIG_HOME/ipython"
 

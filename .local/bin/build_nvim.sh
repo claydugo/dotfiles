@@ -97,10 +97,13 @@ if [ "$CURRENT_COMMIT" = "$TARGET_COMMIT" ] && [ "$FORCE_REBUILD" = false ]; the
 fi
 
 if [ "$CURRENT_COMMIT" != "$TARGET_COMMIT" ]; then
-    echo "Checking out $TARGET_REF..."
-    git checkout "$TARGET_REF"
-    if [ "$BUILD_STABLE" = false ]; then
-        git pull
+    if [ "$BUILD_STABLE" = true ]; then
+        echo "Checking out $TARGET_REF..."
+        git checkout "$TARGET_REF"
+    else
+        echo "Updating master branch..."
+        git checkout master
+        git pull origin master
     fi
 fi
 
