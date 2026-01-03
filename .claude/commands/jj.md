@@ -43,12 +43,13 @@ description: Generate jj commands for committing changes
    ```
    ## Commit N: [description]
    Files: [remaining files already in @]
-   Command: jj describe
+   Command: jj describe && jj new
    Message:
    [imperative summary]
 
    [optional body]
    ```
+   Note: `jj new` finalizes the commit (moves it from @ to @-) so the push sequence works.
 
 5. **Output push sequence:**
    - **Feature branch:**
@@ -56,13 +57,13 @@ description: Generate jj commands for committing changes
      - If a bookmark exists, use it; otherwise create a descriptive name
      ```bash
      jj git fetch && jj rebase -d main@origin
-     jj bookmark set <existing-or-new-name>
+     jj bookmark set <existing-or-new-name> -r @- --allow-backwards
      jj git push -b <existing-or-new-name>
      ```
    - **Direct push:**
      ```bash
      jj git fetch && jj rebase -d main@origin
-     jj bookmark set main
+     jj bookmark set main -r @- --allow-backwards
      jj git push
      ```
 
