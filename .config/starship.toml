@@ -1,23 +1,24 @@
 # The background for the bubble characters
 # is the bg color for the kitty dracula theme
 # this is very tailored to my setup
+format = """
+[](bg:#282a36)\
+$conda\
+$hostname\
+$directory\
+$git_branch\
+$git_status\
+$cmd_duration\
+\n$character"""
+
 # format = """
 # [](bg:#282a36)\
 # $conda\
 # $hostname\
 # $directory\
-# $git_branch\
-# $git_status\
+# ${custom.jj}\
 # $cmd_duration\
 # \n$character"""
-
-format = """
-[](bg:#282a36)\
-$hostname\
-$directory\
-${custom.jj}\
-$cmd_duration\
-\n$character"""
 
 add_newline = false
 
@@ -33,9 +34,9 @@ format = '[ $hostname ]($style)'
 ssh_only = true
 
 [git_branch]
-# symbol = ""
-# format = '[[$symbol $branch ](fg:bold purple )]()'
-disabled = true
+symbol = ""
+format = '[[$symbol $branch ](fg:bold purple )]()'
+# disabled = true
 
 # Tried to make this like bash-git-prompt
 [git_status]
