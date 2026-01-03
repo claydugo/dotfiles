@@ -21,6 +21,7 @@ cd ~/dotfiles
 │   ├── commands
 │   │   ├── interview.md
 │   │   ├── jj.md
+│   │   ├── pythonista.md
 │   │   └── remove_slop.md
 │   ├── output-styles
 │   │   └── direct-action.md
@@ -67,6 +68,8 @@ cd ~/dotfiles
 │   │           ├── tokyonight.lua
 │   │           ├── treesitter.lua
 │   │           └── vimwiki.lua
+│   ├── opencode
+│   │   └── opencode.json
 │   └── starship.toml
 ├── .gitconfig
 ├── .gitignore
