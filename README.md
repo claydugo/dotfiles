@@ -21,6 +21,7 @@ cd ~/dotfiles
 │   ├── commands
 │   │   ├── interview.md
 │   │   ├── jj.md
+│   │   ├── luaist.md
 │   │   ├── pythonista.md
 │   │   └── remove_slop.md
 │   ├── output-styles
