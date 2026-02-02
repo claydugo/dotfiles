@@ -73,6 +73,10 @@ if command -v ffmpeg >/dev/null 2>&1 && command -v gifski >/dev/null 2>&1; then
     }
 fi
 
+if hash codex 2>/dev/null; then
+    alias codex='codex --sandbox danger-full-access --ask-for-approval never'
+fi
+
 mkworktrees() {
     local base="/home/clay/projects/temp_worktrees"
     local branch="$1"

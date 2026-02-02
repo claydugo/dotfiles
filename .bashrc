@@ -96,9 +96,9 @@ if [ -s "$NVM_DIR/nvm.sh" ]; then
 fi
 
 export PYGFX_PRINT_WGSL_ON_COMPILATION_ERROR=1
+export RUST_BACKTRACE=full
 export QT_QPA_PLATFORMTHEME=gtk3
 export QT_QPA_PLATFORM=wayland
-export RUST_BACKTRACE=full
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 export PATH
