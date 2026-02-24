@@ -35,7 +35,8 @@
     "pyright-lsp@claude-plugins-official": true,
     "lua-lsp@claude-plugins-official": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
-    "playwright@claude-plugins-official": true
+    "playwright@claude-plugins-official": true,
+    "clangd-lsp@claude-plugins-official": true
   },
   "sandbox": {
     "enabled": false,
@@ -56,5 +57,6 @@
   "alwaysThinkingEnabled": true,
   "companyAnnouncements": [
     "https://github.com/claydugo/dotfiles"
-  ]
+  ],
+  "skipDangerousModePermissionPrompt": true
 }

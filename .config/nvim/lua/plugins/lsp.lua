@@ -124,7 +124,7 @@ function M.config()
           SpelledNumbers = true,
           PossessiveNoun = true,
           NoOxfordComma = true,
-          BoringWords = true,
+          BoringWords = false,
           UseGenitive = true,
           -- OrthographicConsistency = false,
         },
