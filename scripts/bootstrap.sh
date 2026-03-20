@@ -182,7 +182,6 @@ global_cli_tools=(
     fd-find
     cmake
     make
-    python
     htop
     wget
     curl
