@@ -140,7 +140,7 @@ done
 mkdir -p "$XDG_CONFIG_HOME/opencode"
 ln -sfn "$HOME/dotfiles/.config/opencode/opencode.json" "$XDG_CONFIG_HOME/opencode/opencode.json"
 
-ln -sfn "$HOME/dotfiles/.ipython" "$XDG_CONFIG_HOME/ipython"
+ln -sfn "$HOME/dotfiles/.ipython" "$HOME/.ipython"
 
 print_message "32" "Installing Kitty terminal..."
 mkdir -p "$HOME/.local/bin/"
