@@ -131,6 +131,8 @@ Installed via `scripts/bootstrap.sh`:
 - `jujutsu`
 - `hyperfine`
 - `tree-sitter-cli`
+- `ruff`
+- `ty`
 
 ### Other
 - [Pixi](https://pixi.sh/)
