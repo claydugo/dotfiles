@@ -32,20 +32,22 @@ return {
       end,
     })
 
-    -- Auto-install missing parsers
-    local installed = require("nvim-treesitter").get_installed()
-    local installed_set = {}
-    for _, p in ipairs(installed) do
-      installed_set[p] = true
-    end
-    local to_install = {}
-    for _, p in ipairs(ensure_installed) do
-      if not installed_set[p] then
-        table.insert(to_install, p)
+    -- Auto-install missing parsers (skip in headless; headless_install.lua handles it)
+    if #vim.api.nvim_list_uis() > 0 then
+      local installed = require("nvim-treesitter").get_installed()
+      local installed_set = {}
+      for _, p in ipairs(installed) do
+        installed_set[p] = true
       end
-    end
-    if #to_install > 0 then
-      require("nvim-treesitter").install(to_install)
+      local to_install = {}
+      for _, p in ipairs(ensure_installed) do
+        if not installed_set[p] then
+          table.insert(to_install, p)
+        end
+      end
+      if #to_install > 0 then
+        require("nvim-treesitter").install(to_install)
+      end
     end
 
     -- Textobjects (1.x API: config is separate from keymaps)

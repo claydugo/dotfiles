@@ -206,8 +206,6 @@ setup_modern_bash
 
 ln -sfn "$HOME/dotfiles/.gitconfig" "$XDG_CONFIG_HOME/git/config"
 
-export PATH="$HOME/.pixi/bin:$PATH"
-
 print_message "32" "Setting up Neovim plugins..."
 nvim --headless "+Lazy! restore" +qa
 
