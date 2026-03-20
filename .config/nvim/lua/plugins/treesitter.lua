@@ -60,16 +60,36 @@ return {
 
     local ts_move = require("nvim-treesitter-textobjects.move")
     for key, fn in pairs({
-      ["]f"] = function() ts_move.goto_next_start("@function.outer") end,
-      ["]c"] = function() ts_move.goto_next_start("@class.outer") end,
-      ["]a"] = function() ts_move.goto_next_start("@parameter.inner") end,
-      ["]F"] = function() ts_move.goto_next_end("@function.outer") end,
-      ["]C"] = function() ts_move.goto_next_end("@class.outer") end,
-      ["[f"] = function() ts_move.goto_previous_start("@function.outer") end,
-      ["[c"] = function() ts_move.goto_previous_start("@class.outer") end,
-      ["[a"] = function() ts_move.goto_previous_start("@parameter.inner") end,
-      ["[F"] = function() ts_move.goto_previous_end("@function.outer") end,
-      ["[C"] = function() ts_move.goto_previous_end("@class.outer") end,
+      ["]f"] = function()
+        ts_move.goto_next_start("@function.outer")
+      end,
+      ["]c"] = function()
+        ts_move.goto_next_start("@class.outer")
+      end,
+      ["]a"] = function()
+        ts_move.goto_next_start("@parameter.inner")
+      end,
+      ["]F"] = function()
+        ts_move.goto_next_end("@function.outer")
+      end,
+      ["]C"] = function()
+        ts_move.goto_next_end("@class.outer")
+      end,
+      ["[f"] = function()
+        ts_move.goto_previous_start("@function.outer")
+      end,
+      ["[c"] = function()
+        ts_move.goto_previous_start("@class.outer")
+      end,
+      ["[a"] = function()
+        ts_move.goto_previous_start("@parameter.inner")
+      end,
+      ["[F"] = function()
+        ts_move.goto_previous_end("@function.outer")
+      end,
+      ["[C"] = function()
+        ts_move.goto_previous_end("@class.outer")
+      end,
     }) do
       vim.keymap.set({ "n", "x", "o" }, key, fn)
     end
