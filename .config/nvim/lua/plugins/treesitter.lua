@@ -1,11 +1,11 @@
 return {
   "nvim-treesitter/nvim-treesitter",
-  branch = "master", -- pin to master for old API (main branch has breaking changes)
+  branch = "main",
   build = ":TSUpdate",
   event = { "BufReadPre", "BufNewFile" },
   dependencies = {
     "windwp/nvim-ts-autotag",
-    { "nvim-treesitter/nvim-treesitter-textobjects", branch = "master" },
+    { "nvim-treesitter/nvim-treesitter-textobjects", branch = "main" },
   },
   config = function()
     require("nvim-ts-autotag").setup()
@@ -21,6 +21,16 @@ return {
     -- nvim-treesitter 1.x: highlight/indent are built into Neovim.
     -- tree-sitter-cli and compilers must be in the nvim pixi env.
     require("nvim-treesitter").setup()
+
+    -- Enable treesitter highlighting for all buffers with a parser
+    vim.api.nvim_create_autocmd("FileType", {
+      group = vim.api.nvim_create_augroup("treesitter_highlight", { clear = true }),
+      callback = function(args)
+        if pcall(vim.treesitter.start, args.buf) then
+          vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end
+      end,
+    })
 
     -- Auto-install missing parsers
     local installed = require("nvim-treesitter").get_installed()
