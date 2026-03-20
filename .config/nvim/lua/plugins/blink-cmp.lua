@@ -1,7 +1,7 @@
 return {
   "saghen/blink.cmp",
+  version = "1.*",
   lazy = false,
-  build = "cargo +nightly build --release",
   dependencies = { "rafamadriz/friendly-snippets" },
   opts = {
     keymap = {
@@ -64,6 +64,7 @@ return {
     },
     fuzzy = {
       implementation = "prefer_rust",
+      prebuilt_binaries = { force_version = "v1.10.0" },
     },
   },
 }

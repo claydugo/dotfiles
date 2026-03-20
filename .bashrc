@@ -17,22 +17,6 @@ shopt -s globstar 2>/dev/null
 
 set -o vi
 
-if hash nvim 2>/dev/null; then
-  export EDITOR=nvim
-elif hash vim 2>/dev/null; then
-  export EDITOR=vim
-else
-  export EDITOR=vi
-fi
-export USE_EDITOR="$EDITOR"
-export VISUAL="$EDITOR"
-
-# Try new ssh specific leader
-if [[ -n $SSH_CONNECTION ]] && command -v tmux >/dev/null 2>&1; then
-#     tmux attach || tmux new
-    [[ -f ~/dotfiles/.tmux-ssh.conf ]] && tmux source-file ~/dotfiles/.tmux-ssh.conf 2>/dev/null
-fi
-
 # kitty doesnt work well with tmux
 if [[ ${TERM} == "xterm-kitty" ]]; then
     export TERM=xterm-256color
@@ -59,16 +43,31 @@ path_prepend() {
 
 path_prepend "$HOME/.cargo/bin"
 path_prepend "/usr/lib/qt6/bin"
+path_prepend "$HOME/.pixi/bin"
 
 if [[ -f "$HOME/.cargo/env" ]]; then
     . "$HOME/.cargo/env"
 fi
 
+if hash nvim 2>/dev/null; then
+  export EDITOR=nvim
+elif hash vim 2>/dev/null; then
+  export EDITOR=vim
+else
+  export EDITOR=vi
+fi
+export USE_EDITOR="$EDITOR"
+export VISUAL="$EDITOR"
+
+# Try new ssh specific leader
+if [[ -n $SSH_CONNECTION ]] && command -v tmux >/dev/null 2>&1; then
+#     tmux attach || tmux new
+    [[ -f ~/dotfiles/.tmux-ssh.conf ]] && tmux source-file ~/dotfiles/.tmux-ssh.conf 2>/dev/null
+fi
+
 if hash starship 2>/dev/null; then
     eval "$(starship init bash)"
 fi
-
-path_prepend "$HOME/.pixi/bin"
 
 os=$(uname -s)
 

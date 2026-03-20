@@ -15,7 +15,6 @@ install_pixi() {
     if ! command -v pixi &> /dev/null; then
         curl -fsSL https://pixi.sh/install.sh | bash
         export PATH="$HOME/.pixi/bin:$PATH"
-        echo 'export PATH="$HOME/.pixi/bin:$PATH"' >> ~/.bashrc
     else
         print_message "34" "Pixi is already installed."
     fi
@@ -23,18 +22,10 @@ install_pixi() {
 
 install_with_pixi() {
     local packages=("$@")
-    print_message "32" "Installing packages with Pixi: ${packages[*]}"
-    if [ ! -f ~/dotfiles/pixi.toml ]; then
-        cat > ~/dotfiles/pixi.toml << EOF
-[project]
-name = "dotfiles"
-version = "0.1.0"
-description = "Personal dotfiles configuration"
-channels = ["conda-forge"]
-EOF
-    fi
-    cd ~/dotfiles
-    pixi add "${packages[@]}"
+    print_message "32" "Installing packages globally with Pixi: ${packages[*]}"
+    for pkg in "${packages[@]}"; do
+        pixi global install "$pkg"
+    done
 }
 
 print_message "34" "Setting up dotfiles..."
@@ -68,7 +59,7 @@ for item in ~/dotfiles/.config/*; do
     ln -sfn "$item" "$target"
 done
 
-ln -sfn ~/dotfiles/.ipython "$XDG_CONFIG_HOME/ipython"
+ln -sfn ~/dotfiles/.ipython ~/.ipython
 
 git config --global user.name "Clay Dugo"
 git config --global user.email "claydugo@gmail.com"
@@ -85,21 +76,19 @@ sed -i "s|Icon=kitty|Icon=$HOME/.local/kitty.app/share/icons/hicolor/256x256/app
 sed -i "s|Exec=kitty|Exec=$HOME/.local/kitty.app/bin/kitty|g" ~/.local/share/applications/kitty*.desktop
 
 ln -sf ~/dotfiles/ramona/scripts/ws ~/.local/bin/ws
-ln -sf ~/dotfiles/.local/bin/build_nvim.sh ~/.local/bin/build_nvim
 sudo ln -sf ~/dotfiles/ramona/scripts/drop_caches /usr/sbin/drop_caches
 
 cd ~/dotfiles
 git checkout -b "$(hostname)"
 
 common_packages=(
-    neovim
+    nvim
     fswatch
     tmux
     ripgrep
     htop
     cmake
     python
-    gnome-tweaks
     fd-find
     wget
     openssl
@@ -107,12 +96,14 @@ common_packages=(
     curl
     unzip
     starship
+    tree-sitter-cli
 )
 
 install_pixi
 install_with_pixi "${common_packages[@]}"
 
 if [ "$(uname -s)" == "Linux" ]; then
+    sudo apt-get install -y gnome-tweaks
     # Set up inotify and caps lock as escape
     echo -e "fs.inotify.max_user_watches=100000\nfs.inotify.max_queued_events=100000" | sudo tee -a /etc/sysctl.conf
     sudo sysctl -p
