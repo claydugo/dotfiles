@@ -45,14 +45,17 @@ function M.run()
       done = done + 1
     else
       local handle = pkg:install()
-      handle:once("closed", vim.schedule_wrap(function()
-        done = done + 1
-        if pkg:is_installed() then
-          print("  ✓ " .. pkg_name .. " installed (" .. done .. "/" .. total .. ")")
-        else
-          print("  ✗ " .. pkg_name .. " failed to install")
-        end
-      end))
+      handle:once(
+        "closed",
+        vim.schedule_wrap(function()
+          done = done + 1
+          if pkg:is_installed() then
+            print("  ✓ " .. pkg_name .. " installed (" .. done .. "/" .. total .. ")")
+          else
+            print("  ✗ " .. pkg_name .. " failed to install")
+          end
+        end)
+      )
     end
   end
 

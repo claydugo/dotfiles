@@ -196,6 +196,8 @@ global_cli_tools=(
     jujutsu
     hyperfine
     tree-sitter-cli
+    ruff
+    ty
 )
 
 install_nvm || { print_message "31" "Failed to install NVM"; exit 1; }

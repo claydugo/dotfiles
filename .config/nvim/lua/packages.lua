@@ -23,8 +23,6 @@ M.treesitter = {
 }
 
 M.mason = {
-  "ty",
-  "ruff",
   "biome",
   "harper-ls",
   "bash-language-server",

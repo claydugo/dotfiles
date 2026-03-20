@@ -175,7 +175,7 @@ jobs:
               exit 1
             fi
 
-            PARSER_DIR="$HOME/.local/share/nvim/lazy/nvim-treesitter/parser"
+            PARSER_DIR="$HOME/.local/share/nvim/site/parser"
             if [ -d "$PARSER_DIR" ]; then
               parser_count=$(ls "$PARSER_DIR"/*.so 2>/dev/null | wc -l)
               if [ "$parser_count" -gt 5 ]; then
