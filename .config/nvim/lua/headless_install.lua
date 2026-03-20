@@ -11,7 +11,11 @@ function M.run()
   end
 
   print("Installing Treesitter parsers...")
-  vim.cmd("TSUpdateSync " .. table.concat(parsers, " "))
+  local ts_install = require("nvim-treesitter.install")
+  local ok, err = ts_install.install(parsers, { force = true, summary = true }):pwait(300000)
+  if not ok then
+    print("Treesitter install error: " .. tostring(err))
+  end
 
   local mason_packages = vim.list_extend({}, packages.mason)
   if vim.fn.executable("javac") == 1 then
