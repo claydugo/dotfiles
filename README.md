@@ -117,7 +117,6 @@ Installed via `scripts/bootstrap.sh`:
 - `fd-find`
 - `cmake`
 - `make`
-- `python`
 - `htop`
 - `wget`
 - `curl`
