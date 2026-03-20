@@ -23,7 +23,43 @@ function M.run()
   end
 
   print("Installing Mason packages...")
-  vim.cmd("silent! MasonInstall " .. table.concat(mason_packages, " "))
+  local registry = require("mason-registry")
+
+  local refreshed = false
+  registry.refresh(function()
+    refreshed = true
+  end)
+  vim.wait(30000, function()
+    return refreshed
+  end, 100)
+
+  local done = 0
+  local total = #mason_packages
+  for _, pkg_name in ipairs(mason_packages) do
+    local pkg_ok, pkg = pcall(registry.get_package, pkg_name)
+    if not pkg_ok then
+      print("  ✗ " .. pkg_name .. " not found in registry")
+      done = done + 1
+    elseif pkg:is_installed() then
+      print("  ✓ " .. pkg_name .. " (already installed)")
+      done = done + 1
+    else
+      local handle = pkg:install()
+      handle:once("closed", vim.schedule_wrap(function()
+        done = done + 1
+        if pkg:is_installed() then
+          print("  ✓ " .. pkg_name .. " installed (" .. done .. "/" .. total .. ")")
+        else
+          print("  ✗ " .. pkg_name .. " failed to install")
+        end
+      end))
+    end
+  end
+
+  -- Wait for all Mason installations to complete
+  vim.wait(300000, function()
+    return done >= total
+  end, 1000)
 end
 
 return M
