@@ -223,6 +223,13 @@ if [ "$(uname -s)" = "Linux" ]; then
     fi
 fi
 
+if git submodule status ramona 2>/dev/null | grep -qv '^-'; then
+    if [ -x "$HOME/dotfiles/ramona/work_prefs.sh" ]; then
+        print_message "32" "Running work preferences setup..."
+        "$HOME/dotfiles/ramona/work_prefs.sh"
+    fi
+fi
+
 print_message "33" "************************************"
 print_message "32" "Setup complete!"
 print_message "33" "************************************"

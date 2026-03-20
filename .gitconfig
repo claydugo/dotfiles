@@ -55,5 +55,6 @@
 [url "git@github.com:"]
     pushInsteadOf = "https://github.com/"
 
+
 [includeIf "gitdir:~/projects/ramona/"]
     path = ~/.gitrconfig
