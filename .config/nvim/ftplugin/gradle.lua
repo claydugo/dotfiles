@@ -6,12 +6,20 @@ vim.opt_local.tabstop = 4
 vim.opt_local.shiftwidth = 4
 vim.opt_local.expandtab = false
 
-local opts = { buffer = true, noremap = true, silent = true }
-vim.keymap.set("n", "<leader>b", ":!./gradlew build<CR>", vim.tbl_extend("force", opts, { desc = "Gradle build" }))
-vim.keymap.set("n", "<leader>tt", ":!./gradlew test<CR>", vim.tbl_extend("force", opts, { desc = "Gradle test" }))
-vim.keymap.set(
-  "n",
-  "<leader>tl",
-  ":!./gradlew tasks<CR>",
-  vim.tbl_extend("force", opts, { desc = "List gradle tasks" })
-)
+local function map(mode, lhs, rhs, desc)
+  vim.keymap.set(mode, lhs, rhs, { buffer = true, noremap = true, silent = true, desc = desc })
+end
+
+local function gradlew_cmd(cmd)
+  return function()
+    if vim.fn.filereadable("./gradlew") == 0 then
+      vim.notify("gradlew not found in current directory", vim.log.levels.WARN)
+      return
+    end
+    vim.cmd("!" .. cmd)
+  end
+end
+
+map("n", "<leader>b", gradlew_cmd("./gradlew build"), "Gradle build")
+map("n", "<leader>tt", gradlew_cmd("./gradlew test"), "Gradle test")
+map("n", "<leader>tl", gradlew_cmd("./gradlew tasks"), "List gradle tasks")

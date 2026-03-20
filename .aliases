@@ -35,6 +35,11 @@ alias restart_anydesk='(tmux has-session -t anydesk_session 2>/dev/null || tmux 
 # Think this is zsh default
 alias ~='cd ~'
 
+# Linux desktop
+alias f='nautilus .'
+alias v='/usr/bin/env nvim'
+alias aptup='sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y'
+
 # Ramona Specific
 if [ -f ~/dotfiles/ramona/.ramona ]; then
     source ~/dotfiles/ramona/.ramona
@@ -66,6 +71,10 @@ if command -v ffmpeg >/dev/null 2>&1 && command -v gifski >/dev/null 2>&1; then
         base_name="$(basename "${input_file}" .mp4)"
         ffmpeg -i "${input_file}" -f yuv4mpegpipe - | gifski -Q 100 --extra -o "${base_name}.gif" -
     }
+fi
+
+if hash codex 2>/dev/null; then
+    alias codex='codex --sandbox danger-full-access --ask-for-approval never'
 fi
 
 mkworktrees() {

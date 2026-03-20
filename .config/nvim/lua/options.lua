@@ -7,20 +7,20 @@ vim.o.grepformat = "%f:%l:%c:%m"
 vim.o.encoding = "utf-8"
 vim.o.backspace = "indent,eol,start"
 
-vim.o.completeopt = "menu,menuone,noselect"
+vim.opt.completeopt = { "menu", "menuone", "noselect" }
 
 vim.o.hidden = true
 vim.o.backup = false
 vim.o.writebackup = false
 vim.o.swapfile = false
-vim.o.clipboard = "unnamed,unnamedplus"
+vim.opt.clipboard = { "unnamed", "unnamedplus" }
 
 vim.o.updatetime = 300
 vim.o.ignorecase = true
 vim.o.incsearch = true
 vim.o.smartcase = true
 vim.o.hlsearch = true
-vim.o.shortmess = vim.o.shortmess .. "S"
+vim.opt.shortmess:append("S")
 
 vim.o.history = 1000
 vim.o.ruler = true
@@ -66,21 +66,22 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   end,
 })
 
+-- Strip leading whitespace for commit messages
+vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+  callback = function()
+    if vim.bo.filetype == "jj" or vim.bo.filetype == "gitcommit" then
+      local save_cursor = vim.fn.getpos(".")
+      vim.cmd([[keeppatterns %s/^\s\+//e]])
+      vim.fn.setpos(".", save_cursor)
+    end
+  end,
+})
+
 if vim.g.vscode then
   vim.o.cmdheight = 3
 else
   vim.o.cmdheight = 0
 end
-
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "lua",
-  callback = function()
-    vim.bo.expandtab = true
-    vim.bo.shiftwidth = 2
-    vim.bo.tabstop = 2
-    vim.bo.softtabstop = 2
-  end,
-})
 
 vim.cmd([[
 	command! Q q

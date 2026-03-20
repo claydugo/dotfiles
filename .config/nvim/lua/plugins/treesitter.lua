@@ -1,42 +1,21 @@
 return {
   "nvim-treesitter/nvim-treesitter",
+  branch = "master", -- pin to master for old API (main branch has breaking changes)
   build = ":TSUpdate",
   event = { "BufReadPre", "BufNewFile" },
   dependencies = {
     "windwp/nvim-ts-autotag",
-    "nvim-treesitter/nvim-treesitter-textobjects",
+    { "nvim-treesitter/nvim-treesitter-textobjects", branch = "master" },
   },
   config = function()
     require("nvim-ts-autotag").setup()
 
-    local ensure_installed = {
-      "python",
-      "lua",
-      "wgsl",
-      "cuda",
-      "rust",
-      "c",
-      "bash",
+    local packages = require("packages")
+    local ensure_installed = vim.list_extend({}, packages.treesitter)
 
-      "html",
-      "json",
-      "qmldir",
-      "luadoc",
-
-      "desktop",
-      "tmux",
-      "ssh_config",
-      "git_config",
-      "git_rebase",
-      "gitattributes",
-      "gitcommit",
-      "gitignore",
-    }
-
-    -- Only install Java/Gradle parsers if JDK is available (check for javac in PATH)
+    -- Only install Java/Gradle parsers if JDK is available
     if vim.fn.executable("javac") == 1 then
-      table.insert(ensure_installed, "java")
-      table.insert(ensure_installed, "groovy")
+      vim.list_extend(ensure_installed, packages.treesitter_java)
     end
 
     -- nvim-treesitter 1.x: highlight/indent are built into Neovim.
@@ -97,6 +76,7 @@ return {
 
     -- Force treesitter re-highlight after external file changes
     vim.api.nvim_create_autocmd("FileChangedShellPost", {
+      group = vim.api.nvim_create_augroup("treesitter_external_changes", { clear = true }),
       callback = function()
         vim.cmd("edit")
       end,

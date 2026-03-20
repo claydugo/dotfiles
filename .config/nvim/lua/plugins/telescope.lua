@@ -1,6 +1,36 @@
 local M = {
   "nvim-telescope/telescope.nvim",
   cmd = { "Telescope" },
+  keys = {
+    {
+      "<leader>f",
+      function()
+        require("telescope.builtin").find_files({ hidden = true })
+      end,
+      desc = "Find files",
+    },
+    {
+      "<leader>g",
+      function()
+        require("telescope.builtin").live_grep()
+      end,
+      desc = "Live grep",
+    },
+    {
+      "<leader>d",
+      function()
+        require("telescope.builtin").lsp_definitions()
+      end,
+      desc = "LSP definitions",
+    },
+    {
+      "<leader>t",
+      function()
+        require("telescope.builtin").lsp_type_definitions()
+      end,
+      desc = "LSP type definitions",
+    },
+  },
   dependencies = {
     { "nvim-lua/plenary.nvim" },
     { "nvim-treesitter/nvim-treesitter" },
@@ -97,6 +127,9 @@ function M.config()
   harpoon:setup({})
   local conf = require("telescope.config").values
   local function toggle_telescope(harpoon_files)
+    if not harpoon_files or not harpoon_files.items then
+      return
+    end
     local file_paths = {}
     for _, item in ipairs(harpoon_files.items) do
       table.insert(file_paths, item.value)
@@ -129,6 +162,23 @@ function M.config()
       harpoon:list():select(i)
     end)
   end
+end
+
+-- Runs at startup before plugin loads
+function M.init()
+  vim.api.nvim_create_autocmd("VimEnter", {
+    group = vim.api.nvim_create_augroup("telescope_startup", { clear = true }),
+    callback = function()
+      local arg = vim.fn.argv(0)
+      if arg and (vim.fn.isdirectory(arg) ~= 0 or arg == "") then
+        vim.defer_fn(function()
+          if vim.bo[0].filetype ~= "netrw" then
+            require("telescope.builtin").find_files({ hidden = true })
+          end
+        end, 100)
+      end
+    end,
+  })
 end
 
 return M

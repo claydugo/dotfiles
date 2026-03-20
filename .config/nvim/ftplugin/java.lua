@@ -2,12 +2,19 @@ if vim.fn.executable("javac") == 0 then
   return
 end
 
-vim.defer_fn(function()
-  local ok, ts_highlight = pcall(require, "nvim-treesitter.highlight")
-  if ok then
-    ts_highlight.attach(vim.api.nvim_get_current_buf(), "java")
-  end
-end, 100)
+-- Attach treesitter when plugin is loaded (avoids race condition)
+vim.api.nvim_create_autocmd("User", {
+  pattern = "LazyLoad",
+  once = true,
+  callback = function(args)
+    if args.data == "nvim-treesitter" then
+      local ok, ts_highlight = pcall(require, "nvim-treesitter.highlight")
+      if ok then
+        ts_highlight.attach(vim.api.nvim_get_current_buf(), "java")
+      end
+    end
+  end,
+})
 
 vim.opt_local.tabstop = 4
 vim.opt_local.shiftwidth = 4
@@ -17,16 +24,24 @@ vim.opt_local.suffixesadd:append(".java")
 vim.opt_local.path:append("src/main/java/**")
 vim.opt_local.path:append("src/test/java/**")
 
-local opts = { buffer = true, noremap = true, silent = true }
-vim.keymap.set("n", "<leader>b", ":!./gradlew build<CR>", vim.tbl_extend("force", opts, { desc = "Gradle build" }))
-vim.keymap.set("n", "<leader>tt", ":!./gradlew test<CR>", vim.tbl_extend("force", opts, { desc = "Gradle test" }))
-vim.keymap.set(
-  "n",
-  "<leader>tc",
-  ":!./gradlew clean build<CR>",
-  vim.tbl_extend("force", opts, { desc = "Gradle clean build" })
-)
-vim.keymap.set("n", "<leader>tj", ":!./gradlew shadowJar<CR>", vim.tbl_extend("force", opts, { desc = "Build JAR" }))
+local function map(mode, lhs, rhs, desc)
+  vim.keymap.set(mode, lhs, rhs, { buffer = true, noremap = true, silent = true, desc = desc })
+end
+
+local function gradlew_cmd(cmd)
+  return function()
+    if vim.fn.filereadable("./gradlew") == 0 then
+      vim.notify("gradlew not found in current directory", vim.log.levels.WARN)
+      return
+    end
+    vim.cmd("!" .. cmd)
+  end
+end
+
+map("n", "<leader>b", gradlew_cmd("./gradlew build"), "Gradle build")
+map("n", "<leader>tt", gradlew_cmd("./gradlew test"), "Gradle test")
+map("n", "<leader>tc", gradlew_cmd("./gradlew clean build"), "Gradle clean build")
+map("n", "<leader>tj", gradlew_cmd("./gradlew shadowJar"), "Build JAR")
 
 local jdtls_ok, jdtls = pcall(require, "jdtls")
 if not jdtls_ok then
@@ -61,16 +76,34 @@ if vim.fn.isdirectory(jdtls_path) == 0 then
 end
 
 local launcher_path = jdtls_path .. "/plugins/"
-local launcher_jar =
-  vim.fn.system("find " .. launcher_path .. ' -name "org.eclipse.equinox.launcher_*.jar" | head -1'):gsub("\n", "")
+local launcher_jar = nil
+local handle = vim.uv.fs_scandir(launcher_path)
+if handle then
+  while true do
+    local name, type = vim.uv.fs_scandir_next(handle)
+    if not name then
+      break
+    end
+    if type == "file" and name:match("^org%.eclipse%.equinox%.launcher_.*%.jar$") then
+      launcher_jar = launcher_path .. name
+      break
+    end
+  end
+end
 
-if launcher_jar == "" or vim.fn.filereadable(launcher_jar) == 0 then
+if not launcher_jar or vim.fn.filereadable(launcher_jar) == 0 then
+  return
+end
+
+local java_path = vim.fn.exepath("java")
+if java_path == "" then
+  vim.notify("java not found in PATH", vim.log.levels.WARN)
   return
 end
 
 local config = {
   cmd = {
-    "/usr/lib/jvm/java-21-openjdk-amd64/bin/java",
+    java_path,
     "-Declipse.application=org.eclipse.jdt.ls.core.id1",
     "-Dosgi.bundles.defaultStartLevel=4",
     "-Declipse.product=org.eclipse.jdt.ls.core.product",
@@ -143,53 +176,11 @@ local config = {
 
 jdtls.start_or_attach(config)
 
-vim.keymap.set(
-  "n",
-  "<leader>d",
-  "<Cmd>lua vim.lsp.buf.type_definition()<CR>",
-  vim.tbl_extend("force", opts, { desc = "Go to type definition" })
-)
-
-vim.keymap.set(
-  "n",
-  "gd",
-  "<Cmd>lua vim.lsp.buf.definition()<CR>",
-  vim.tbl_extend("force", opts, { desc = "Go to definition" })
-)
-vim.keymap.set(
-  "n",
-  "gD",
-  "<Cmd>lua vim.lsp.buf.type_definition()<CR>",
-  vim.tbl_extend("force", opts, { desc = "Go to type definition" })
-)
-vim.keymap.set(
-  "n",
-  "gi",
-  "<Cmd>lua vim.lsp.buf.implementation()<CR>",
-  vim.tbl_extend("force", opts, { desc = "Go to implementation" })
-)
-
-vim.keymap.set(
-  "n",
-  "<leader>oi",
-  '<Cmd>lua require"jdtls".organize_imports()<CR>',
-  vim.tbl_extend("force", opts, { desc = "Organize imports" })
-)
-vim.keymap.set(
-  "n",
-  "<leader>ev",
-  '<Cmd>lua require"jdtls".extract_variable()<CR>',
-  vim.tbl_extend("force", opts, { desc = "Extract variable" })
-)
-vim.keymap.set(
-  "n",
-  "<leader>ec",
-  '<Cmd>lua require"jdtls".extract_constant()<CR>',
-  vim.tbl_extend("force", opts, { desc = "Extract constant" })
-)
-vim.keymap.set(
-  "v",
-  "<leader>em",
-  '<Esc><Cmd>lua require"jdtls".extract_method(true)<CR>',
-  vim.tbl_extend("force", opts, { desc = "Extract method" })
-)
+map("n", "<leader>d", "<Cmd>lua vim.lsp.buf.type_definition()<CR>", "Go to type definition")
+map("n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", "Go to definition")
+map("n", "gD", "<Cmd>lua vim.lsp.buf.type_definition()<CR>", "Go to type definition")
+map("n", "gi", "<Cmd>lua vim.lsp.buf.implementation()<CR>", "Go to implementation")
+map("n", "<leader>oi", '<Cmd>lua require"jdtls".organize_imports()<CR>', "Organize imports")
+map("n", "<leader>ev", '<Cmd>lua require"jdtls".extract_variable()<CR>', "Extract variable")
+map("n", "<leader>ec", '<Cmd>lua require"jdtls".extract_constant()<CR>', "Extract constant")
+map("v", "<leader>em", '<Esc><Cmd>lua require"jdtls".extract_method(true)<CR>', "Extract method")

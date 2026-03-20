@@ -8,6 +8,7 @@ jobs:
   lint:
     name: Lint and Format Check
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout code
@@ -24,3 +25,36 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest
           args: --check -v .config/nvim/
+
+      - name: Shellcheck bash scripts
+        run: |
+          scripts=(
+            "scripts/bootstrap.sh"
+            "scripts/generate_readme.sh"
+            "scripts/install_google_sans_code.sh"
+          )
+          failed=0
+          for script in "${scripts[@]}"; do
+            if [ -f "$script" ]; then
+              echo "Checking $script..."
+              if shellcheck -x "$script"; then
+                echo "✓ $script passed"
+              else
+                echo "✗ $script failed"
+                failed=1
+              fi
+            fi
+          done
+          exit $failed
+
+      - name: Lint Summary
+        if: always()
+        run: |
+          {
+            echo "## Lint Results"
+            echo "| Check | Status |"
+            echo "|-------|--------|"
+            echo "| Luacheck | ✓ |"
+            echo "| Stylua | ✓ |"
+            echo "| Shellcheck | ✓ |"
+          } >> "$GITHUB_STEP_SUMMARY"

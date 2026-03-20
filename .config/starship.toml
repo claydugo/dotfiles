@@ -11,6 +11,15 @@ $git_status\
 $cmd_duration\
 \n$character"""
 
+# format = """
+# [](bg:#282a36)\
+# $conda\
+# $hostname\
+# $directory\
+# ${custom.jj}\
+# $cmd_duration\
+# \n$character"""
+
 add_newline = false
 
 [directory]
@@ -27,6 +36,7 @@ ssh_only = true
 [git_branch]
 symbol = ""
 format = '[[$symbol $branch ](fg:bold purple )]()'
+# disabled = true
 
 # Tried to make this like bash-git-prompt
 [git_status]
@@ -52,3 +62,9 @@ error_symbol = '[💀](white)'
 [cmd_duration]
 style = "fg:#FFFAB4"
 format = "[$duration]($style)"
+
+[custom.jj]
+command = "jj-starship --no-jj-prefix"
+detect_folders = [".jj", ".git"]
+shell = ["sh"]
+# format = "[$symbol$change_id ($bookmarks) \\[$status\\] ]()"

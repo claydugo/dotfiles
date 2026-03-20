@@ -1,0 +1,19 @@
+#:schema https://docs.jj-vcs.dev/latest/config-schema.json
+
+[user]
+name = "Clay Dugo"
+email = "claydugo@gmail.com"
+
+[ui]
+editor = ["nvim", "-c", "set filetype=jj"]
+merge-editor = "nvim"
+diff-formatter = ":color-words"
+
+[signing]
+backend = "ssh"
+behavior = "own"
+key = "/home/clay/.ssh/id_ed25519"
+
+[[--scope]]
+--when.repositories = ["~/projects/ramona"]
+user.email = "clay@ramonaoptics.com"
