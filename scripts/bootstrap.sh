@@ -215,6 +215,17 @@ setup_modern_bash
 
 ln -sfn "$HOME/dotfiles/.gitconfig" "$XDG_CONFIG_HOME/git/config"
 
+# Set up dotfiles multi-remote (GitHub primary, GitLab mirror)
+if [ -z "${CI:-}" ]; then
+    print_message "32" "Configuring git remotes for dotfiles..."
+    cd "$HOME/dotfiles"
+    git config remote.origin.url git@github.com:claydugo/dotfiles.git
+    git config remote.gitlab.url git@gitlab.com:claydugo/dotfiles.git
+    git config remote.gitlab.fetch "+refs/heads/*:refs/remotes/gitlab/*"
+    git config --replace-all remote.all.pushurl git@github.com:claydugo/dotfiles.git
+    git config --add remote.all.pushurl git@gitlab.com:claydugo/dotfiles.git
+fi
+
 print_message "32" "Setting up Neovim plugins..."
 nvim --headless "+Lazy! restore" +qa
 
