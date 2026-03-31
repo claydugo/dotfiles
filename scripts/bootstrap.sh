@@ -111,6 +111,11 @@ sudo -v
 
 print_message "32" "Symlinking configuration files..."
 ln -sfn "$HOME/dotfiles/.bashrc" "$HOME/.bashrc"
+if [ "$(uname -s)" = "Darwin" ]; then
+    if [ ! -e "$HOME/.bash_profile" ] || [ -L "$HOME/.bash_profile" ]; then
+        printf '[ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"\n' > "$HOME/.bash_profile"
+    fi
+fi
 ln -sfn "$HOME/dotfiles/.gitignore" "$HOME/.gitignore"
 ln -sfn "$HOME/dotfiles/.gitlab_ci_skip" "$HOME/.gitlab_ci_skip"
 
@@ -163,7 +168,7 @@ ln -sf "$HOME/dotfiles/.local/bin/build_nvim.sh" "$HOME/.local/bin/build_nvim"
 
 if [ -d "$HOME/dotfiles/ramona/scripts" ]; then
     [ -f "$HOME/dotfiles/ramona/scripts/ws" ] && ln -sf "$HOME/dotfiles/ramona/scripts/ws" "$HOME/.local/bin/ws"
-    [ -f "$HOME/dotfiles/ramona/scripts/drop_caches" ] && sudo ln -sf "$HOME/dotfiles/ramona/scripts/drop_caches" /usr/sbin/drop_caches
+    [ -f "$HOME/dotfiles/ramona/scripts/drop_caches" ] && ln -sf "$HOME/dotfiles/ramona/scripts/drop_caches" "$HOME/.local/bin/drop_caches"
 fi
 
 cd "$HOME/dotfiles"
@@ -178,8 +183,6 @@ global_cli_tools=(
     eza
     bat
     fzf
-    ripgrep
-    fd-find
     cmake
     make
     htop
@@ -187,7 +190,6 @@ global_cli_tools=(
     curl
     unzip
     openssl
-    xclip
     fswatch
     rattler-build
     fastfetch
@@ -196,9 +198,12 @@ global_cli_tools=(
     jujutsu
     hyperfine
     tree-sitter-cli
-    ruff
     ty
 )
+
+if [ "$(uname -s)" = "Linux" ]; then
+    global_cli_tools+=(xclip)
+fi
 
 install_nvm || { print_message "31" "Failed to install NVM"; exit 1; }
 install_pixi || { print_message "31" "Failed to install Pixi"; exit 1; }
