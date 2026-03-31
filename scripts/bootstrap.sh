@@ -136,6 +136,7 @@ for item in "$HOME/dotfiles/.config"/*; do
     base_item=$(basename "$item")
     # Skip directories that need special handling (contain runtime data)
     [[ "$base_item" == "opencode" ]] && continue
+    [[ "$base_item" == "karabiner" && "$(uname -s)" != "Darwin" ]] && continue
     target="$XDG_CONFIG_HOME/$base_item"
     [ -e "$target" ] && rm -rf "$target"
     ln -sfn "$item" "$target"
