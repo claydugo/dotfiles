@@ -4,8 +4,8 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 
 shopt -s histappend
-HISTIGNORE="&:[ ]*:exit:e:R:tmux.*:cd:la:ls:ll:lll:c:history:clear:cl:t:\:..:...:....:q"
-HISTCONTROL=ignoreboth
+HISTIGNORE="&:ls:la:ll:lll:cd:exit:clear:cl:history:q:..:...:....:\:"
+HISTCONTROL=ignoredups
 HISTSIZE=50000
 HISTFILESIZE=100000
 HISTFILE="$XDG_STATE_HOME/bash/history"
@@ -41,13 +41,17 @@ path_prepend() {
     esac
 }
 
-path_prepend "$HOME/.cargo/bin"
-path_prepend "/usr/lib/qt6/bin"
-path_prepend "$HOME/.pixi/bin"
-
 if [[ -f "$HOME/.cargo/env" ]]; then
     . "$HOME/.cargo/env"
 fi
+
+export BUN_INSTALL="$HOME/.bun"
+
+path_prepend "$HOME/.cargo/bin"
+path_prepend "/usr/lib/qt6/bin"
+path_prepend "$HOME/.pixi/bin"
+path_prepend "$BUN_INSTALL/bin"
+path_prepend "$HOME/.local/bin"
 
 if hash nvim 2>/dev/null; then
   export EDITOR=nvim
@@ -68,9 +72,6 @@ fi
 if hash starship 2>/dev/null; then
     eval "$(starship init bash)"
 fi
-
-path_prepend "$HOME/.pixi/bin"
-path_prepend "$HOME/.opencode/bin"
 
 source "$HOME/dotfiles/.aliases"
 
@@ -102,7 +103,3 @@ if [[ "$(uname)" == "Linux" ]]; then
     export QT_QPA_PLATFORMTHEME=gtk3
     export QT_QPA_PLATFORM=wayland
 fi
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-export PATH
-export PATH="$HOME/.local/bin:$PATH"

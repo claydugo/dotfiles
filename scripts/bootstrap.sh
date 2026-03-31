@@ -120,7 +120,7 @@ fi
 ln -sfn "$HOME/dotfiles/.gitignore" "$HOME/.gitignore"
 ln -sfn "$HOME/dotfiles/.gitlab_ci_skip" "$HOME/.gitlab_ci_skip"
 
-mkdir -p "$XDG_CONFIG_HOME/tmux"
+mkdir -p "$XDG_CONFIG_HOME/tmux" "${XDG_STATE_HOME:-$HOME/.local/state}/bash"
 ln -sfn "$HOME/dotfiles/.tmux.conf" "$XDG_CONFIG_HOME/tmux/tmux.conf"
 
 mkdir -p "$XDG_CONFIG_HOME/git"

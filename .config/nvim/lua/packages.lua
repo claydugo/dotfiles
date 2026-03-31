@@ -10,6 +10,7 @@ M.treesitter = {
   "bash",
   "html",
   "json",
+  "toml",
   "qmldir",
   "luadoc",
   "desktop",
