@@ -113,8 +113,6 @@ Installed via `scripts/bootstrap.sh`:
 - `eza`
 - `bat`
 - `fzf`
-- `ripgrep`
-- `fd-find`
 - `cmake`
 - `make`
 - `htop`
@@ -122,7 +120,6 @@ Installed via `scripts/bootstrap.sh`:
 - `curl`
 - `unzip`
 - `openssl`
-- `xclip`
 - `fswatch`
 - `rattler-build`
 - `fastfetch`
@@ -131,7 +128,6 @@ Installed via `scripts/bootstrap.sh`:
 - `jujutsu`
 - `hyperfine`
 - `tree-sitter-cli`
-- `ruff`
 - `ty`
 
 ### Other
