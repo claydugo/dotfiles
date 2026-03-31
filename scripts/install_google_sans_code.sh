@@ -2,7 +2,11 @@
 
 set -euo pipefail
 
-FONT_DIR="${HOME}/.local/share/fonts/GoogleSansCodeNerdFont"
+if [ "$(uname -s)" = "Darwin" ]; then
+    FONT_DIR="${HOME}/Library/Fonts/GoogleSansCodeNerdFont"
+else
+    FONT_DIR="${HOME}/.local/share/fonts/GoogleSansCodeNerdFont"
+fi
 TEMP_DIR=$(mktemp -d)
 
 print_message() {
