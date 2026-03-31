@@ -113,6 +113,7 @@ print_message "32" "Symlinking configuration files..."
 ln -sfn "$HOME/dotfiles/.bashrc" "$HOME/.bashrc"
 if [ "$(uname -s)" = "Darwin" ]; then
     if [ ! -e "$HOME/.bash_profile" ] || [ -L "$HOME/.bash_profile" ]; then
+        # shellcheck disable=SC2016
         printf '[ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"\n' > "$HOME/.bash_profile"
     fi
 fi
