@@ -20,7 +20,9 @@
       "KillBash(*)",
       "ExitPlanMode(*)"
     ],
-    "deny": [],
+    "deny": [
+      "Bash(command:gh *)"
+    ],
     "ask": [],
     "defaultMode": "bypassPermissions",
     "additionalDirectories": [
