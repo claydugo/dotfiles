@@ -63,10 +63,13 @@ fi
 export USE_EDITOR="$EDITOR"
 export VISUAL="$EDITOR"
 
-# Try new ssh specific leader
-if [[ -n $SSH_CONNECTION ]] && command -v tmux >/dev/null 2>&1; then
-#     tmux attach || tmux new
-    [[ -f ~/dotfiles/.tmux-ssh.conf ]] && tmux source-file ~/dotfiles/.tmux-ssh.conf 2>/dev/null
+if hash fzf 2>/dev/null; then
+    eval "$(fzf --bash)"
+    export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
+    export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .git'
+    bind -m emacs-standard '"\ed": " \C-b\C-k \C-u`__fzf_cd__`\e\C-e\er\C-m\C-y\C-h\e \C-y\ey\C-x\C-x\C-d"'
+    bind -m vi-command '"\ed": "\C-z\ed\C-z"'
+    bind -m vi-insert '"\ed": "\C-z\ed\C-z"'
 fi
 
 if hash starship 2>/dev/null; then

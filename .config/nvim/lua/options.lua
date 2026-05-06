@@ -8,12 +8,17 @@ vim.o.encoding = "utf-8"
 vim.o.backspace = "indent,eol,start"
 
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
+vim.opt.completeopt:append("fuzzy")
+vim.opt.completeopt:append("nearest")
 
 vim.o.hidden = true
 vim.o.backup = false
 vim.o.writebackup = false
 vim.o.swapfile = false
+vim.o.undofile = true
+vim.o.confirm = true
 vim.opt.clipboard = { "unnamed", "unnamedplus" }
+vim.opt.jumpoptions = "stack,view"
 
 vim.o.updatetime = 300
 vim.o.ignorecase = true
@@ -21,6 +26,7 @@ vim.o.incsearch = true
 vim.o.smartcase = true
 vim.o.hlsearch = true
 vim.opt.shortmess:append("S")
+vim.opt.shortmess:append("WIcC")
 
 vim.o.history = 1000
 vim.o.ruler = true

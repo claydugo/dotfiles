@@ -1,5 +1,6 @@
 return {
-  "Bekaboo/dropbar.nvim",
+  "claydugo/dropbar.nvim",
+  branch = "fix/buf-modified-set-removal",
   event = { "BufReadPre", "BufNewFile" },
   dependencies = {
     "nvim-tree/nvim-web-devicons",

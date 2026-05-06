@@ -57,8 +57,10 @@
   },
   "spinnerTipsEnabled": false,
   "alwaysThinkingEnabled": true,
+  "effortLevel": "xhigh",
   "companyAnnouncements": [
     "https://github.com/claydugo/dotfiles"
   ],
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "editorMode": "vim"
 }
