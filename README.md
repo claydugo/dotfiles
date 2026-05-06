@@ -29,10 +29,6 @@ cd ~/dotfiles
 │   └── settings.json
 ├── .config
 │   ├── .ripgreprc
-│   ├── alacritty
-│   │   └── alacritty.yml
-│   ├── ghostty
-│   │   └── config
 │   ├── jj
 │   │   └── config.toml
 │   ├── kitty
@@ -64,13 +60,13 @@ cd ~/dotfiles
 │   │           ├── markdown.lua
 │   │           ├── mini.lua
 │   │           ├── noice.lua
+│   │           ├── showtime.lua
+│   │           ├── snacks.lua
 │   │           ├── telescope.lua
 │   │           ├── tip_of_my_buffer.lua
 │   │           ├── tokyonight.lua
 │   │           ├── treesitter.lua
 │   │           └── vimwiki.lua
-│   ├── opencode
-│   │   └── opencode.json
 │   └── starship.toml
 ├── .gitconfig
 ├── .gitignore
@@ -88,7 +84,6 @@ cd ~/dotfiles
 ├── .luarc.json
 ├── .pre-commit-config.yaml
 ├── .stylua.toml
-├── .tmux-ssh.conf
 ├── .tmux.conf
 ├── README.md
 └── scripts
