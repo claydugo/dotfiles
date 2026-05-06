@@ -108,6 +108,8 @@ Installed via `scripts/bootstrap.sh`:
 - `eza`
 - `bat`
 - `fzf`
+- `ripgrep`
+- `fd-find`
 - `cmake`
 - `make`
 - `htop`
