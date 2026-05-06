@@ -93,7 +93,7 @@ jobs:
         run: |
           su - clay -c '
             export PATH="$HOME/.pixi/bin:$PATH"
-            set -e
+            set -eo pipefail
             echo "Checking pixi packages functionality..."
 
             pixi --version && echo "✓ pixi"
@@ -116,7 +116,7 @@ jobs:
           su - clay -c '
             export NVM_DIR="$HOME/.local/share/nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-            set -e
+            set -eo pipefail
             echo "Checking NVM and Node functionality..."
 
             nvm --version && echo "✓ nvm"
@@ -156,7 +156,7 @@ jobs:
       - name: Verify nvim setup (functional)
         run: |
           su - clay -c '
-            set -e
+            set -eo pipefail
             export PATH="$HOME/.pixi/bin:$PATH"
             echo "Checking nvim setup and functionality..."
 
@@ -192,6 +192,14 @@ jobs:
               echo "✓ Mason packages ($mason_count packages)"
             else
               echo "✗ Mason directory not found"
+              exit 1
+            fi
+
+            FZF_LIB=~/.local/share/nvim/lazy/telescope-fzf-native.nvim/build/libfzf.so
+            if [ -f "$FZF_LIB" ]; then
+              echo "✓ telescope-fzf-native built"
+            else
+              echo "✗ telescope-fzf-native build failed (missing $FZF_LIB)"
               exit 1
             fi
 

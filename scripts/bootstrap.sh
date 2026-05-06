@@ -61,7 +61,7 @@ install_with_pixi_global() {
     local packages=("$@")
     print_message "32" "Installing global CLI tools with Pixi: ${packages[*]}"
     for pkg in "${packages[@]}"; do
-        if ! pixi global list 2>/dev/null | grep -Fq "$pkg"; then
+        if ! pixi global list 2>/dev/null | grep -Fq "── ${pkg}: "; then
             pixi global install "$pkg"
         else
             print_message "34" "$pkg is already installed globally."
@@ -180,6 +180,8 @@ global_cli_tools=(
     eza
     bat
     fzf
+    ripgrep
+    fd-find
     cmake
     make
     htop
