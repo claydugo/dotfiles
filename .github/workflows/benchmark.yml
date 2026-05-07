@@ -1,0 +1,115 @@
+name: Benchmark
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.config/nvim/**'
+      - 'scripts/bootstrap.sh'
+      - '.github/workflows/benchmark.yml'
+      - '.github/scripts/benchmark.sh'
+  schedule:
+    # Same Saturday 03:00 UTC slot as install-dotfiles — surfaces nvim
+    # startup regressions that result purely from upstream plugin updates.
+    - cron: '0 3 * * 6'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write  # benchmark-action posts comments on regression alerts
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  benchmark:
+    name: nvim startup time
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    container:
+      image: ubuntu:24.04
+    env:
+      DEBIAN_FRONTEND: noninteractive
+
+    steps:
+      - name: Install prerequisites
+        run: |
+          apt-get update
+          apt-get install -y git curl sudo tree xz-utils fontconfig gcc make
+
+      - name: Create test user
+        run: |
+          useradd -m -s /bin/bash clay
+          echo "clay ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+          su - clay -c "git config --global --add safe.directory '*'"
+
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        with:
+          path: dotfiles-pr
+
+      - name: Stage PR repo at ~/dotfiles
+        run: |
+          cp -a dotfiles-pr /home/clay/dotfiles
+          chown -R clay:clay /home/clay/dotfiles
+
+      - name: Cache pixi + lazy plugins
+        uses: actions/cache@v4
+        with:
+          path: |
+            /home/clay/.pixi
+            /home/clay/.local/share/nvim/lazy
+          key: bench-${{ runner.os }}-${{ hashFiles('dotfiles-pr/scripts/bootstrap.sh', 'dotfiles-pr/.config/nvim/lazy-lock.json') }}
+          restore-keys: bench-${{ runner.os }}-
+
+      - name: Authenticated git
+        if: github.actor == github.repository_owner
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          su - clay -c "git config --global url.\"https://x-access-token:${GH_TOKEN}@github.com/\".insteadOf \"https://github.com/\""
+
+      - name: Run bootstrap
+        run: su - clay -c "cd ~/dotfiles && ./scripts/bootstrap.sh"
+
+      - name: Measure nvim startup
+        run: |
+          su - clay -c '
+            export PATH="$HOME/.pixi/bin:$PATH"
+            cd ~/dotfiles
+            bash .github/scripts/benchmark.sh /tmp/result.json
+            cat /tmp/result.json
+          '
+
+      # Rolling-history cache: restore the latest snapshot keyed by run_id,
+      # always save under a unique key. actions/cache@v4 is immutable on hit,
+      # so a static key would freeze the data after the first save.
+      - name: Restore benchmark history
+        id: benchmark-cache-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/cache
+          key: ${{ runner.os }}-benchmark-history-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-benchmark-history-
+
+      - name: Compare against history (alert on regression)
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          name: nvim startup
+          tool: customSmallerIsBetter
+          output-file-path: /tmp/result.json
+          external-data-json-path: /tmp/cache/benchmark-data.json
+          alert-threshold: '150%'
+          comment-on-alert: true
+          fail-on-alert: false
+          alert-comment-cc-users: '@claydugo'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Save benchmark history
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/cache
+          key: ${{ runner.os }}-benchmark-history-${{ github.run_id }}

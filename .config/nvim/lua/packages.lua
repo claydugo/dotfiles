@@ -11,6 +11,7 @@ M.treesitter = {
   "html",
   "json",
   "toml",
+  "yaml",
   "qmldir",
   "luadoc",
   "desktop",

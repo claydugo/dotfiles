@@ -1,0 +1,11 @@
+std = "lua51+vim"
+
+exclude = [
+    "ramona/**",
+    "**/.pixi/**",
+    "**/site-packages/**",
+    "**/.local/share/nvim/lazy/**",
+]
+
+[lints]
+mixed_table = "allow"

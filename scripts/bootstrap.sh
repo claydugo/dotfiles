@@ -10,7 +10,18 @@ print_message() {
     printf '\e[%sm%s\e[0m\n' "$color" "$message"
 }
 
-# Download and execute with retry logic
+is_ci() {
+    [ -n "${GITHUB_ACTIONS:-}" ] || [ -n "${CI:-}" ]
+}
+
+link() {
+    local src="$1" dst="$2"
+    if [ -L "$dst" ] && [ "$dst" -ef "$src" ]; then
+        return 0
+    fi
+    ln -sfn "$src" "$dst"
+}
+
 download_and_execute() {
     local url="$1"
     local max_retries=3
@@ -72,19 +83,16 @@ install_with_pixi_global() {
 setup_modern_bash() {
     local pixi_bash="$HOME/.pixi/bin/bash"
 
-    # Verify pixi bash exists and is executable
     if [ ! -x "$pixi_bash" ]; then
         print_message "33" "Pixi bash not found, skipping shell setup"
         return 0
     fi
 
-    # Add to /etc/shells if not present
     if ! grep -qxF "$pixi_bash" /etc/shells 2>/dev/null; then
         print_message "32" "Adding $pixi_bash to /etc/shells..."
         echo "$pixi_bash" | sudo tee -a /etc/shells >/dev/null
     fi
 
-    # Switch shell if not already using pixi bash
     if [ "$SHELL" != "$pixi_bash" ]; then
         print_message "32" "Switching default shell to modern bash..."
         sudo chsh -s "$pixi_bash" "$USER"
@@ -105,48 +113,57 @@ setup_pixi_environment() {
 
 print_message "34" "Setting up dotfiles..."
 cd "$HOME/dotfiles/"
-git submodule update --remote
+# Skip in CI — ramona uses a GitLab SSH URL that CI runners can't authenticate to.
+if ! is_ci; then
+    git submodule update --remote
+fi
 
 sudo -v
 
 print_message "32" "Symlinking configuration files..."
-ln -sfn "$HOME/dotfiles/.bashrc" "$HOME/.bashrc"
+link "$HOME/dotfiles/.bashrc" "$HOME/.bashrc"
 if [ "$(uname -s)" = "Darwin" ]; then
     if [ ! -e "$HOME/.bash_profile" ] || [ -L "$HOME/.bash_profile" ]; then
         # shellcheck disable=SC2016
         printf '[ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"\n' > "$HOME/.bash_profile"
     fi
 fi
-ln -sfn "$HOME/dotfiles/.gitignore" "$HOME/.gitignore"
-ln -sfn "$HOME/dotfiles/.gitlab_ci_skip" "$HOME/.gitlab_ci_skip"
+link "$HOME/dotfiles/.gitignore" "$HOME/.gitignore"
+link "$HOME/dotfiles/.gitlab_ci_skip" "$HOME/.gitlab_ci_skip"
 
 mkdir -p "$XDG_CONFIG_HOME/tmux" "${XDG_STATE_HOME:-$HOME/.local/state}/bash"
-ln -sfn "$HOME/dotfiles/.tmux.conf" "$XDG_CONFIG_HOME/tmux/tmux.conf"
+link "$HOME/dotfiles/.tmux.conf" "$XDG_CONFIG_HOME/tmux/tmux.conf"
 
 mkdir -p "$XDG_CONFIG_HOME/git"
 
 if [ -f "$HOME/dotfiles/.condarc" ]; then
     mkdir -p "$XDG_CONFIG_HOME/conda"
-    ln -sfn "$HOME/dotfiles/.condarc" "$XDG_CONFIG_HOME/conda/.condarc"
+    link "$HOME/dotfiles/.condarc" "$XDG_CONFIG_HOME/conda/.condarc"
 fi
 
-[ -e "$HOME/.claude" ] && rm -rf "$HOME/.claude"
-ln -sfn "$HOME/dotfiles/.claude" "$HOME/.claude"
+# .claude and .config/* may contain runtime data — replace whole dir on first run.
+if [ -L "$HOME/.claude" ] && [ "$HOME/.claude" -ef "$HOME/dotfiles/.claude" ]; then
+    :
+else
+    [ -e "$HOME/.claude" ] && rm -rf "$HOME/.claude"
+    ln -sfn "$HOME/dotfiles/.claude" "$HOME/.claude"
+fi
 
 for item in "$HOME/dotfiles/.config"/*; do
     base_item=$(basename "$item")
-    # Skip directories that need special handling (contain runtime data)
     [[ "$base_item" == "karabiner" && "$(uname -s)" != "Darwin" ]] && continue
     target="$XDG_CONFIG_HOME/$base_item"
+    if [ -L "$target" ] && [ "$target" -ef "$item" ]; then
+        continue
+    fi
     [ -e "$target" ] && rm -rf "$target"
     ln -sfn "$item" "$target"
 done
 
-ln -sfn "$HOME/dotfiles/.ipython" "$HOME/.ipython"
+link "$HOME/dotfiles/.ipython" "$HOME/.ipython"
 
 print_message "32" "Installing Kitty terminal..."
 mkdir -p "$HOME/.local/bin/"
-# Kitty installer uses 'sh /dev/stdin' with args, so use inline retry
 kitty_installed=false
 for attempt in 1 2 3; do
     if curl -fsSL --max-time 120 https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n; then
@@ -193,6 +210,7 @@ global_cli_tools=(
     rattler-build
     fastfetch
     stylua
+    selene
     gifski
     jujutsu
     hyperfine
@@ -212,8 +230,7 @@ setup_modern_bash
 
 ln -sfn "$HOME/dotfiles/.gitconfig" "$XDG_CONFIG_HOME/git/config"
 
-# Set up dotfiles multi-remote (GitHub primary, GitLab mirror)
-if [ -z "${CI:-}" ]; then
+if ! is_ci; then
     print_message "32" "Configuring git remotes for dotfiles..."
     cd "$HOME/dotfiles"
     git config remote.origin.url git@github.com:claydugo/dotfiles.git

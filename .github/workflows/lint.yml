@@ -1,59 +1,107 @@
 name: Lint
 
 on:
+  push:
+    branches: [main]
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
 
 jobs:
-  lint:
-    name: Lint and Format Check
+  shell:
+    name: Shell (bash -n + shellcheck)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Luacheck
-        uses: lunarmodules/luacheck@v1.2.0
-        with:
-          args: .config/nvim/lua/
+      - name: Install shellcheck
+        run: sudo apt-get update -qq && sudo apt-get install -y shellcheck
 
-      - name: Run Stylua
+      - name: Discover shell scripts (by shebang or shellcheck directive)
+        id: discover
+        run: |
+          mapfile -t scripts < <(
+            find . -type f \
+              -not -path './.git/*' \
+              -not -path './ramona/*' \
+              -not -path './.local/share/*' \
+              -not -path './.pixi/*' \
+              -not -path './.config/nvim/lazy-lock.json' \
+              -exec sh -c 'head -n1 "$1" 2>/dev/null | grep -qE "^(#!.*sh\b|# shellcheck shell=)"' _ {} \; \
+              -print
+          )
+          printf '%s\n' "${scripts[@]}" | tee discovered.txt
+          {
+            echo "## Discovered shell scripts (${#scripts[@]})"
+            printf -- '- `%s`\n' "${scripts[@]}"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "count=${#scripts[@]}" >> "$GITHUB_OUTPUT"
+
+      - name: bash -n syntax fast-fail
+        if: steps.discover.outputs.count != '0'
+        run: |
+          set -e
+          while IFS= read -r f; do
+            echo "→ bash -n $f"
+            bash -n "$f"
+          done < discovered.txt
+          echo "✓ all scripts pass syntax check"
+
+      - name: shellcheck
+        if: always() && steps.discover.outputs.count != '0'
+        run: |
+          EXCLUDES=SC1090,SC1091,SC2034,SC2154
+          fail=0
+          while IFS= read -r f; do
+            if ! shellcheck -x --exclude="$EXCLUDES" "$f"; then
+              fail=1
+            fi
+          done < discovered.txt
+          [ "$fail" -eq 0 ] && echo "✓ shellcheck clean"
+          exit $fail
+
+  lua:
+    name: Lua (stylua + selene)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: stylua --check
         uses: JohnnyMorganz/stylua-action@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest
-          args: --check -v .config/nvim/
+          args: --check .config/nvim
 
-      - name: Shellcheck bash scripts
+      - name: Install selene
         run: |
-          scripts=(
-            "scripts/bootstrap.sh"
-            "scripts/generate_readme.sh"
-            "scripts/install_google_sans_code.sh"
-          )
-          failed=0
-          for script in "${scripts[@]}"; do
-            if [ -f "$script" ]; then
-              echo "Checking $script..."
-              if shellcheck -x "$script"; then
-                echo "✓ $script passed"
-              else
-                echo "✗ $script failed"
-                failed=1
-              fi
-            fi
-          done
-          exit $failed
+          SELENE_VERSION=0.29.0
+          curl -fsSL "https://github.com/Kampfkarren/selene/releases/download/${SELENE_VERSION}/selene-light-${SELENE_VERSION}-linux.zip" -o selene.zip
+          unzip -q selene.zip
+          chmod +x selene
+          sudo mv selene /usr/local/bin/
 
-      - name: Lint Summary
+      - name: selene
         if: always()
-        run: |
+        run: selene .
+
+  summary:
+    name: Lint summary
+    if: always()
+    needs: [shell, lua]
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
           {
-            echo "## Lint Results"
+            echo "## Lint results"
             echo "| Check | Status |"
             echo "|-------|--------|"
-            echo "| Luacheck | ✓ |"
-            echo "| Stylua | ✓ |"
-            echo "| Shellcheck | ✓ |"
+            echo "| shell (bash -n + shellcheck) | ${{ needs.shell.result }} |"
+            echo "| lua (stylua + selene) | ${{ needs.lua.result }} |"
           } >> "$GITHUB_STEP_SUMMARY"
