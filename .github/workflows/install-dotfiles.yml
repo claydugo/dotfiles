@@ -6,14 +6,20 @@ on:
     paths:
       - 'scripts/bootstrap.sh'
       - '.config/nvim/**'
+      - '.bashrc'
+      - '.aliases'
       - '.github/workflows/install-dotfiles.yml'
       - '.github/scripts/benchmark.sh'
+      - '.github/scripts/benchmark-bash.sh'
   pull_request:
     paths:
       - 'scripts/bootstrap.sh'
       - '.config/nvim/**'
+      - '.bashrc'
+      - '.aliases'
       - '.github/workflows/install-dotfiles.yml'
       - '.github/scripts/benchmark.sh'
+      - '.github/scripts/benchmark-bash.sh'
   schedule:
     - cron: '0 3 * * 6'
   workflow_dispatch:
@@ -276,6 +282,15 @@ jobs:
             cat /tmp/result.json
           '
 
+      - name: Measure bash startup
+        run: |
+          su - clay -c '
+            export PATH="$HOME/.pixi/bin:$PATH"
+            cd ~/dotfiles
+            bash .github/scripts/benchmark-bash.sh /tmp/bash-result.json
+            cat /tmp/bash-result.json
+          '
+
       - name: Restore benchmark history
         uses: actions/cache/restore@v4
         with:
@@ -290,6 +305,19 @@ jobs:
           name: nvim startup (Ubuntu)
           tool: customSmallerIsBetter
           output-file-path: /tmp/result.json
+          external-data-json-path: /tmp/cache/benchmark-data.json
+          alert-threshold: '150%'
+          comment-on-alert: true
+          fail-on-alert: false
+          alert-comment-cc-users: '@claydugo'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compare bash startup against history (alert on regression)
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          name: bash startup (Ubuntu)
+          tool: customSmallerIsBetter
+          output-file-path: /tmp/bash-result.json
           external-data-json-path: /tmp/cache/benchmark-data.json
           alert-threshold: '150%'
           comment-on-alert: true
@@ -425,6 +453,13 @@ jobs:
           bash .github/scripts/benchmark.sh /tmp/result.json
           cat /tmp/result.json
 
+      - name: Measure bash startup
+        run: |
+          export PATH="$HOME/.pixi/bin:$PATH"
+          cd "$HOME/dotfiles"
+          bash .github/scripts/benchmark-bash.sh /tmp/bash-result.json
+          cat /tmp/bash-result.json
+
       - name: Restore benchmark history
         uses: actions/cache/restore@v4
         with:
@@ -439,6 +474,19 @@ jobs:
           name: nvim startup (macOS)
           tool: customSmallerIsBetter
           output-file-path: /tmp/result.json
+          external-data-json-path: /tmp/cache/benchmark-data.json
+          alert-threshold: '150%'
+          comment-on-alert: true
+          fail-on-alert: false
+          alert-comment-cc-users: '@claydugo'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compare bash startup against history (alert on regression)
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          name: bash startup (macOS)
+          tool: customSmallerIsBetter
+          output-file-path: /tmp/bash-result.json
           external-data-json-path: /tmp/cache/benchmark-data.json
           alert-threshold: '150%'
           comment-on-alert: true
