@@ -7,7 +7,6 @@ if [ "$(uname -s)" = "Darwin" ]; then
 else
     FONT_DIR="${HOME}/.local/share/fonts/GoogleSansCodeNerdFont"
 fi
-TEMP_DIR=$(mktemp -d)
 
 print_message() {
     local color="$1"
@@ -15,6 +14,12 @@ print_message() {
     printf '\e[%sm%s\e[0m\n' "$color" "$message"
 }
 
+if [ -d "$FONT_DIR" ] && find "$FONT_DIR" -name '*.ttf' -type f | grep -q .; then
+    print_message "32" "Google Sans Code Nerd Font already installed at $FONT_DIR"
+    exit 0
+fi
+
+TEMP_DIR=$(mktemp -d)
 cleanup() {
     rm -rf "$TEMP_DIR"
 }
