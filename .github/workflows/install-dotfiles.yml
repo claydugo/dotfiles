@@ -72,6 +72,9 @@ jobs:
           key: lazy-${{ runner.os }}-${{ hashFiles('dotfiles-pr/.config/nvim/lazy-lock.json') }}
           restore-keys: lazy-${{ runner.os }}-
 
+      - name: Reset cached path ownership
+        run: chown -R clay:clay /home/clay
+
       - name: Authenticated git for plugin clones (lift GH rate limit)
         if: github.actor == github.repository_owner
         env:
