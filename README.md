@@ -88,8 +88,7 @@ cd ~/dotfiles
 ├── scripts
 │   ├── bootstrap.sh
 │   ├── generate_readme.sh
-│   ├── install_google_sans_code.sh
-│   └── tmate_restore.py
+│   └── install_google_sans_code.sh
 ├── selene.toml
 └── vim.yml
 ```
