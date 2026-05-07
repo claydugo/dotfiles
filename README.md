@@ -80,17 +80,18 @@ cd ~/dotfiles
 ├── .local
 │   └── bin
 │       └── build_nvim.sh
-├── .luacheckrc
 ├── .luarc.json
 ├── .pre-commit-config.yaml
 ├── .stylua.toml
 ├── .tmux.conf
 ├── README.md
-└── scripts
-    ├── bootstrap.sh
-    ├── generate_readme.sh
-    ├── install_google_sans_code.sh
-    └── tmate_restore.py
+├── scripts
+│   ├── bootstrap.sh
+│   ├── generate_readme.sh
+│   ├── install_google_sans_code.sh
+│   └── tmate_restore.py
+├── selene.toml
+└── vim.yml
 ```
 
 </details>
@@ -121,6 +122,7 @@ Installed via `scripts/bootstrap.sh`:
 - `rattler-build`
 - `fastfetch`
 - `stylua`
+- `selene`
 - `gifski`
 - `jujutsu`
 - `hyperfine`
