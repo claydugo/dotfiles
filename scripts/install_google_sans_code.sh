@@ -27,9 +27,15 @@ trap cleanup EXIT
 
 print_message "32" "Installing Google Sans Code Nerd Font..."
 
+GH_AUTH_HEADER=()
+GH_API_TOKEN="${GITHUB_TOKEN:-${GH_TOKEN:-}}"
+if [ -n "$GH_API_TOKEN" ]; then
+    GH_AUTH_HEADER=(-H "Authorization: Bearer $GH_API_TOKEN")
+fi
+
 API_RESPONSE=""
 for attempt in 1 2 3; do
-    if API_RESPONSE=$(curl -fsSL --max-time 30 https://api.github.com/repos/E-Vertin/GoogleSansCode-NerdFont/releases/latest 2>/dev/null); then
+    if API_RESPONSE=$(curl -fsSL --max-time 30 "${GH_AUTH_HEADER[@]}" https://api.github.com/repos/E-Vertin/GoogleSansCode-NerdFont/releases/latest); then
         [ -n "$API_RESPONSE" ] && break
     fi
     print_message "33" "API fetch failed, attempt $attempt/3..."

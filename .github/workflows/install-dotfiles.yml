@@ -89,10 +89,14 @@ jobs:
           su - clay -c "git config --global url.\"https://x-access-token:${GH_TOKEN}@github.com/\".insteadOf \"https://github.com/\""
 
       - name: Run bootstrap (first run)
-        run: su - clay -c "cd ~/dotfiles && ./scripts/bootstrap.sh"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: su - clay -c "export GITHUB_TOKEN='${GH_TOKEN}'; cd ~/dotfiles && ./scripts/bootstrap.sh"
 
       - name: Run bootstrap (idempotency check)
-        run: su - clay -c "cd ~/dotfiles && ./scripts/bootstrap.sh"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: su - clay -c "export GITHUB_TOKEN='${GH_TOKEN}'; cd ~/dotfiles && ./scripts/bootstrap.sh"
 
       - name: Assert bootstrap did not modify tracked files
         run: |
@@ -391,9 +395,13 @@ jobs:
           git config --global url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
 
       - name: Run bootstrap (first run)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: cd "$HOME/dotfiles" && ./scripts/bootstrap.sh
 
       - name: Run bootstrap (idempotency check)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: cd "$HOME/dotfiles" && ./scripts/bootstrap.sh
 
       - name: Assert bootstrap did not modify tracked files
