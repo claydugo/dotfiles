@@ -206,12 +206,10 @@ global_cli_tools=(
     curl
     unzip
     openssl
-    fswatch
     rattler-build
     fastfetch
     stylua
     selene
-    gifski
     jujutsu
     hyperfine
     tree-sitter-cli
@@ -219,7 +217,7 @@ global_cli_tools=(
 )
 
 if [ "$(uname -s)" = "Linux" ]; then
-    global_cli_tools+=(xclip)
+    global_cli_tools+=(xclip fswatch gifski)
 fi
 
 install_nvm || { print_message "31" "Failed to install NVM"; exit 1; }

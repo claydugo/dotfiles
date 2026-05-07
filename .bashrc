@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
@@ -67,9 +68,6 @@ if hash fzf 2>/dev/null; then
     eval "$(fzf --bash)"
     export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
     export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .git'
-    bind -m emacs-standard '"\ed": " \C-b\C-k \C-u`__fzf_cd__`\e\C-e\er\C-m\C-y\C-h\e \C-y\ey\C-x\C-x\C-d"'
-    bind -m vi-command '"\ed": "\C-z\ed\C-z"'
-    bind -m vi-insert '"\ed": "\C-z\ed\C-z"'
 fi
 
 if hash starship 2>/dev/null; then

@@ -397,8 +397,10 @@ jobs:
       - name: Verify nvim starts (macOS)
         run: |
           export PATH="$HOME/.pixi/bin:$PATH"
+          TIMEOUT=$(command -v timeout || command -v gtimeout || true)
+          [ -n "$TIMEOUT" ] && TIMEOUT="$TIMEOUT 30"
           set +e
-          output=$(timeout 30 nvim --headless -c "qa" 2>&1)
+          output=$($TIMEOUT nvim --headless -c "qa" 2>&1)
           status=$?
           set -e
           if [ "$status" -ne 0 ]; then
