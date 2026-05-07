@@ -14,14 +14,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  shell:
-    name: Shell (bash -n + shellcheck)
+  lint:
+    name: Lint (bash + lua)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - name: Install shellcheck
         run: sudo apt-get update -qq && sudo apt-get install -y shellcheck
+
+      - name: Install selene
+        run: |
+          SELENE_VERSION=0.29.0
+          curl -fsSL "https://github.com/Kampfkarren/selene/releases/download/${SELENE_VERSION}/selene-light-${SELENE_VERSION}-linux.zip" -o selene.zip
+          unzip -q selene.zip
+          chmod +x selene
+          sudo mv selene /usr/local/bin/
 
       - name: Discover shell scripts (by shebang or shellcheck directive)
         id: discover
@@ -44,7 +52,7 @@ jobs:
           echo "count=${#scripts[@]}" >> "$GITHUB_OUTPUT"
 
       - name: bash -n syntax fast-fail
-        if: steps.discover.outputs.count != '0'
+        if: always() && steps.discover.outputs.count != '0'
         run: |
           set -e
           while IFS= read -r f; do
@@ -66,42 +74,14 @@ jobs:
           [ "$fail" -eq 0 ] && echo "✓ shellcheck clean"
           exit $fail
 
-  lua:
-    name: Lua (stylua + selene)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
       - name: stylua --check
+        if: always()
         uses: JohnnyMorganz/stylua-action@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           version: latest
           args: --check .config/nvim
 
-      - name: Install selene
-        run: |
-          SELENE_VERSION=0.29.0
-          curl -fsSL "https://github.com/Kampfkarren/selene/releases/download/${SELENE_VERSION}/selene-light-${SELENE_VERSION}-linux.zip" -o selene.zip
-          unzip -q selene.zip
-          chmod +x selene
-          sudo mv selene /usr/local/bin/
-
       - name: selene
         if: always()
         run: selene .
-
-  summary:
-    name: Lint summary
-    if: always()
-    needs: [shell, lua]
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          {
-            echo "## Lint results"
-            echo "| Check | Status |"
-            echo "|-------|--------|"
-            echo "| shell (bash -n + shellcheck) | ${{ needs.shell.result }} |"
-            echo "| lua (stylua + selene) | ${{ needs.lua.result }} |"
-          } >> "$GITHUB_STEP_SUMMARY"

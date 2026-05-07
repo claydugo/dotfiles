@@ -7,17 +7,20 @@ on:
       - 'scripts/bootstrap.sh'
       - '.config/nvim/**'
       - '.github/workflows/install-dotfiles.yml'
+      - '.github/scripts/benchmark.sh'
   pull_request:
     paths:
       - 'scripts/bootstrap.sh'
       - '.config/nvim/**'
       - '.github/workflows/install-dotfiles.yml'
+      - '.github/scripts/benchmark.sh'
   schedule:
     - cron: '0 3 * * 6'
   workflow_dispatch:
 
 permissions:
   contents: read
+  pull-requests: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -261,6 +264,43 @@ jobs:
             echo "✓ nvim starts cleanly"
           '
 
+      - name: Measure nvim startup
+        run: |
+          su - clay -c '
+            export PATH="$HOME/.pixi/bin:$PATH"
+            cd ~/dotfiles
+            bash .github/scripts/benchmark.sh /tmp/result.json
+            cat /tmp/result.json
+          '
+
+      - name: Restore benchmark history
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/cache
+          key: ${{ runner.os }}-benchmark-history-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-benchmark-history-
+
+      - name: Compare against benchmark history (alert on regression)
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          name: nvim startup (Ubuntu)
+          tool: customSmallerIsBetter
+          output-file-path: /tmp/result.json
+          external-data-json-path: /tmp/cache/benchmark-data.json
+          alert-threshold: '150%'
+          comment-on-alert: true
+          fail-on-alert: false
+          alert-comment-cc-users: '@claydugo'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Save benchmark history
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/cache
+          key: ${{ runner.os }}-benchmark-history-${{ github.run_id }}
+
       - name: Test summary
         if: always()
         run: |
@@ -372,6 +412,41 @@ jobs:
             exit 1
           fi
           echo "✓ nvim starts cleanly"
+
+      - name: Measure nvim startup
+        run: |
+          export PATH="$HOME/.pixi/bin:$PATH"
+          cd "$HOME/dotfiles"
+          bash .github/scripts/benchmark.sh /tmp/result.json
+          cat /tmp/result.json
+
+      - name: Restore benchmark history
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/cache
+          key: ${{ runner.os }}-benchmark-history-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-benchmark-history-
+
+      - name: Compare against benchmark history (alert on regression)
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          name: nvim startup (macOS)
+          tool: customSmallerIsBetter
+          output-file-path: /tmp/result.json
+          external-data-json-path: /tmp/cache/benchmark-data.json
+          alert-threshold: '150%'
+          comment-on-alert: true
+          fail-on-alert: false
+          alert-comment-cc-users: '@claydugo'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Save benchmark history
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/cache
+          key: ${{ runner.os }}-benchmark-history-${{ github.run_id }}
 
   plugin-freshness:
     name: Lazy.nvim plugin archive check

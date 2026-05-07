@@ -60,9 +60,9 @@ install_nvm() {
 
 install_pixi() {
     print_message "32" "Installing Pixi package manager..."
+    export PATH="$HOME/.pixi/bin:$PATH"
     if ! command -v pixi >/dev/null 2>&1; then
-        download_and_execute "https://pixi.sh/install.sh"
-        export PATH="$HOME/.pixi/bin:$PATH"
+        PIXI_NO_PATH_UPDATE=1 download_and_execute "https://pixi.sh/install.sh"
     else
         print_message "34" "Pixi is already installed."
     fi
