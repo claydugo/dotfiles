@@ -84,6 +84,7 @@ cd ~/dotfiles
 ├── .pre-commit-config.yaml
 ├── .stylua.toml
 ├── .tmux.conf
+├── .yamlfmt
 ├── README.md
 ├── scripts
 │   ├── bootstrap.sh
