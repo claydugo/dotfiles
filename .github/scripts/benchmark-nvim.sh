@@ -2,7 +2,7 @@
 
 set -eo pipefail
 
-OUTPUT=${1:-benchmark-bash-result.json}
+OUTPUT=${1:-benchmark-result.json}
 WARMUPS=${WARMUPS:-3}
 RUNS=${RUNS:-30}
 
@@ -15,7 +15,7 @@ hyperfine \
     --shell=none \
     --style=basic \
     --export-json "$tmpdir/result.json" \
-    'bash -i -c exit'
+    'nvim --headless +qa'
 
 read -r median_ms stddev_ms min_ms <<<"$(python3 - "$tmpdir/result.json" <<'PY'
 import json, sys
@@ -30,7 +30,7 @@ echo "Median: ${median_ms}ms (stddev ${stddev_ms}ms, min ${min_ms}ms)"
 cat > "$OUTPUT" <<EOF
 [
   {
-    "name": "bash startup time",
+    "name": "nvim startup time",
     "unit": "ms",
     "value": $median_ms,
     "range": "±$stddev_ms"

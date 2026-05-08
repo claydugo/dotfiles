@@ -31,6 +31,13 @@ jobs:
           chmod +x selene
           sudo mv selene /usr/local/bin/
 
+      - name: Install yamlfmt
+        run: |
+          YAMLFMT_VERSION=0.21.0
+          curl -fsSL "https://github.com/google/yamlfmt/releases/download/v${YAMLFMT_VERSION}/yamlfmt_${YAMLFMT_VERSION}_Linux_x86_64.tar.gz" \
+            | sudo tar -xz -C /usr/local/bin yamlfmt
+          sudo chmod +x /usr/local/bin/yamlfmt
+
       - name: Discover shell scripts (by shebang or shellcheck directive)
         id: discover
         run: |
@@ -85,3 +92,7 @@ jobs:
       - name: selene
         if: always()
         run: selene .
+
+      - name: yamlfmt --lint
+        if: always()
+        run: yamlfmt -lint

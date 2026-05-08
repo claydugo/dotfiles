@@ -9,8 +9,9 @@ on:
       - '.bashrc'
       - '.aliases'
       - '.github/workflows/install-dotfiles.yml'
-      - '.github/scripts/benchmark.sh'
+      - '.github/scripts/benchmark-nvim.sh'
       - '.github/scripts/benchmark-bash.sh'
+      - '.github/scripts/compare-benchmark.py'
   pull_request:
     paths:
       - 'scripts/bootstrap.sh'
@@ -18,8 +19,9 @@ on:
       - '.bashrc'
       - '.aliases'
       - '.github/workflows/install-dotfiles.yml'
-      - '.github/scripts/benchmark.sh'
+      - '.github/scripts/benchmark-nvim.sh'
       - '.github/scripts/benchmark-bash.sh'
+      - '.github/scripts/compare-benchmark.py'
   schedule:
     - cron: '0 3 * * 6'
   workflow_dispatch:
@@ -46,7 +48,7 @@ jobs:
       - name: Install prerequisites
         run: |
           apt-get update
-          apt-get install -y git curl sudo tree xz-utils fontconfig gcc make
+          apt-get install -y git curl sudo tree xz-utils fontconfig gcc make python3
 
       - name: Create test user
         run: |
@@ -282,7 +284,7 @@ jobs:
           su - clay -c '
             export PATH="$HOME/.pixi/bin:$PATH"
             cd ~/dotfiles
-            bash .github/scripts/benchmark.sh /tmp/result.json
+            bash .github/scripts/benchmark-nvim.sh /tmp/result.json
             cat /tmp/result.json
           '
 
@@ -303,34 +305,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-benchmark-history-
 
-      - name: Compare against benchmark history (alert on regression)
-        uses: benchmark-action/github-action-benchmark@v1
-        with:
-          name: nvim startup (Ubuntu)
-          tool: customSmallerIsBetter
-          output-file-path: /tmp/result.json
-          external-data-json-path: /tmp/cache/benchmark-data.json
-          alert-threshold: '150%'
-          comment-on-alert: true
-          fail-on-alert: false
-          alert-comment-cc-users: '@claydugo'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Compare bash startup against history (alert on regression)
-        uses: benchmark-action/github-action-benchmark@v1
-        with:
-          name: bash startup (Ubuntu)
-          tool: customSmallerIsBetter
-          output-file-path: /tmp/bash-result.json
-          external-data-json-path: /tmp/cache/benchmark-data.json
-          alert-threshold: '150%'
-          comment-on-alert: true
-          fail-on-alert: false
-          alert-comment-cc-users: '@claydugo'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Compare against rolling baseline (nvim + bash)
+        env:
+          RECORD: ${{ github.event_name == 'push' && '--record' || '' }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          chown -R clay:clay /tmp/cache 2>/dev/null || true
+          su - clay -c "
+            export GITHUB_SHA='${GITHUB_SHA}'
+            cd ~/dotfiles
+            python3 .github/scripts/compare-benchmark.py /tmp/result.json /tmp/cache 'nvim startup (Ubuntu)' ${RECORD}
+            python3 .github/scripts/compare-benchmark.py /tmp/bash-result.json /tmp/cache 'bash startup (Ubuntu)' ${RECORD}
+          "
 
       - name: Save benchmark history
-        if: always()
+        if: github.event_name == 'push'
         uses: actions/cache/save@v4
         with:
           path: /tmp/cache
@@ -458,7 +447,7 @@ jobs:
         run: |
           export PATH="$HOME/.pixi/bin:$PATH"
           cd "$HOME/dotfiles"
-          bash .github/scripts/benchmark.sh /tmp/result.json
+          bash .github/scripts/benchmark-nvim.sh /tmp/result.json
           cat /tmp/result.json
 
       - name: Measure bash startup
@@ -476,34 +465,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-benchmark-history-
 
-      - name: Compare against benchmark history (alert on regression)
-        uses: benchmark-action/github-action-benchmark@v1
-        with:
-          name: nvim startup (macOS)
-          tool: customSmallerIsBetter
-          output-file-path: /tmp/result.json
-          external-data-json-path: /tmp/cache/benchmark-data.json
-          alert-threshold: '150%'
-          comment-on-alert: true
-          fail-on-alert: false
-          alert-comment-cc-users: '@claydugo'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Compare bash startup against history (alert on regression)
-        uses: benchmark-action/github-action-benchmark@v1
-        with:
-          name: bash startup (macOS)
-          tool: customSmallerIsBetter
-          output-file-path: /tmp/bash-result.json
-          external-data-json-path: /tmp/cache/benchmark-data.json
-          alert-threshold: '150%'
-          comment-on-alert: true
-          fail-on-alert: false
-          alert-comment-cc-users: '@claydugo'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Compare against rolling baseline (nvim + bash)
+        env:
+          RECORD: ${{ github.event_name == 'push' && '--record' || '' }}
+        run: |
+          cd "$HOME/dotfiles"
+          python3 .github/scripts/compare-benchmark.py /tmp/result.json /tmp/cache 'nvim startup (macOS)' ${RECORD}
+          python3 .github/scripts/compare-benchmark.py /tmp/bash-result.json /tmp/cache 'bash startup (macOS)' ${RECORD}
 
       - name: Save benchmark history
-        if: always()
+        if: github.event_name == 'push'
         uses: actions/cache/save@v4
         with:
           path: /tmp/cache

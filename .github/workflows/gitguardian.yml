@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # full history needed to scan past commits
+          fetch-depth: 0 # full history needed to scan past commits
 
       - name: Run gg-shield
         uses: GitGuardian/ggshield-action@v1

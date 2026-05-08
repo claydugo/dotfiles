@@ -52,6 +52,7 @@ path_prepend "$HOME/.cargo/bin"
 path_prepend "/usr/lib/qt6/bin"
 path_prepend "$HOME/.pixi/bin"
 path_prepend "$BUN_INSTALL/bin"
+path_prepend "$HOME/go/bin"
 path_prepend "$HOME/.local/bin"
 
 if hash nvim 2>/dev/null; then
