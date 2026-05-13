@@ -217,3 +217,11 @@ extract() {
         return 1
     fi
 }
+
+if hash exiftool 2>/dev/null; then
+    stripc2pa() {
+        local in="$1"
+        local out="${2:-${in%.*}-stripped.${in##*.}}"
+        exiftool -jumbf:all= -o "$out" "$in"
+    }
+fi
