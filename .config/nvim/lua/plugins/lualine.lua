@@ -36,13 +36,16 @@ function M.config()
     sections = {
       lualine_a = { "mode" },
       lualine_b = { "filename" },
-      lualine_c = {},
-      lualine_x = { search_display },
-      lualine_y = { get_LSP },
-      lualine_z = {
-        { "branch" },
-        { "diff" },
+      lualine_c = {
+        {
+          "diagnostics",
+          sources = { "nvim_diagnostic" },
+          sections = { "error", "warn", "info", "hint" },
+        },
       },
+      lualine_x = {},
+      lualine_y = { get_LSP },
+      lualine_z = { search_display },
     },
   })
 end

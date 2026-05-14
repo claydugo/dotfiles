@@ -28,9 +28,13 @@ M.mason = {
   "biome",
   "harper-ls",
   "bash-language-server",
-  "lua-language-server",
+  "emmylua_ls",
   "rust-analyzer",
   "shellcheck",
+  "wgsl-analyzer",
+  "clangd",
+  "taplo",
+  "yaml-language-server",
 }
 
 M.treesitter_java = { "java", "groovy" }

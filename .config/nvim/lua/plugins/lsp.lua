@@ -10,8 +10,6 @@ local M = {
 }
 
 function M.config()
-  vim.env.PATH = vim.fn.expand("~/.pixi/envs/default/bin") .. ":" .. vim.env.PATH
-
   require("mason").setup()
 
   vim.diagnostic.config({
@@ -145,10 +143,12 @@ function M.config()
     },
   })
 
-  vim.lsp.config("lua_ls", {
-    cmd = { "lua-language-server" },
+  vim.lsp.config("emmylua_ls", {
+    cmd = { "emmylua_ls" },
     filetypes = { "lua" },
     root_markers = {
+      ".emmyrc.json",
+      ".emmyrc.lua",
       ".luarc.json",
       ".luarc.jsonc",
       ".luacheckrc",
@@ -157,6 +157,11 @@ function M.config()
       "selene.toml",
       "selene.yml",
       ".git",
+    },
+    workspace_required = false,
+    settings = {
+      codeLens = { enable = true },
+      hint = { enable = true },
     },
     capabilities = capabilities,
     on_attach = on_attach,
@@ -170,13 +175,87 @@ function M.config()
     on_attach = on_attach,
   })
 
-  vim.lsp.enable("ty")
-  vim.lsp.enable("ruff")
-  vim.lsp.enable("biome")
-  vim.lsp.enable("harper_ls")
-  vim.lsp.enable("bashls")
-  vim.lsp.enable("lua_ls")
-  vim.lsp.enable("rust_analyzer")
+  vim.lsp.config("wgsl_analyzer", {
+    cmd = { "wgsl-analyzer" },
+    filetypes = { "wgsl" },
+    root_markers = { ".git" },
+    capabilities = capabilities,
+    on_attach = on_attach,
+  })
+
+  local clangd_capabilities = vim.tbl_deep_extend("force", capabilities, {
+    textDocument = { completion = { editsNearCursor = true } },
+    offsetEncoding = { "utf-8", "utf-16" },
+  })
+  vim.lsp.config("clangd", {
+    cmd = { "clangd" },
+    filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
+    root_markers = {
+      ".clangd",
+      ".clang-tidy",
+      ".clang-format",
+      "compile_commands.json",
+      "compile_flags.txt",
+      "configure.ac",
+      ".git",
+    },
+    get_language_id = function(_, ftype)
+      local t = { objc = "objective-c", objcpp = "objective-cpp", cuda = "cuda-cpp" }
+      return t[ftype] or ftype
+    end,
+    capabilities = clangd_capabilities,
+    on_init = function(client, init_result)
+      if init_result.offsetEncoding then
+        client.offset_encoding = init_result.offsetEncoding
+      end
+    end,
+    on_attach = on_attach,
+  })
+
+  vim.lsp.config("taplo", {
+    cmd = { "taplo", "lsp", "stdio" },
+    filetypes = { "toml" },
+    root_markers = { ".taplo.toml", "taplo.toml", ".git" },
+    capabilities = capabilities,
+    on_attach = on_attach,
+  })
+
+  vim.lsp.config("yamlls", {
+    cmd = { "yaml-language-server", "--stdio" },
+    filetypes = { "yaml", "yaml.docker-compose", "yaml.gitlab", "yaml.helm-values" },
+    root_markers = { ".git" },
+    settings = {
+      redhat = { telemetry = { enabled = false } },
+      yaml = { format = { enable = true } },
+    },
+    on_init = function(client)
+      client.server_capabilities.documentFormattingProvider = true
+    end,
+    capabilities = capabilities,
+    on_attach = on_attach,
+  })
+
+  -- Gate by executable: on a fresh install mason hasn't finished by the time
+  -- this runs, and enabling a server whose binary doesn't exist surfaces a
+  -- noisy "command not found" the first time a matching filetype opens.
+  local servers = {
+    ty = "ty",
+    ruff = "ruff",
+    biome = "biome",
+    harper_ls = "harper-ls",
+    bashls = "bash-language-server",
+    emmylua_ls = "emmylua_ls",
+    rust_analyzer = "rust-analyzer",
+    wgsl_analyzer = "wgsl-analyzer",
+    clangd = "clangd",
+    taplo = "taplo",
+    yamlls = "yaml-language-server",
+  }
+  for name, cmd in pairs(servers) do
+    if vim.fn.executable(cmd) == 1 then
+      vim.lsp.enable(name)
+    end
+  end
 
   vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic" })
   vim.keymap.set("n", "<leader>eq", function()
@@ -203,14 +282,6 @@ function M.config()
   vim.keymap.set("v", "<leader>r", function()
     vim.lsp.buf.format()
   end, { desc = "Format selection" })
-
-  -- https://github.com/wgsl-analyzer/wgsl-analyzer
-  vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
-    pattern = "*.wgsl",
-    callback = function()
-      vim.bo.filetype = "wgsl"
-    end,
-  })
 end
 
 return M

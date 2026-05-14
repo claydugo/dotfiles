@@ -62,5 +62,6 @@
     "https://github.com/claydugo/dotfiles"
   ],
   "skipDangerousModePermissionPrompt": true,
-  "editorMode": "vim"
+  "editorMode": "vim",
+  "verbose": true
 }
