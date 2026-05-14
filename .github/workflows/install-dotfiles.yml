@@ -156,7 +156,7 @@ jobs:
       - name: Verify pixi packages
         run: |
           su - clay -c '
-            export PATH="$HOME/.pixi/bin:$PATH"
+            export PATH="$HOME/.pixi/bin:$HOME/.local/bin:$PATH"
             set -eo pipefail
             echo "Checking pixi packages functionality..."
 
@@ -174,6 +174,7 @@ jobs:
             selene --version && echo "✓ selene"
             jj --version && echo "✓ jujutsu"
             hyperfine --version && echo "✓ hyperfine"
+            claude --version && echo "✓ claude code"
           '
 
       - name: Verify NVM + Node

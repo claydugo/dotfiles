@@ -68,6 +68,16 @@ install_pixi() {
     fi
 }
 
+install_claude_code() {
+    print_message "32" "Installing Claude Code..."
+    export PATH="$HOME/.local/bin:$PATH"
+    if ! command -v claude >/dev/null 2>&1; then
+        download_and_execute "https://claude.ai/install.sh"
+    else
+        print_message "34" "Claude Code is already installed."
+    fi
+}
+
 install_with_pixi_global() {
     local packages=("$@")
     print_message "32" "Installing global CLI tools with Pixi: ${packages[*]}"
@@ -224,6 +234,7 @@ install_nvm || { print_message "31" "Failed to install NVM"; exit 1; }
 install_pixi || { print_message "31" "Failed to install Pixi"; exit 1; }
 setup_pixi_environment
 install_with_pixi_global "${global_cli_tools[@]}" || { print_message "31" "Failed to install global CLI tools"; exit 1; }
+install_claude_code || { print_message "31" "Failed to install Claude Code"; exit 1; }
 setup_modern_bash
 
 ln -sfn "$HOME/dotfiles/.gitconfig" "$XDG_CONFIG_HOME/git/config"
