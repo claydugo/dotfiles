@@ -132,11 +132,9 @@ sudo -v
 
 print_message "32" "Symlinking configuration files..."
 link "$HOME/dotfiles/.bashrc" "$HOME/.bashrc"
-if [ "$(uname -s)" = "Darwin" ]; then
-    if [ ! -e "$HOME/.bash_profile" ] || [ -L "$HOME/.bash_profile" ]; then
-        # shellcheck disable=SC2016
-        printf '[ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"\n' > "$HOME/.bash_profile"
-    fi
+if [ ! -e "$HOME/.bash_profile" ] || [ -L "$HOME/.bash_profile" ]; then
+    # shellcheck disable=SC2016
+    printf '[ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"\n' > "$HOME/.bash_profile"
 fi
 link "$HOME/dotfiles/.gitignore" "$HOME/.gitignore"
 link "$HOME/dotfiles/.gitlab_ci_skip" "$HOME/.gitlab_ci_skip"
