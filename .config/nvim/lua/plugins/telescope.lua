@@ -1,3 +1,16 @@
+-- telescope-fzf-native builds a native lib. Unix uses its Makefile; Windows has
+-- no make/gcc by default, so use the cmake build (the --install step lands
+-- build/libfzf.dll where the loader expects it). The Ninja generator picks up
+-- the zig $CC exported in options.lua, so it builds without MSVC.
+local fzf_build = "make"
+if vim.fn.has("win32") == 1 then
+  fzf_build = table.concat({
+    "cmake -S. -Bbuild -G Ninja -DCMAKE_BUILD_TYPE=Release",
+    "cmake --build build --config Release",
+    "cmake --install build --prefix build",
+  }, " && ")
+end
+
 local M = {
   "nvim-telescope/telescope.nvim",
   cmd = { "Telescope" },
@@ -36,7 +49,7 @@ local M = {
     { "nvim-treesitter/nvim-treesitter" },
     { "ThePrimeagen/harpoon", branch = "harpoon2" },
     { "debugloop/telescope-undo.nvim" },
-    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    { "nvim-telescope/telescope-fzf-native.nvim", build = fzf_build },
     { "nvim-telescope/telescope-ui-select.nvim" },
   },
 }

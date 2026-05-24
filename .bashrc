@@ -99,10 +99,17 @@ if [ -s "$NVM_DIR/nvm.sh" ]; then
     }
 fi
 
+if hash fnm 2>/dev/null; then
+    eval "$(fnm env --use-on-cd)"
+fi
+
 export PYGFX_PRINT_WGSL_ON_COMPILATION_ERROR=1
 export RUST_BACKTRACE=full
 if [[ "$(uname)" == "Linux" ]]; then
     export QT_QPA_PLATFORMTHEME=gtk3
     export QT_QPA_PLATFORM=wayland
+fi
+if [[ "$(uname -s)" == MINGW* || "$(uname -s)" == MSYS* ]] && hash zig 2>/dev/null; then
+    export CC="zig cc"
 fi
 export CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1

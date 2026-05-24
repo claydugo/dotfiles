@@ -2,11 +2,17 @@
 
 set -euo pipefail
 
-if [ "$(uname -s)" = "Darwin" ]; then
-    FONT_DIR="${HOME}/Library/Fonts/GoogleSansCodeNerdFont"
-else
-    FONT_DIR="${HOME}/.local/share/fonts/GoogleSansCodeNerdFont"
-fi
+case "$(uname -s)" in
+    MINGW* | MSYS* | CYGWIN*) OS=windows ;;
+    Darwin) OS=macos ;;
+    *) OS=linux ;;
+esac
+
+case "$OS" in
+    macos) FONT_DIR="${HOME}/Library/Fonts/GoogleSansCodeNerdFont" ;;
+    windows) FONT_DIR="${LOCALAPPDATA}/Microsoft/Windows/Fonts/GoogleSansCodeNerdFont" ;;
+    *) FONT_DIR="${HOME}/.local/share/fonts/GoogleSansCodeNerdFont" ;;
+esac
 
 print_message() {
     local color="$1"
@@ -68,7 +74,15 @@ $download_success || { print_message "31" "Failed to download font"; exit 1; }
 
 print_message "34" "Extracting fonts..."
 mkdir -p "$FONT_DIR"
-tar -xJf "$TEMP_DIR/font.tar.xz" -C "$TEMP_DIR"
+if [ "$OS" = windows ]; then
+    # GNU tar in Git Bash needs a separate xz binary; the Windows bundled bsdtar
+    # (System32\tar.exe) decompresses .tar.xz natively.
+    wintar="/c/Windows/System32/tar.exe"
+    [ -x "$wintar" ] || wintar="tar"
+    "$wintar" -xf "$(cygpath -w "$TEMP_DIR/font.tar.xz")" -C "$(cygpath -w "$TEMP_DIR")"
+else
+    tar -xJf "$TEMP_DIR/font.tar.xz" -C "$TEMP_DIR"
+fi
 
 font_count=$(find "$TEMP_DIR" -name "*.ttf" -type f | wc -l)
 if [[ "$font_count" -eq 0 ]]; then
@@ -76,6 +90,23 @@ if [[ "$font_count" -eq 0 ]]; then
     exit 1
 fi
 find "$TEMP_DIR" -name "*.ttf" -type f -exec cp {} "$FONT_DIR/" \;
+
+if [ "$OS" = windows ]; then
+    # Per-user font install (no admin): register each .ttf under HKCU so Windows
+    # apps can resolve it. The value points at the absolute path of the file.
+    print_message "34" "Registering fonts for the current user..."
+    powershell -NoProfile -Command '
+        $dir = Join-Path $env:LOCALAPPDATA "Microsoft\Windows\Fonts\GoogleSansCodeNerdFont"
+        $key = "HKCU:\Software\Microsoft\Windows NT\CurrentVersion\Fonts"
+        New-Item -Path $key -Force | Out-Null
+        Get-ChildItem -Path $dir -Filter *.ttf | ForEach-Object {
+            New-ItemProperty -Path $key -Name ("{0} (TrueType)" -f $_.BaseName) `
+                -Value $_.FullName -PropertyType String -Force | Out-Null
+        }
+    ' && print_message "32" "✓ Installed $font_count fonts to $FONT_DIR (restart your terminal)" \
+        || print_message "33" "Copied $font_count fonts to $FONT_DIR but registry registration failed"
+    exit 0
+fi
 
 if command -v fc-cache &>/dev/null; then
     print_message "34" "Updating font cache..."

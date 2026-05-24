@@ -1,0 +1,10 @@
+# Normalize everything to LF in the repo and working tree.
+# Critical on Windows: a CRLF checkout would break bash scripts (shebang,
+# `set -euo pipefail`) when bootstrap.sh runs under Git Bash.
+* text=auto eol=lf
+
+# Binaries — never touch line endings.
+*.png binary
+*.ttf binary
+*.otf binary
+*.ico binary
