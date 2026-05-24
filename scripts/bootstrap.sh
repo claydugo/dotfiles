@@ -137,10 +137,15 @@ install_pixi() {
 install_claude_code() {
     print_message "32" "Installing Claude Code..."
     export PATH="$HOME/.local/bin:$PATH"
-    if ! command -v claude >/dev/null 2>&1; then
-        download_and_execute "https://claude.ai/install.sh"
-    else
+    if command -v claude >/dev/null 2>&1; then
         print_message "34" "Claude Code is already installed."
+        return 0
+    fi
+    if [ "$OS" = windows ]; then
+        powershell -NoProfile -Command "irm https://claude.ai/install.ps1 | iex" ||
+            print_message "33" "Claude Code install failed (install manually: irm https://claude.ai/install.ps1 | iex)."
+    else
+        download_and_execute "https://claude.ai/install.sh"
     fi
 }
 
@@ -198,6 +203,7 @@ setup_powershell() {
     print_message "32" "Setting up PowerShell profile..."
     "$ps_exe" -NoProfile -Command "if (-not (Get-Module -ListAvailable PSFzf)) { try { Install-Module PSFzf -Scope CurrentUser -Force -AcceptLicense } catch {} }" >/dev/null 2>&1 || true
 
+    # shellcheck disable=SC2016  # $PROFILE is a PowerShell variable, not bash
     profile=$("$ps_exe" -NoProfile -Command '$PROFILE.CurrentUserCurrentHost' 2>/dev/null | tr -d '\r')
     [ -z "$profile" ] && return 0
     profile_unix=$(cygpath -u "$profile")

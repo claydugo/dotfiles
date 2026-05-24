@@ -95,7 +95,8 @@ if [ "$OS" = windows ]; then
     # Per-user font install (no admin): register each .ttf under HKCU so Windows
     # apps can resolve it. The value points at the absolute path of the file.
     print_message "34" "Registering fonts for the current user..."
-    powershell -NoProfile -Command '
+    # shellcheck disable=SC2016  # $env/$key/$_ are PowerShell variables, not bash
+    if powershell -NoProfile -Command '
         $dir = Join-Path $env:LOCALAPPDATA "Microsoft\Windows\Fonts\GoogleSansCodeNerdFont"
         $key = "HKCU:\Software\Microsoft\Windows NT\CurrentVersion\Fonts"
         New-Item -Path $key -Force | Out-Null
@@ -103,8 +104,11 @@ if [ "$OS" = windows ]; then
             New-ItemProperty -Path $key -Name ("{0} (TrueType)" -f $_.BaseName) `
                 -Value $_.FullName -PropertyType String -Force | Out-Null
         }
-    ' && print_message "32" "✓ Installed $font_count fonts to $FONT_DIR (restart your terminal)" \
-        || print_message "33" "Copied $font_count fonts to $FONT_DIR but registry registration failed"
+    '; then
+        print_message "32" "✓ Installed $font_count fonts to $FONT_DIR (restart your terminal)"
+    else
+        print_message "33" "Copied $font_count fonts to $FONT_DIR but registry registration failed"
+    fi
     exit 0
 fi
 

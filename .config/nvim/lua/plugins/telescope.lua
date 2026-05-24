@@ -1,7 +1,3 @@
--- telescope-fzf-native builds a native lib. Unix uses its Makefile; Windows has
--- no make/gcc by default, so use the cmake build (the --install step lands
--- build/libfzf.dll where the loader expects it). The Ninja generator picks up
--- the zig $CC exported in options.lua, so it builds without MSVC.
 local fzf_build = "make"
 if vim.fn.has("win32") == 1 then
   fzf_build = table.concat({
@@ -177,7 +173,6 @@ function M.config()
   end
 end
 
--- Runs at startup before plugin loads
 function M.init()
   vim.api.nvim_create_autocmd("VimEnter", {
     group = vim.api.nvim_create_augroup("telescope_startup", { clear = true }),

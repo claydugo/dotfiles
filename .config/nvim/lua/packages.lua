@@ -9,6 +9,8 @@ M.treesitter = {
   "c",
   "bash",
   "html",
+  "markdown",
+  "markdown_inline",
   "json",
   "toml",
   "yaml",
