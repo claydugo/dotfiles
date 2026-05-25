@@ -111,13 +111,13 @@ jobs:
           su - clay -c '
             set -e
             cd ~/dotfiles
-            if [ -n "$(git status --porcelain)" ]; then
+            if [ -n "$(git status --porcelain -- . ":(exclude).claude/settings.json")" ]; then
               echo "::error::bootstrap modified tracked files"
-              git status --porcelain
-              git diff
+              git status --porcelain -- . ":(exclude).claude/settings.json"
+              git diff -- . ":(exclude).claude/settings.json"
               exit 1
             fi
-            echo "✓ no tracked-file changes after two bootstrap runs"
+            echo "✓ no tracked-file changes (claude-managed settings.json excluded)"
           '
 
       - name: Verify symlinks
@@ -405,13 +405,13 @@ jobs:
         run: |
           set -e
           cd "$HOME/dotfiles"
-          if [ -n "$(git status --porcelain)" ]; then
+          if [ -n "$(git status --porcelain -- . ":(exclude).claude/settings.json")" ]; then
             echo "::error::bootstrap modified tracked files"
-            git status --porcelain
-            git diff
+            git status --porcelain -- . ":(exclude).claude/settings.json"
+            git diff -- . ":(exclude).claude/settings.json"
             exit 1
           fi
-          echo "✓ no tracked-file changes after two bootstrap runs"
+          echo "✓ no tracked-file changes (claude-managed settings.json excluded)"
 
       - name: Verify symlinks (macOS)
         run: |
@@ -549,13 +549,13 @@ jobs:
         run: |
           set -e
           cd "$HOME/dotfiles"
-          if [ -n "$(git status --porcelain)" ]; then
+          if [ -n "$(git status --porcelain -- . ":(exclude).claude/settings.json")" ]; then
             echo "::error::bootstrap modified tracked files"
-            git status --porcelain
-            git diff
+            git status --porcelain -- . ":(exclude).claude/settings.json"
+            git diff -- . ":(exclude).claude/settings.json"
             exit 1
           fi
-          echo "✓ no tracked-file changes after two bootstrap runs"
+          echo "✓ no tracked-file changes (claude-managed settings.json excluded)"
 
       - name: Verify symlinks
         run: |
