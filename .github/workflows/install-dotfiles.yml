@@ -524,7 +524,7 @@ jobs:
       - name: Cache lazy.nvim plugins
         uses: actions/cache@v4
         with:
-          path: ~/.local/share/nvim/lazy
+          path: ~/.local/share/nvim-data/lazy
           key: lazy-${{ runner.os }}-${{ hashFiles('dotfiles-pr/.config/nvim/lazy-lock.json') }}
           restore-keys: lazy-${{ runner.os }}-
 
@@ -618,15 +618,15 @@ jobs:
           export XDG_CONFIG_HOME="$HOME/.config"
           export XDG_DATA_HOME="$HOME/.local/share"
 
-          if [ -d ~/.local/share/nvim/lazy ]; then
-            plugin_count=$(find ~/.local/share/nvim/lazy -maxdepth 1 -type d | wc -l)
+          if [ -d ~/.local/share/nvim-data/lazy ]; then
+            plugin_count=$(find ~/.local/share/nvim-data/lazy -maxdepth 1 -type d | wc -l)
             echo "✓ Lazy plugins installed ($plugin_count)"
           else
             echo "✗ Lazy plugin directory not found"
             exit 1
           fi
 
-          PARSER_DIR="$HOME/.local/share/nvim/site/parser"
+          PARSER_DIR="$HOME/.local/share/nvim-data/site/parser"
           if [ -d "$PARSER_DIR" ]; then
             parser_count=$(find "$PARSER_DIR" -name '*.so' | wc -l)
             echo "✓ Treesitter parsers ($parser_count)"
@@ -634,14 +634,14 @@ jobs:
             echo "⚠ Treesitter parser directory not found"
           fi
 
-          if [ -d ~/.local/share/nvim/mason/packages ]; then
-            mason_count=$(find ~/.local/share/nvim/mason/packages -maxdepth 1 -mindepth 1 -type d | wc -l)
+          if [ -d ~/.local/share/nvim-data/mason/packages ]; then
+            mason_count=$(find ~/.local/share/nvim-data/mason/packages -maxdepth 1 -mindepth 1 -type d | wc -l)
             echo "✓ Mason packages ($mason_count)"
           else
             echo "⚠ Mason directory not found"
           fi
 
-          FZF_DLL=~/.local/share/nvim/lazy/telescope-fzf-native.nvim/build/libfzf.dll
+          FZF_DLL=~/.local/share/nvim-data/lazy/telescope-fzf-native.nvim/build/libfzf.dll
           if [ -f "$FZF_DLL" ]; then
             echo "✓ telescope-fzf-native built"
           else

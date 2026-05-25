@@ -33,8 +33,12 @@ if (Get-Module -ListAvailable PSReadLine) {
     Import-Module PSReadLine
     Set-PSReadLineOption -EditMode Vi
     Set-PSReadLineOption -ViModeIndicator Cursor
-    Set-PSReadLineOption -PredictionSource HistoryAndPlugin
-    Set-PSReadLineOption -PredictionViewStyle InlineView   # F2 toggles ListView
+    # Predictions need an interactive VT console; skip when output is redirected
+    # (e.g. CI / piped pwsh) to avoid a noisy "cannot enable predictions" error.
+    if (-not [Console]::IsOutputRedirected) {
+        Set-PSReadLineOption -PredictionSource HistoryAndPlugin
+        Set-PSReadLineOption -PredictionViewStyle InlineView   # F2 toggles ListView
+    }
     Set-PSReadLineOption -HistoryNoDuplicates
     Set-PSReadLineOption -MaximumHistoryCount 100000
     Set-PSReadLineOption -HistorySearchCursorMovesToEnd
