@@ -61,8 +61,8 @@
   "companyAnnouncements": [
     "https://github.com/claydugo/dotfiles"
   ],
+  "autoUpdatesChannel": "latest",
   "skipDangerousModePermissionPrompt": true,
   "editorMode": "vim",
-  "verbose": true,
-  "autoUpdatesChannel": "latest"
+  "verbose": true
 }
