@@ -27,7 +27,28 @@ config.colors = {
 }
 
 if wezterm.target_triple:find("windows") then
-  config.default_prog = { "pwsh.exe", "-NoLogo" }
+  -- Launch Git Bash (login+interactive) so ~/.bashrc loads, instead of pwsh.
+  -- Locate bin\bash.exe by deriving Git's root from `git` on PATH (no hardcoded
+  -- install path; also avoids the WSL bash.exe shim in WindowsApps).
+  local bash = "bash.exe"
+  local ok, out = wezterm.run_child_process({ "where", "git" })
+  if ok then
+    local gitexe = out:match("[^\r\n]+")
+    if gitexe then
+      local dir = gitexe:gsub("[/\\][^/\\]+$", "")
+      for _ = 1, 5 do
+        local cand = dir .. "\\bin\\bash.exe"
+        local f = io.open(cand, "r")
+        if f then
+          f:close()
+          bash = cand
+          break
+        end
+        dir = dir:gsub("[/\\][^/\\]+$", "")
+      end
+    end
+  end
+  config.default_prog = { bash, "-l", "-i" }
 end
 
 return config

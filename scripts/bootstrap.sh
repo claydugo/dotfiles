@@ -192,30 +192,6 @@ setup_pixi_environment() {
     fi
 }
 
-setup_powershell() {
-    local ps_exe profile profile_unix
-    ps_exe=$(command -v pwsh 2>/dev/null || command -v powershell 2>/dev/null || true)
-    if [ -z "$ps_exe" ]; then
-        print_message "33" "PowerShell not found; skipping profile setup."
-        return 0
-    fi
-
-    print_message "32" "Setting up PowerShell profile..."
-    "$ps_exe" -NoProfile -Command "if (-not (Get-Module -ListAvailable PSFzf)) { try { Install-Module PSFzf -Scope CurrentUser -Force -AcceptLicense } catch {} }" >/dev/null 2>&1 || true
-
-    # shellcheck disable=SC2016  # $PROFILE is a PowerShell variable, not bash
-    profile=$("$ps_exe" -NoProfile -Command '$PROFILE.CurrentUserCurrentHost' 2>/dev/null | tr -d '\r')
-    [ -z "$profile" ] && return 0
-    profile_unix=$(cygpath -u "$profile")
-    mkdir -p "$(dirname "$profile_unix")"
-    if [ -e "$profile_unix" ] && [ ! -L "$profile_unix" ]; then
-        mv "$profile_unix" "$profile_unix.bak.$(date +%s)"
-        print_message "33" "Backed up existing PowerShell profile alongside as *.bak.*"
-    fi
-    link "$HOME/dotfiles/windows/profile.ps1" "$profile_unix"
-    print_message "34" "Linked PowerShell profile -> $profile"
-}
-
 setup_windows_env() {
     local cfg data cache state
     cfg=$(cygpath -w "$HOME/.config")
@@ -270,9 +246,14 @@ for item in "$HOME/dotfiles/.config"/*; do
     base_item=$(basename "$item")
     [[ "$base_item" == "karabiner" && "$OS" != "macos" ]] && continue
     [[ "$base_item" == "kitty" && "$OS" == "windows" ]] && continue
-    [[ "$base_item" == "psmux" && "$OS" != "windows" ]] && continue
     link "$item" "$XDG_CONFIG_HOME/$base_item"
 done
+
+# Windows: psmux reads ~/.psmux.conf first. Point it at the single unified tmux
+# config (the same file real tmux uses via ~/.config/tmux/tmux.conf above).
+if [ "$OS" = windows ]; then
+    link "$HOME/dotfiles/.tmux.conf" "$HOME/.psmux.conf"
+fi
 
 link "$HOME/dotfiles/.ipython" "$HOME/.ipython"
 
@@ -367,7 +348,6 @@ if [ "$OS" != windows ]; then
 fi
 
 if [ "$OS" = windows ]; then
-    setup_powershell
     setup_windows_env
 fi
 

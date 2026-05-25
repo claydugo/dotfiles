@@ -55,6 +55,13 @@ path_prepend "$BUN_INSTALL/bin"
 path_prepend "$HOME/go/bin"
 path_prepend "$HOME/.local/bin"
 
+if [[ -n "$MSYSTEM" ]]; then
+    for _d in /usr/bin /bin /mingw64/bin; do
+        case ":$PATH:" in *":$_d:"*) ;; *) PATH="$PATH:$_d" ;; esac
+    done
+    unset _d
+fi
+
 if hash nvim 2>/dev/null; then
   export EDITOR=nvim
 elif hash vim 2>/dev/null; then

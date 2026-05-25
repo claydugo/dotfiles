@@ -574,13 +574,6 @@ jobs:
           test_link ~/.config/nvim "nvim"
           test_link ~/.config/wezterm "wezterm"
           test_link ~/.config/git/config "gitconfig"
-          profile=$(pwsh -NoProfile -Command '$PROFILE.CurrentUserCurrentHost' | tr -d '\r')
-          if [ -e "$(cygpath -u "$profile")" ]; then
-            echo "✓ PowerShell profile linked ($profile)"
-          else
-            echo "✗ PowerShell profile missing"
-            exit 1
-          fi
           bash -n ~/.bashrc && echo "✓ .bashrc syntax valid"
 
       - name: Verify pixi tools
@@ -601,15 +594,6 @@ jobs:
           zig version && echo "✓ zig"
           fnm --version && echo "✓ fnm"
           claude --version && echo "✓ claude code"
-
-      - name: Verify PowerShell profile parses
-        shell: pwsh
-        run: |
-          $errs = $null
-          $profilePath = $PROFILE.CurrentUserCurrentHost
-          [System.Management.Automation.Language.Parser]::ParseFile($profilePath, [ref]$null, [ref]$errs) | Out-Null
-          if ($errs) { $errs | ForEach-Object { Write-Error $_.Message }; exit 1 }
-          Write-Host "✓ profile.ps1 parses cleanly"
 
       - name: Verify nvim setup
         run: |
