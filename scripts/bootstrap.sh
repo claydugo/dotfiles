@@ -402,7 +402,9 @@ if [ "$OS" = linux ]; then
     fi
 fi
 
-if git submodule status ramona 2>/dev/null | grep -qv '^-'; then
+# Skip on Windows until ramona's pixi env supports win-64 — work_prefs.sh runs
+# `pixi update`/`run` against a linux-64/osx-arm64-only project and would abort.
+if [ "$OS" != windows ] && git submodule status ramona 2>/dev/null | grep -qv '^-'; then
     if [ -x "$HOME/dotfiles/ramona/work_prefs.sh" ]; then
         print_message "32" "Running work preferences setup..."
         "$HOME/dotfiles/ramona/work_prefs.sh"

@@ -109,7 +109,4 @@ if [[ "$(uname)" == "Linux" ]]; then
     export QT_QPA_PLATFORMTHEME=gtk3
     export QT_QPA_PLATFORM=wayland
 fi
-if [[ "$(uname -s)" == MINGW* || "$(uname -s)" == MSYS* ]] && hash zig 2>/dev/null; then
-    export CC="zig cc"
-fi
 export CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING=1
