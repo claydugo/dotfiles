@@ -63,5 +63,6 @@
   ],
   "skipDangerousModePermissionPrompt": true,
   "editorMode": "vim",
-  "verbose": true
+  "verbose": true,
+  "autoUpdatesChannel": "latest"
 }
