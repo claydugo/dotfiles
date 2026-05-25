@@ -85,6 +85,9 @@ fi
 source "$HOME/dotfiles/.aliases"
 
 export NVM_DIR="$XDG_DATA_HOME/nvm"
+# Git Bash's login profile aliases node/npm/etc. to winpty wrappers, which
+# collide with the function definitions below at parse time (syntax error).
+unalias node npm nvm 2>/dev/null || true
 if [ -s "$NVM_DIR/nvm.sh" ]; then
     node() {
         unset -f node npm nvm
