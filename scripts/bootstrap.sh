@@ -33,8 +33,18 @@ link() {
     if [ -L "$dst" ] && [ "$dst" -ef "$src" ]; then
         return 0
     fi
-    if [ -e "$dst" ] || [ -L "$dst" ]; then
+    # If $dst exists as a real file/dir (not a symlink), refuse to wipe it
+    # unless the user opted in. Prevents bootstrap from silently destroying
+    # actual data (e.g. an existing ~/.ipython with shell history) on first
+    # run on a fresh machine.
+    if [ -e "$dst" ] && [ ! -L "$dst" ]; then
+        if [ "${BOOTSTRAP_OVERWRITE:-0}" != "1" ]; then
+            print_message "31" "Refusing to replace existing $dst (not a symlink). Move it aside or rerun with BOOTSTRAP_OVERWRITE=1."
+            return 1
+        fi
         rm -rf "$dst"
+    elif [ -L "$dst" ]; then
+        rm -f "$dst"
     fi
     if [ "$OS" = windows ]; then
         ln -sfn "$(cygpath -w "$src")" "$dst"
@@ -74,18 +84,29 @@ setup_windows_elevated() {
         print_message "34" "Windows dev settings already configured (Developer Mode + long paths)."
         return 0
     fi
-    local tmp
+    local tmp sentinel
     tmp="$(mktemp --suffix=.ps1)" || return 0
-    cat > "$tmp" <<'PS1'
-New-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" -Name AllowDevelopmentWithoutDevLicense -PropertyType DWord -Value 1 -Force | Out-Null
-$paths = @("$env:USERPROFILE\.pixi","$env:USERPROFILE\.local\share\nvim-data","$env:USERPROFILE\.local\state","$env:USERPROFILE\.cache","$env:USERPROFILE\dotfiles","$env:USERPROFILE\AppData\Roaming\fnm")
-foreach ($p in $paths) { Add-MpPreference -ExclusionPath $p -ErrorAction SilentlyContinue }
-New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name LongPathsEnabled -Value 1 -PropertyType DWord -Force | Out-Null
+    sentinel="$(mktemp -u --suffix=.ok)"
+    # Sentinel-file pattern: UAC decline returns success from the outer
+    # Start-Process, so we can't tell from its exit code whether the elevated
+    # child ran. The elevated script writes $sentinel as its final step; if
+    # it's missing afterwards, elevation was declined or the script failed.
+    cat > "$tmp" <<PS1
+\$ErrorActionPreference = "Continue"
+New-ItemProperty -Path "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\AppModelUnlock" -Name AllowDevelopmentWithoutDevLicense -PropertyType DWord -Value 1 -Force | Out-Null
+\$paths = @("\$env:USERPROFILE\\.pixi","\$env:USERPROFILE\\.local\\share\\nvim-data","\$env:USERPROFILE\\.local\\state","\$env:USERPROFILE\\.cache","\$env:USERPROFILE\\dotfiles","\$env:USERPROFILE\\AppData\\Roaming\\fnm")
+foreach (\$p in \$paths) { Add-MpPreference -ExclusionPath \$p -ErrorAction SilentlyContinue }
+New-ItemProperty -Path "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\FileSystem" -Name LongPathsEnabled -Value 1 -PropertyType DWord -Force | Out-Null
+Set-Content -Path "$(cygpath -w "$sentinel")" -Value "ok"
 PS1
     print_message "33" "Configuring Windows dev settings (Developer Mode, Defender exclusions, long paths) — accept the UAC prompt..."
-    powershell -NoProfile -Command "Start-Process powershell -Verb RunAs -Wait -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-File','$(cygpath -w "$tmp")'" 2>/dev/null ||
-        print_message "33" "Elevated Windows setup skipped (elevation declined)."
-    rm -f "$tmp"
+    powershell -NoProfile -Command "Start-Process powershell -Verb RunAs -Wait -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-File','$(cygpath -w "$tmp")'"
+    if [ -f "$sentinel" ]; then
+        print_message "32" "Windows dev settings applied."
+    else
+        print_message "33" "Elevated Windows setup did not complete (UAC declined or script failed)."
+    fi
+    rm -f "$tmp" "$sentinel"
 }
 
 # Windows: install a winget package by id, unless its command is already present.
@@ -147,6 +168,11 @@ install_claude_code() {
     else
         download_and_execute "https://claude.ai/install.sh"
     fi
+    # Installer rewrites .claude/settings.json with its own key order / new keys
+    # (e.g. autoUpdatesChannel). ~/.claude is a symlink into the dotfiles repo,
+    # so the install dirties tracked state. Reset to the committed version so
+    # bootstrap stays idempotent and CI doesn't need a settings.json exclusion.
+    git -C "$HOME/dotfiles" checkout -- .claude/settings.json 2>/dev/null || true
 }
 
 install_with_pixi_global() {
@@ -246,6 +272,7 @@ for item in "$HOME/dotfiles/.config"/*; do
     base_item=$(basename "$item")
     [[ "$base_item" == "karabiner" && "$OS" != "macos" ]] && continue
     [[ "$base_item" == "kitty" && "$OS" == "windows" ]] && continue
+    [[ "$base_item" == "wezterm" && "$OS" != "windows" ]] && continue
     link "$item" "$XDG_CONFIG_HOME/$base_item"
 done
 
@@ -287,6 +314,13 @@ fi
 if [ -d "$HOME/dotfiles/ramona/scripts" ]; then
     [ -f "$HOME/dotfiles/ramona/scripts/ws" ] && link "$HOME/dotfiles/ramona/scripts/ws" "$HOME/.local/bin/ws"
     [ -f "$HOME/dotfiles/ramona/scripts/drop_caches" ] && link "$HOME/dotfiles/ramona/scripts/drop_caches" "$HOME/.local/bin/drop_caches"
+fi
+
+# Per-host branch: keep a checkout named after the machine so host-specific
+# tweaks can be committed without polluting main. Skipped in CI.
+if ! is_ci; then
+    cd "$HOME/dotfiles"
+    git checkout "$(hostname)" 2>/dev/null || git checkout -b "$(hostname)" 2>/dev/null || true
 fi
 
 common_cli_tools=(

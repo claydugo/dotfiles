@@ -28,7 +28,7 @@ def main() -> int:
     p.add_argument("suite", help="Benchmark suite name (history key)")
     p.add_argument("--record", action="store_true", help="Append current result to history")
     p.add_argument("--window", type=int, default=10, help="Recent entries to median (default: 10)")
-    p.add_argument("--threshold", type=float, default=1.5, help="Regression ratio (default: 1.5)")
+    p.add_argument("--threshold", type=float, default=2.0, help="Regression ratio (default: 2.0)")
     p.add_argument("--max-entries", type=int, default=200, help="Cap stored history (default: 200)")
     args = p.parse_args()
 

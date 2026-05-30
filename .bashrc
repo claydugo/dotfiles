@@ -85,9 +85,11 @@ fi
 source "$HOME/dotfiles/.aliases"
 
 export NVM_DIR="$XDG_DATA_HOME/nvm"
-# Git Bash's login profile aliases node/npm/etc. to winpty wrappers, which
-# collide with the function definitions below at parse time (syntax error).
-unalias node npm nvm 2>/dev/null || true
+if [[ -n "$MSYSTEM" ]]; then
+    # Git Bash's login profile aliases node/npm/etc. to winpty wrappers, which
+    # collide with the function definitions below at parse time (syntax error).
+    unalias node npm nvm 2>/dev/null || true
+fi
 if [ -s "$NVM_DIR/nvm.sh" ]; then
     node() {
         unset -f node npm nvm
@@ -107,9 +109,8 @@ if [ -s "$NVM_DIR/nvm.sh" ]; then
         [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
         nvm "$@"
     }
-fi
-
-if hash fnm 2>/dev/null; then
+elif [[ -n "$MSYSTEM" ]] && hash fnm 2>/dev/null; then
+    # Windows uses fnm (not nvm). Skip if nvm is wired up so we don't double-init.
     eval "$(fnm env --use-on-cd)"
 fi
 

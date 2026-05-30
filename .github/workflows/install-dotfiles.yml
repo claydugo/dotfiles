@@ -1,33 +1,12 @@
 name: Install Dotfiles
 
 on:
+  # No paths filter: bootstrap.sh touches most of the repo (.gitconfig,
+  # .tmux.conf, .gitattributes, .claude/**, etc.). Listing every relevant
+  # file is fragile and silently misses regressions when the list drifts.
   push:
     branches: [main]
-    paths:
-      - 'scripts/bootstrap.sh'
-      - 'scripts/install_google_sans_code.sh'
-      - '.config/nvim/**'
-      - '.config/wezterm/**'
-      - 'windows/**'
-      - '.bashrc'
-      - '.aliases'
-      - '.github/workflows/install-dotfiles.yml'
-      - '.github/scripts/benchmark-nvim.sh'
-      - '.github/scripts/benchmark-bash.sh'
-      - '.github/scripts/compare-benchmark.py'
   pull_request:
-    paths:
-      - 'scripts/bootstrap.sh'
-      - 'scripts/install_google_sans_code.sh'
-      - '.config/nvim/**'
-      - '.config/wezterm/**'
-      - 'windows/**'
-      - '.bashrc'
-      - '.aliases'
-      - '.github/workflows/install-dotfiles.yml'
-      - '.github/scripts/benchmark-nvim.sh'
-      - '.github/scripts/benchmark-bash.sh'
-      - '.github/scripts/compare-benchmark.py'
   schedule:
     - cron: '0 3 * * 6'
   workflow_dispatch:
@@ -72,19 +51,20 @@ jobs:
           cp -a dotfiles-pr /home/clay/dotfiles
           chown -R clay:clay /home/clay/dotfiles
 
+      # restore-keys intentionally omitted: a loose fallback would let a
+      # half-broken install from a prior run propagate. Cold rebuild on key
+      # miss is slower but always reflects current bootstrap.sh state.
       - name: Cache pixi globals
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: /home/clay/.pixi
-          key: pixi-${{ runner.os }}-${{ hashFiles('dotfiles-pr/scripts/bootstrap.sh') }}
-          restore-keys: pixi-${{ runner.os }}-
+          key: pixi-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/scripts/bootstrap.sh') }}
 
       - name: Cache lazy.nvim plugins
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: /home/clay/.local/share/nvim/lazy
-          key: lazy-${{ runner.os }}-${{ hashFiles('dotfiles-pr/.config/nvim/lazy-lock.json') }}
-          restore-keys: lazy-${{ runner.os }}-
+          key: lazy-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/.config/nvim/lazy-lock.json') }}
 
       - name: Reset cached path ownership
         run: chown -R clay:clay /home/clay
@@ -101,23 +81,37 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: su - clay -c "export GITHUB_TOKEN='${GH_TOKEN}'; cd ~/dotfiles && ./scripts/bootstrap.sh"
 
+      - name: Assert first bootstrap produced no tracked-file drift
+        run: |
+          su - clay -c '
+            set -e
+            cd ~/dotfiles
+            if [ -n "$(git status --porcelain)" ]; then
+              echo "::error::first bootstrap dirtied tracked files (would be invisible to a same-output two-run check)"
+              git status --porcelain
+              git diff
+              exit 1
+            fi
+            echo "✓ first run clean"
+          '
+
       - name: Run bootstrap (idempotency check)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: su - clay -c "export GITHUB_TOKEN='${GH_TOKEN}'; cd ~/dotfiles && ./scripts/bootstrap.sh"
 
-      - name: Assert bootstrap did not modify tracked files
+      - name: Assert second bootstrap did not modify tracked files
         run: |
           su - clay -c '
             set -e
             cd ~/dotfiles
-            if [ -n "$(git status --porcelain -- . ":(exclude).claude/settings.json")" ]; then
-              echo "::error::bootstrap modified tracked files"
-              git status --porcelain -- . ":(exclude).claude/settings.json"
-              git diff -- . ":(exclude).claude/settings.json"
+            if [ -n "$(git status --porcelain)" ]; then
+              echo "::error::second bootstrap modified tracked files"
+              git status --porcelain
+              git diff
               exit 1
             fi
-            echo "✓ no tracked-file changes (claude-managed settings.json excluded)"
+            echo "✓ no tracked-file changes after two bootstrap runs"
           '
 
       - name: Verify symlinks
@@ -240,16 +234,19 @@ jobs:
             fi
 
             PARSER_DIR="$HOME/.local/share/nvim/site/parser"
-            if [ -d "$PARSER_DIR" ]; then
-              parser_count=$(ls "$PARSER_DIR"/*.so 2>/dev/null | wc -l)
-              if [ "$parser_count" -gt 5 ]; then
-                echo "✓ Treesitter parsers ($parser_count parsers)"
-              else
-                echo "⚠ Fewer than expected parsers ($parser_count)"
-              fi
-            else
-              echo "⚠ Treesitter parser directory not found"
+            if [ ! -d "$PARSER_DIR" ]; then
+              echo "✗ Treesitter parser directory not found at $PARSER_DIR"
+              exit 1
             fi
+            parser_count=$(ls "$PARSER_DIR"/*.so 2>/dev/null | wc -l)
+            for p in lua c bash markdown markdown_inline json yaml; do
+              [ -f "$PARSER_DIR/$p.so" ] || { echo "✗ missing required parser: $p.so"; exit 1; }
+            done
+            if [ "$parser_count" -lt 12 ]; then
+              echo "✗ only $parser_count parsers installed (expected >=12)"
+              exit 1
+            fi
+            echo "✓ Treesitter parsers ($parser_count parsers; lua/c/bash/markdown/json/yaml present)"
 
             if [ -d ~/.local/share/nvim/mason/packages ]; then
               mason_count=$(ls -d ~/.local/share/nvim/mason/packages/* 2>/dev/null | wc -l)
@@ -278,7 +275,7 @@ jobs:
               echo "$output"
               exit 1
             fi
-            if echo "$output" | grep -qiE "error|fail"; then
+            if echo "$output" | grep -qE "^E[0-9]+:|Error detected while processing|stack traceback"; then
               echo "✗ nvim startup output contains errors:"
               echo "$output"
               exit 1
@@ -332,6 +329,27 @@ jobs:
           path: /tmp/cache
           key: ${{ runner.os }}-benchmark-history-${{ github.run_id }}
 
+      - name: Collect failure diagnostics
+        if: failure()
+        run: |
+          mkdir -p /tmp/failure-bundle
+          su - clay -c '
+            cd ~/dotfiles
+            git status --porcelain > /tmp/failure-bundle/git-status.txt 2>&1 || true
+            git diff > /tmp/failure-bundle/git-diff.txt 2>&1 || true
+            cp -a ~/.local/state/nvim /tmp/failure-bundle/nvim-state 2>/dev/null || true
+            pixi global list > /tmp/failure-bundle/pixi-globals.txt 2>&1 || true
+            ls -la ~ > /tmp/failure-bundle/home-listing.txt 2>&1 || true
+          ' || true
+
+      - name: Upload failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failure-ubuntu-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/failure-bundle
+          if-no-files-found: ignore
+
       - name: Test summary
         if: always()
         run: |
@@ -374,15 +392,13 @@ jobs:
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/.pixi
-          key: pixi-${{ runner.os }}-${{ hashFiles('dotfiles-pr/scripts/bootstrap.sh') }}
-          restore-keys: pixi-${{ runner.os }}-
+          key: pixi-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/scripts/bootstrap.sh') }}
 
       - name: Cache lazy.nvim plugins
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/.local/share/nvim/lazy
-          key: lazy-${{ runner.os }}-${{ hashFiles('dotfiles-pr/.config/nvim/lazy-lock.json') }}
-          restore-keys: lazy-${{ runner.os }}-
+          key: lazy-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/.config/nvim/lazy-lock.json') }}
 
       - name: Authenticated git for plugin clones
         if: github.actor == github.repository_owner
@@ -396,22 +412,34 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: cd "$HOME/dotfiles" && ./scripts/bootstrap.sh
 
+      - name: Assert first bootstrap produced no tracked-file drift
+        run: |
+          set -e
+          cd "$HOME/dotfiles"
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::first bootstrap dirtied tracked files"
+            git status --porcelain
+            git diff
+            exit 1
+          fi
+          echo "✓ first run clean"
+
       - name: Run bootstrap (idempotency check)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: cd "$HOME/dotfiles" && ./scripts/bootstrap.sh
 
-      - name: Assert bootstrap did not modify tracked files
+      - name: Assert second bootstrap did not modify tracked files
         run: |
           set -e
           cd "$HOME/dotfiles"
-          if [ -n "$(git status --porcelain -- . ":(exclude).claude/settings.json")" ]; then
-            echo "::error::bootstrap modified tracked files"
-            git status --porcelain -- . ":(exclude).claude/settings.json"
-            git diff -- . ":(exclude).claude/settings.json"
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::second bootstrap modified tracked files"
+            git status --porcelain
+            git diff
             exit 1
           fi
-          echo "✓ no tracked-file changes (claude-managed settings.json excluded)"
+          echo "✓ no tracked-file changes after two bootstrap runs"
 
       - name: Verify symlinks (macOS)
         run: |
@@ -425,18 +453,54 @@ jobs:
           }
           test_symlink ~/.bashrc ".bashrc"
           test_symlink ~/.gitignore ".gitignore"
+          test_symlink ~/.gitlab_ci_skip ".gitlab_ci_skip"
+          test_symlink ~/.claude ".claude"
           test_symlink ~/.config/nvim "nvim"
           test_symlink ~/.config/kitty "kitty"
           test_symlink ~/.config/starship.toml "starship.toml"
+          test_symlink ~/.config/git/config "gitconfig"
           [ -f ~/.bash_profile ] && echo "✓ .bash_profile present (Darwin)"
+          bash -n ~/.bashrc && echo "✓ .bashrc syntax valid"
+
+      - name: Verify pixi tools (macOS)
+        run: |
+          export PATH="$HOME/.pixi/bin:$HOME/.local/bin:$PATH"
+          set -eo pipefail
+          pixi --version && echo "✓ pixi"
+          nvim --version | head -1 && echo "✓ neovim"
+          tmux -V && echo "✓ tmux"
+          starship --version && echo "✓ starship"
+          eza --version | head -1 && echo "✓ eza"
+          bat --version && echo "✓ bat"
+          fzf --version && echo "✓ fzf"
+          rg --version | head -1 && echo "✓ ripgrep"
+          fd --version && echo "✓ fd-find"
+          fastfetch --version && echo "✓ fastfetch"
+          stylua --version && echo "✓ stylua"
+          selene --version && echo "✓ selene"
+          jj --version && echo "✓ jujutsu"
+          hyperfine --version && echo "✓ hyperfine"
+          claude --version && echo "✓ claude code"
+
+      - name: Verify modern bash is default shell (macOS)
+        run: |
+          set -eo pipefail
+          login_shell=$(dscl . -read /Users/"$USER" UserShell | awk '{print $2}')
+          want="$HOME/.pixi/bin/bash"
+          if [ "$login_shell" = "$want" ]; then
+            echo "✓ login shell is pixi bash ($login_shell)"
+          else
+            echo "✗ login shell is $login_shell, expected $want"
+            exit 1
+          fi
 
       - name: Verify nvim starts (macOS)
         run: |
           export PATH="$HOME/.pixi/bin:$PATH"
-          TIMEOUT=$(command -v timeout || command -v gtimeout || true)
-          [ -n "$TIMEOUT" ] && TIMEOUT="$TIMEOUT 30"
+          # perl's alarm + exec gives a portable 30s timeout (no coreutils on
+          # stock macOS; SIGALRM kills the child, status 142 surfaces below).
           set +e
-          output=$($TIMEOUT nvim --headless -c "qa" 2>&1)
+          output=$(perl -e 'alarm 30; exec @ARGV' nvim --headless -c "qa" 2>&1)
           status=$?
           set -e
           if [ "$status" -ne 0 ]; then
@@ -444,7 +508,7 @@ jobs:
             echo "$output"
             exit 1
           fi
-          if echo "$output" | grep -qiE "error|fail"; then
+          if echo "$output" | grep -qE "^E[0-9]+:|Error detected while processing|stack traceback"; then
             echo "✗ nvim startup output contains errors:"
             echo "$output"
             exit 1
@@ -488,6 +552,25 @@ jobs:
           path: /tmp/cache
           key: ${{ runner.os }}-benchmark-history-${{ github.run_id }}
 
+      - name: Collect failure diagnostics (macOS)
+        if: failure()
+        run: |
+          mkdir -p /tmp/failure-bundle
+          cd "$HOME/dotfiles"
+          git status --porcelain > /tmp/failure-bundle/git-status.txt 2>&1 || true
+          git diff > /tmp/failure-bundle/git-diff.txt 2>&1 || true
+          cp -a ~/.local/state/nvim /tmp/failure-bundle/nvim-state 2>/dev/null || true
+          "$HOME/.pixi/bin/pixi" global list > /tmp/failure-bundle/pixi-globals.txt 2>&1 || true
+          ls -la ~ > /tmp/failure-bundle/home-listing.txt 2>&1 || true
+
+      - name: Upload failure diagnostics (macOS)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failure-macos-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/failure-bundle
+          if-no-files-found: ignore
+
   install-windows:
     name: Install (Windows)
     runs-on: windows-latest
@@ -518,15 +601,13 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.pixi
-          key: pixi-${{ runner.os }}-${{ hashFiles('dotfiles-pr/scripts/bootstrap.sh') }}
-          restore-keys: pixi-${{ runner.os }}-
+          key: pixi-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/scripts/bootstrap.sh') }}
 
       - name: Cache lazy.nvim plugins
         uses: actions/cache@v4
         with:
           path: ~/.local/share/nvim-data/lazy
-          key: lazy-${{ runner.os }}-${{ hashFiles('dotfiles-pr/.config/nvim/lazy-lock.json') }}
-          restore-keys: lazy-${{ runner.os }}-
+          key: lazy-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/.config/nvim/lazy-lock.json') }}
 
       - name: Authenticated git for plugin clones (lift GH rate limit)
         if: github.actor == github.repository_owner
@@ -540,22 +621,34 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: cd "$HOME/dotfiles" && ./scripts/bootstrap.sh
 
+      - name: Assert first bootstrap produced no tracked-file drift
+        run: |
+          set -e
+          cd "$HOME/dotfiles"
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::first bootstrap dirtied tracked files"
+            git status --porcelain
+            git diff
+            exit 1
+          fi
+          echo "✓ first run clean"
+
       - name: Run bootstrap (idempotency check)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: cd "$HOME/dotfiles" && ./scripts/bootstrap.sh
 
-      - name: Assert bootstrap did not modify tracked files
+      - name: Assert second bootstrap did not modify tracked files
         run: |
           set -e
           cd "$HOME/dotfiles"
-          if [ -n "$(git status --porcelain -- . ":(exclude).claude/settings.json")" ]; then
-            echo "::error::bootstrap modified tracked files"
-            git status --porcelain -- . ":(exclude).claude/settings.json"
-            git diff -- . ":(exclude).claude/settings.json"
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::second bootstrap modified tracked files"
+            git status --porcelain
+            git diff
             exit 1
           fi
-          echo "✓ no tracked-file changes (claude-managed settings.json excluded)"
+          echo "✓ no tracked-file changes after two bootstrap runs"
 
       - name: Verify symlinks
         run: |
@@ -574,6 +667,7 @@ jobs:
           test_link ~/.config/nvim "nvim"
           test_link ~/.config/wezterm "wezterm"
           test_link ~/.config/git/config "gitconfig"
+          test_link ~/.claude ".claude"
           bash -n ~/.bashrc && echo "✓ .bashrc syntax valid"
 
       - name: Verify pixi tools
@@ -611,12 +705,20 @@ jobs:
           fi
 
           PARSER_DIR="$HOME/.local/share/nvim-data/site/parser"
-          if [ -d "$PARSER_DIR" ]; then
-            parser_count=$(find "$PARSER_DIR" -name '*.so' | wc -l)
-            echo "✓ Treesitter parsers ($parser_count)"
-          else
-            echo "⚠ Treesitter parser directory not found"
+          if [ ! -d "$PARSER_DIR" ]; then
+            echo "✗ Treesitter parser directory not found at $PARSER_DIR (zig-cc pipeline likely broken)"
+            exit 1
           fi
+          # Parsers compile to *.so even on Windows (loaded by libuv).
+          parser_count=$(find "$PARSER_DIR" -name '*.so' | wc -l)
+          for p in lua c bash markdown markdown_inline json yaml; do
+            [ -f "$PARSER_DIR/$p.so" ] || { echo "✗ missing required parser: $p.so"; exit 1; }
+          done
+          if [ "$parser_count" -lt 12 ]; then
+            echo "✗ only $parser_count parsers installed (expected >=12)"
+            exit 1
+          fi
+          echo "✓ Treesitter parsers ($parser_count; lua/c/bash/markdown/json/yaml present)"
 
           if [ -d ~/.local/share/nvim-data/mason/packages ]; then
             mason_count=$(find ~/.local/share/nvim-data/mason/packages -maxdepth 1 -mindepth 1 -type d | wc -l)
@@ -632,21 +734,41 @@ jobs:
             echo "⚠ telescope-fzf-native not built (telescope falls back to its Lua sorter; needs MSVC)"
           fi
 
+          # Git Bash ships /usr/bin/timeout (MSYS coreutils) — use it directly.
           set +e
-          output=$(nvim --headless -c "qa" 2>&1)
+          output=$(timeout 30 nvim --headless -c "qa" 2>&1)
           status=$?
           set -e
           if [ "$status" -ne 0 ]; then
-            echo "✗ nvim exited with status $status"
+            echo "✗ nvim exited with status $status (124 = timeout)"
             echo "$output"
             exit 1
           fi
-          if echo "$output" | grep -qiE "error|fail"; then
+          if echo "$output" | grep -qE "^E[0-9]+:|Error detected while processing|stack traceback"; then
             echo "✗ nvim startup output contains errors:"
             echo "$output"
             exit 1
           fi
           echo "✓ nvim starts cleanly"
+
+      - name: Collect failure diagnostics (Windows)
+        if: failure()
+        run: |
+          mkdir -p /tmp/failure-bundle
+          cd "$HOME/dotfiles"
+          git status --porcelain > /tmp/failure-bundle/git-status.txt 2>&1 || true
+          git diff > /tmp/failure-bundle/git-diff.txt 2>&1 || true
+          cp -a "$HOME/.local/state/nvim-data" /tmp/failure-bundle/nvim-state 2>/dev/null || true
+          "$HOME/.pixi/bin/pixi.exe" global list > /tmp/failure-bundle/pixi-globals.txt 2>&1 || true
+          ls -la "$HOME" > /tmp/failure-bundle/home-listing.txt 2>&1 || true
+
+      - name: Upload failure diagnostics (Windows)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failure-windows-${{ github.run_id }}-${{ github.run_attempt }}
+          path: /tmp/failure-bundle
+          if-no-files-found: ignore
 
       - name: Test summary
         if: always()

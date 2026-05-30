@@ -30,25 +30,36 @@ if wezterm.target_triple:find("windows") then
   -- Launch Git Bash (login+interactive) so ~/.bashrc loads, instead of pwsh.
   -- Locate bin\bash.exe by deriving Git's root from `git` on PATH (no hardcoded
   -- install path; also avoids the WSL bash.exe shim in WindowsApps).
-  local bash = "bash.exe"
-  local ok, out = wezterm.run_child_process({ "where", "git" })
+  local bash = nil
+  local ok, out = wezterm.run_child_process({ "where.exe", "git" })
   if ok then
-    local gitexe = out:match("[^\r\n]+")
-    if gitexe then
-      local dir = gitexe:gsub("[/\\][^/\\]+$", "")
-      for _ = 1, 5 do
-        local cand = dir .. "\\bin\\bash.exe"
-        local f = io.open(cand, "r")
-        if f then
-          f:close()
-          bash = cand
-          break
+    -- `where` can return multiple hits; walk them in order, skipping any
+    -- candidate under System32 (that's the WSL-launcher git, not Git for
+    -- Windows) before deriving the install root.
+    for line in (out or ""):gmatch("[^\r\n]+") do
+      if not line:lower():find("\\system32\\", 1, true) then
+        local dir = line:gsub("[/\\][^/\\]+$", "")
+        for _ = 1, 5 do
+          local cand = dir .. "\\bin\\bash.exe"
+          local f = io.open(cand, "r")
+          if f then
+            f:close()
+            bash = cand
+            break
+          end
+          dir = dir:gsub("[/\\][^/\\]+$", "")
         end
-        dir = dir:gsub("[/\\][^/\\]+$", "")
+        if bash then break end
       end
     end
   end
-  config.default_prog = { bash, "-l", "-i" }
+  if bash then
+    config.default_prog = { bash, "-l", "-i" }
+  else
+    -- Git Bash not found. Fall back to pwsh rather than literal "bash.exe"
+    -- (which would resolve to the WSL shim in System32).
+    config.default_prog = { "pwsh.exe", "-NoLogo" }
+  end
 end
 
 return config

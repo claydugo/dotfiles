@@ -7,7 +7,5 @@ return {
   dev = is_local,
   dir = is_local and plugin_dir or nil,
   event = "VeryLazy",
-  opts = {
-    commit_length = 20,
-  },
+  opts = {},
 }
