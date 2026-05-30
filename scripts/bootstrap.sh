@@ -33,18 +33,8 @@ link() {
     if [ -L "$dst" ] && [ "$dst" -ef "$src" ]; then
         return 0
     fi
-    # If $dst exists as a real file/dir (not a symlink), refuse to wipe it
-    # unless the user opted in. Prevents bootstrap from silently destroying
-    # actual data (e.g. an existing ~/.ipython with shell history) on first
-    # run on a fresh machine.
-    if [ -e "$dst" ] && [ ! -L "$dst" ]; then
-        if [ "${BOOTSTRAP_OVERWRITE:-0}" != "1" ]; then
-            print_message "31" "Refusing to replace existing $dst (not a symlink). Move it aside or rerun with BOOTSTRAP_OVERWRITE=1."
-            return 1
-        fi
+    if [ -e "$dst" ] || [ -L "$dst" ]; then
         rm -rf "$dst"
-    elif [ -L "$dst" ]; then
-        rm -f "$dst"
     fi
     if [ "$OS" = windows ]; then
         ln -sfn "$(cygpath -w "$src")" "$dst"
