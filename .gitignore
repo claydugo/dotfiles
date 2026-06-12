@@ -72,3 +72,10 @@ CLAUDE.md
 !.claude/settings.json
 !.claude/commands/
 !.claude/output-styles/
+
+# IPython runtime state (only the startup script + __init__.py are tracked).
+.ipython/profile_default/history.sqlite
+.ipython/profile_default/db/
+.ipython/profile_default/log/
+.ipython/profile_default/pid/
+.ipython/profile_default/security/

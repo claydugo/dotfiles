@@ -2,7 +2,21 @@
 
 set -euo pipefail
 
+case "$(uname -s)" in
+    MINGW* | MSYS* | CYGWIN*) OS=windows ;;
+    Darwin) OS=macos ;;
+    *) OS=linux ;;
+esac
+
 : "${XDG_CONFIG_HOME:="$HOME/.config"}"
+
+if [ "$OS" = windows ]; then
+    export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+    export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+    export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+    export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+    export MSYS=winsymlinks:nativestrict
+fi
 
 print_message() {
     local color="$1"
@@ -19,7 +33,14 @@ link() {
     if [ -L "$dst" ] && [ "$dst" -ef "$src" ]; then
         return 0
     fi
-    ln -sfn "$src" "$dst"
+    if [ -e "$dst" ] || [ -L "$dst" ]; then
+        rm -rf "$dst"
+    fi
+    if [ "$OS" = windows ]; then
+        ln -sfn "$(cygpath -w "$src")" "$dst"
+    else
+        ln -sfn "$src" "$dst"
+    fi
 }
 
 download_and_execute() {
@@ -44,6 +65,52 @@ download_and_execute() {
     return 1
 }
 
+setup_windows_elevated() {
+    is_ci && { print_message "33" "Skipping elevated Windows setup (CI handles it)."; return 0; }
+    local devmode longpaths
+    devmode=$(powershell -NoProfile -Command "(Get-ItemProperty 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\AppModelUnlock' -Name AllowDevelopmentWithoutDevLicense -ErrorAction SilentlyContinue).AllowDevelopmentWithoutDevLicense" 2>/dev/null | tr -d '\r')
+    longpaths=$(powershell -NoProfile -Command "(Get-ItemProperty 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\FileSystem' -Name LongPathsEnabled -ErrorAction SilentlyContinue).LongPathsEnabled" 2>/dev/null | tr -d '\r')
+    if [ "$devmode" = "1" ] && [ "$longpaths" = "1" ]; then
+        print_message "34" "Windows dev settings already configured (Developer Mode + long paths)."
+        return 0
+    fi
+    local tmp sentinel
+    tmp="$(mktemp --suffix=.ps1)" || return 0
+    sentinel="$(mktemp -u --suffix=.ok)"
+    # Sentinel-file pattern: UAC decline returns success from the outer
+    # Start-Process, so we can't tell from its exit code whether the elevated
+    # child ran. The elevated script writes $sentinel as its final step; if
+    # it's missing afterwards, elevation was declined or the script failed.
+    cat > "$tmp" <<PS1
+\$ErrorActionPreference = "Continue"
+New-ItemProperty -Path "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\AppModelUnlock" -Name AllowDevelopmentWithoutDevLicense -PropertyType DWord -Value 1 -Force | Out-Null
+\$paths = @("\$env:USERPROFILE\\.pixi","\$env:USERPROFILE\\.local\\share\\nvim-data","\$env:USERPROFILE\\.local\\state","\$env:USERPROFILE\\.cache","\$env:USERPROFILE\\dotfiles","\$env:USERPROFILE\\AppData\\Roaming\\fnm")
+foreach (\$p in \$paths) { Add-MpPreference -ExclusionPath \$p -ErrorAction SilentlyContinue }
+New-ItemProperty -Path "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\FileSystem" -Name LongPathsEnabled -Value 1 -PropertyType DWord -Force | Out-Null
+Set-Content -Path "$(cygpath -w "$sentinel")" -Value "ok"
+PS1
+    print_message "33" "Configuring Windows dev settings (Developer Mode, Defender exclusions, long paths) — accept the UAC prompt..."
+    powershell -NoProfile -Command "Start-Process powershell -Verb RunAs -Wait -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-File','$(cygpath -w "$tmp")'"
+    if [ -f "$sentinel" ]; then
+        print_message "32" "Windows dev settings applied."
+    else
+        print_message "33" "Elevated Windows setup did not complete (UAC declined or script failed)."
+    fi
+    rm -f "$tmp" "$sentinel"
+}
+
+# Windows: install a winget package by id, unless its command is already present.
+install_winget() {
+    local id="$1" cmd="$2" name="$3"
+    if command -v "$cmd" >/dev/null 2>&1; then
+        print_message "34" "$name is already installed."
+        return 0
+    fi
+    print_message "32" "Installing $name via winget..."
+    winget install --silent --accept-package-agreements --accept-source-agreements --id "$id" >/dev/null 2>&1 ||
+        print_message "33" "$name winget install failed (install it manually if needed)."
+}
+
 install_nvm() {
     print_message "32" "Installing NVM (Node Version Manager)..."
     export NVM_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/nvm"
@@ -55,6 +122,16 @@ install_nvm() {
         nvm install --lts
     else
         print_message "34" "NVM is already installed."
+    fi
+}
+
+install_node_windows() {
+    print_message "32" "Setting up Node via fnm..."
+    if command -v fnm >/dev/null 2>&1; then
+        fnm install --lts || true
+        fnm default lts-latest || true
+    else
+        print_message "33" "fnm not found; skipping Node setup."
     fi
 }
 
@@ -71,11 +148,21 @@ install_pixi() {
 install_claude_code() {
     print_message "32" "Installing Claude Code..."
     export PATH="$HOME/.local/bin:$PATH"
-    if ! command -v claude >/dev/null 2>&1; then
-        download_and_execute "https://claude.ai/install.sh"
-    else
+    if command -v claude >/dev/null 2>&1; then
         print_message "34" "Claude Code is already installed."
+        return 0
     fi
+    if [ "$OS" = windows ]; then
+        powershell -NoProfile -Command "irm https://claude.ai/install.ps1 | iex" ||
+            print_message "33" "Claude Code install failed (install manually: irm https://claude.ai/install.ps1 | iex)."
+    else
+        download_and_execute "https://claude.ai/install.sh"
+    fi
+    # Installer rewrites .claude/settings.json with its own key order / new keys
+    # (e.g. autoUpdatesChannel). ~/.claude is a symlink into the dotfiles repo,
+    # so the install dirties tracked state. Reset to the committed version so
+    # bootstrap stays idempotent and CI doesn't need a settings.json exclusion.
+    git -C "$HOME/dotfiles" checkout -- .claude/settings.json 2>/dev/null || true
 }
 
 install_with_pixi_global() {
@@ -121,14 +208,33 @@ setup_pixi_environment() {
     fi
 }
 
+setup_windows_env() {
+    local cfg data cache state
+    cfg=$(cygpath -w "$HOME/.config")
+    data=$(cygpath -w "$HOME/.local/share")
+    cache=$(cygpath -w "$HOME/.cache")
+    state=$(cygpath -w "$HOME/.local/state")
+    print_message "32" "Persisting XDG environment variables (User scope)..."
+    powershell -NoProfile -Command "
+        [Environment]::SetEnvironmentVariable('XDG_CONFIG_HOME', '$cfg', 'User');
+        [Environment]::SetEnvironmentVariable('XDG_DATA_HOME', '$data', 'User');
+        [Environment]::SetEnvironmentVariable('XDG_CACHE_HOME', '$cache', 'User');
+        [Environment]::SetEnvironmentVariable('XDG_STATE_HOME', '$state', 'User');
+        [Environment]::SetEnvironmentVariable('EDITOR', 'nvim', 'User')
+    " >/dev/null 2>&1 || print_message "33" "Could not persist user env vars (continuing)."
+}
+
 print_message "34" "Setting up dotfiles..."
 cd "$HOME/dotfiles/"
-# Skip in CI — ramona uses a GitLab SSH URL that CI runners can't authenticate to.
 if ! is_ci; then
     git submodule update --remote
 fi
 
-sudo -v
+if [ "$OS" = windows ]; then
+    setup_windows_elevated
+else
+    sudo -v
+fi
 
 print_message "32" "Symlinking configuration files..."
 link "$HOME/dotfiles/.bashrc" "$HOME/.bashrc"
@@ -143,64 +249,72 @@ mkdir -p "$XDG_CONFIG_HOME/tmux" "${XDG_STATE_HOME:-$HOME/.local/state}/bash"
 link "$HOME/dotfiles/.tmux.conf" "$XDG_CONFIG_HOME/tmux/tmux.conf"
 
 mkdir -p "$XDG_CONFIG_HOME/git"
+link "$HOME/dotfiles/.gitconfig" "$XDG_CONFIG_HOME/git/config"
 
 if [ -f "$HOME/dotfiles/.condarc" ]; then
     mkdir -p "$XDG_CONFIG_HOME/conda"
     link "$HOME/dotfiles/.condarc" "$XDG_CONFIG_HOME/conda/.condarc"
 fi
 
-# .claude and .config/* may contain runtime data — replace whole dir on first run.
-if [ -L "$HOME/.claude" ] && [ "$HOME/.claude" -ef "$HOME/dotfiles/.claude" ]; then
-    :
-else
-    [ -e "$HOME/.claude" ] && rm -rf "$HOME/.claude"
-    ln -sfn "$HOME/dotfiles/.claude" "$HOME/.claude"
-fi
+link "$HOME/dotfiles/.claude" "$HOME/.claude"
 
 for item in "$HOME/dotfiles/.config"/*; do
     base_item=$(basename "$item")
-    [[ "$base_item" == "karabiner" && "$(uname -s)" != "Darwin" ]] && continue
-    target="$XDG_CONFIG_HOME/$base_item"
-    if [ -L "$target" ] && [ "$target" -ef "$item" ]; then
-        continue
-    fi
-    [ -e "$target" ] && rm -rf "$target"
-    ln -sfn "$item" "$target"
+    [[ "$base_item" == "karabiner" && "$OS" != "macos" ]] && continue
+    [[ "$base_item" == "kitty" && "$OS" == "windows" ]] && continue
+    [[ "$base_item" == "wezterm" && "$OS" != "windows" ]] && continue
+    link "$item" "$XDG_CONFIG_HOME/$base_item"
 done
+
+# Windows: psmux reads ~/.psmux.conf first. Point it at the single unified tmux
+# config (the same file real tmux uses via ~/.config/tmux/tmux.conf above).
+if [ "$OS" = windows ]; then
+    link "$HOME/dotfiles/.tmux.conf" "$HOME/.psmux.conf"
+fi
 
 link "$HOME/dotfiles/.ipython" "$HOME/.ipython"
 
-print_message "32" "Installing Kitty terminal..."
-mkdir -p "$HOME/.local/bin/"
-kitty_installed=false
-for attempt in 1 2 3; do
-    if curl -fsSL --max-time 120 https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n; then
-        kitty_installed=true
-        break
-    fi
-    print_message "33" "Kitty install failed, attempt $attempt/3..."
-    sleep 5
-done
-$kitty_installed || { print_message "31" "Failed to install Kitty"; exit 1; }
+if [ "$OS" = windows ]; then
+    install_winget wez.wezterm wezterm "WezTerm"
+    install_winget marlocarlo.psmux psmux "psmux (tmux for Windows)"
+else
+    print_message "32" "Installing Kitty terminal..."
+    mkdir -p "$HOME/.local/bin/"
+    kitty_installed=false
+    for attempt in 1 2 3; do
+        if curl -fsSL --max-time 120 https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin launch=n; then
+            kitty_installed=true
+            break
+        fi
+        print_message "33" "Kitty install failed, attempt $attempt/3..."
+        sleep 5
+    done
+    $kitty_installed || { print_message "31" "Failed to install Kitty"; exit 1; }
+fi
 
 print_message "32" "Installing Google Sans Code Nerd Font..."
 "$HOME/dotfiles/scripts/install_google_sans_code.sh"
 
-ln -sf "$HOME/dotfiles/.local/bin/build_nvim.sh" "$HOME/.local/bin/build_nvim"
+mkdir -p "$HOME/.local/bin"
 
-if [ -d "$HOME/dotfiles/ramona/scripts" ]; then
-    [ -f "$HOME/dotfiles/ramona/scripts/ws" ] && ln -sf "$HOME/dotfiles/ramona/scripts/ws" "$HOME/.local/bin/ws"
-    [ -f "$HOME/dotfiles/ramona/scripts/drop_caches" ] && ln -sf "$HOME/dotfiles/ramona/scripts/drop_caches" "$HOME/.local/bin/drop_caches"
+if [ "$OS" != windows ]; then
+    link "$HOME/dotfiles/.local/bin/build_nvim.sh" "$HOME/.local/bin/build_nvim"
 fi
 
-cd "$HOME/dotfiles"
-git checkout "$(hostname)" 2>/dev/null || git checkout -b "$(hostname)" 2>/dev/null || true
+if [ -d "$HOME/dotfiles/ramona/scripts" ]; then
+    [ -f "$HOME/dotfiles/ramona/scripts/ws" ] && link "$HOME/dotfiles/ramona/scripts/ws" "$HOME/.local/bin/ws"
+    [ -f "$HOME/dotfiles/ramona/scripts/drop_caches" ] && link "$HOME/dotfiles/ramona/scripts/drop_caches" "$HOME/.local/bin/drop_caches"
+fi
 
-global_cli_tools=(
-    bash
-    git
+# Per-host branch: keep a checkout named after the machine so host-specific
+# tweaks can be committed without polluting main. Skipped in CI.
+if ! is_ci; then
+    cd "$HOME/dotfiles"
+    git checkout "$(hostname)" 2>/dev/null || git checkout -b "$(hostname)" 2>/dev/null || true
+fi
+
+common_cli_tools=(
     nvim
-    tmux
     starship
     eza
     bat
@@ -209,13 +323,8 @@ global_cli_tools=(
     fd-find
     cmake
     make
-    htop
-    wget
-    curl
-    unzip
     openssl
     rattler-build
-    fastfetch
     stylua
     selene
     jujutsu
@@ -224,18 +333,47 @@ global_cli_tools=(
     ty
 )
 
-if [ "$(uname -s)" = "Linux" ]; then
-    global_cli_tools+=(xclip fswatch gifski)
-fi
+unix_cli_tools=(
+    bash
+    git
+    curl
+    tmux
+    htop
+    wget
+    unzip
+    fastfetch
+)
 
-install_nvm || { print_message "31" "Failed to install NVM"; exit 1; }
+linux_cli_tools=(xclip fswatch gifski)
+
+windows_cli_tools=(zig fnm ninja)
+
+global_cli_tools=("${common_cli_tools[@]}")
+case "$OS" in
+    linux) global_cli_tools+=("${unix_cli_tools[@]}" "${linux_cli_tools[@]}") ;;
+    macos) global_cli_tools+=("${unix_cli_tools[@]}") ;;
+    windows) global_cli_tools+=("${windows_cli_tools[@]}") ;;
+esac
+
 install_pixi || { print_message "31" "Failed to install Pixi"; exit 1; }
 setup_pixi_environment
 install_with_pixi_global "${global_cli_tools[@]}" || { print_message "31" "Failed to install global CLI tools"; exit 1; }
-install_claude_code || { print_message "31" "Failed to install Claude Code"; exit 1; }
-setup_modern_bash
 
-ln -sfn "$HOME/dotfiles/.gitconfig" "$XDG_CONFIG_HOME/git/config"
+if [ "$OS" = windows ]; then
+    install_node_windows || print_message "33" "Node setup via fnm failed (continuing)."
+else
+    install_nvm || { print_message "31" "Failed to install NVM"; exit 1; }
+fi
+
+install_claude_code || { print_message "31" "Failed to install Claude Code"; exit 1; }
+
+if [ "$OS" != windows ]; then
+    setup_modern_bash
+fi
+
+if [ "$OS" = windows ]; then
+    setup_windows_env
+fi
 
 if ! is_ci; then
     print_message "32" "Configuring git remotes for dotfiles..."
@@ -248,12 +386,16 @@ if ! is_ci; then
 fi
 
 print_message "32" "Setting up Neovim plugins..."
+if [ "$OS" = windows ] && command -v fnm >/dev/null 2>&1; then
+    # Put the fnm-managed node on PATH so mason can install npm-based servers.
+    eval "$(fnm env)" 2>/dev/null || true
+fi
 nvim --headless "+Lazy! restore" +qa
 
 print_message "32" "Installing Treesitter parsers and Mason packages..."
 nvim --headless -c "lua require('headless_install').run()" -c "qall"
 
-if [ "$(uname -s)" = "Linux" ]; then
+if [ "$OS" = linux ]; then
     if ! grep -q "fs.inotify.max_user_watches=100000" /etc/sysctl.conf; then
         printf 'fs.inotify.max_user_watches=100000\nfs.inotify.max_queued_events=100000\n' | sudo tee -a /etc/sysctl.conf
         sudo sysctl -p
@@ -264,7 +406,9 @@ if [ "$(uname -s)" = "Linux" ]; then
     fi
 fi
 
-if git submodule status ramona 2>/dev/null | grep -qv '^-'; then
+# Skip on Windows until ramona's pixi env supports win-64 — work_prefs.sh runs
+# `pixi update`/`run` against a linux-64/osx-arm64-only project and would abort.
+if [ "$OS" != windows ] && git submodule status ramona 2>/dev/null | grep -qv '^-'; then
     if [ -x "$HOME/dotfiles/ramona/work_prefs.sh" ]; then
         print_message "32" "Running work preferences setup..."
         "$HOME/dotfiles/ramona/work_prefs.sh"

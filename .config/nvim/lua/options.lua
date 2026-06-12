@@ -62,6 +62,10 @@ vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 vim.g.loaded_node_provider = 0
 
+if vim.fn.has("win32") == 1 and vim.fn.executable("cl") == 0 and vim.fn.executable("zig") == 1 then
+  vim.env.CC = vim.fs.joinpath(vim.fn.stdpath("config"), "bin", "zig-cc.cmd")
+end
+
 -- Remove trailing whitespace
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   pattern = { "*" },

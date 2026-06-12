@@ -1,0 +1,58 @@
+# Normalize everything to LF in the repo and working tree.
+# Critical on Windows: a CRLF checkout would break bash scripts (shebang,
+# `set -euo pipefail`) when bootstrap.sh runs under Git Bash.
+* text=auto eol=lf
+
+# Binaries — never touch line endings. Expanded list so that if any of these
+# ever land in the repo (fixtures, font assets, etc.) git won't corrupt them
+# by trying to normalize line endings.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.svg   binary
+*.webp  binary
+*.bmp   binary
+*.tiff  binary
+*.pdf   binary
+
+*.zip   binary
+*.tar   binary
+*.tar.gz binary
+*.tgz   binary
+*.tar.xz binary
+*.gz    binary
+*.xz    binary
+*.bz2   binary
+*.7z    binary
+*.rar   binary
+
+*.exe   binary
+*.dll   binary
+*.so    binary
+*.dylib binary
+*.a     binary
+*.lib   binary
+*.o     binary
+*.obj   binary
+*.bin   binary
+*.dat   binary
+*.db    binary
+*.sqlite  binary
+*.sqlite3 binary
+
+*.ttf   binary
+*.otf   binary
+*.woff  binary
+*.woff2 binary
+*.eot   binary
+
+*.mp3   binary
+*.mp4   binary
+*.avi   binary
+*.mov   binary
+*.wav   binary
+*.flac  binary
+*.ogg   binary
+*.webm  binary

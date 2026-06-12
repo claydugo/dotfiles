@@ -1,3 +1,12 @@
+local fzf_build = "make"
+if vim.fn.has("win32") == 1 then
+  fzf_build = table.concat({
+    "cmake -S. -Bbuild -G Ninja -DCMAKE_BUILD_TYPE=Release",
+    "cmake --build build --config Release",
+    "cmake --install build --prefix build",
+  }, " && ")
+end
+
 local M = {
   "nvim-telescope/telescope.nvim",
   cmd = { "Telescope" },
@@ -36,7 +45,7 @@ local M = {
     { "nvim-treesitter/nvim-treesitter" },
     { "ThePrimeagen/harpoon", branch = "harpoon2" },
     { "debugloop/telescope-undo.nvim" },
-    { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    { "nvim-telescope/telescope-fzf-native.nvim", build = fzf_build },
     { "nvim-telescope/telescope-ui-select.nvim" },
   },
 }
@@ -164,7 +173,6 @@ function M.config()
   end
 end
 
--- Runs at startup before plugin loads
 function M.init()
   vim.api.nvim_create_autocmd("VimEnter", {
     group = vim.api.nvim_create_augroup("telescope_startup", { clear = true }),
