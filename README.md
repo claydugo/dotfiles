@@ -34,6 +34,9 @@ cd ~/dotfiles
 │   ├── kitty
 │   │   └── kitty.conf
 │   ├── nvim
+│   │   ├── .luarc.json
+│   │   ├── bin
+│   │   │   └── zig-cc.cmd
 │   │   ├── ftplugin
 │   │   │   ├── gradle.lua
 │   │   │   ├── java.lua
@@ -67,7 +70,10 @@ cd ~/dotfiles
 │   │           ├── tokyonight.lua
 │   │           ├── treesitter.lua
 │   │           └── vimwiki.lua
-│   └── starship.toml
+│   ├── starship.toml
+│   └── wezterm
+│       └── wezterm.lua
+├── .gitattributes
 ├── .gitconfig
 ├── .gitignore
 ├── .gitlab_ci_skip
@@ -80,7 +86,6 @@ cd ~/dotfiles
 ├── .local
 │   └── bin
 │       └── build_nvim.sh
-├── .luarc.json
 ├── .pre-commit-config.yaml
 ├── .stylua.toml
 ├── .tmux.conf
@@ -101,31 +106,31 @@ cd ~/dotfiles
 Installed via `scripts/bootstrap.sh`:
 
 ### Pixi
-- `bash`
+- `linux)`
+- `macos)`
+- `windows)`
+- `install_node_windows`
+- `install_nvm`
+- `setup_modern_bash`
+- `setup_windows_env`
+- `print_message`
+- `cd`
 - `git`
-- `nvim`
-- `tmux`
-- `starship`
-- `eza`
-- `bat`
-- `fzf`
-- `ripgrep`
-- `fd-find`
-- `cmake`
-- `make`
-- `htop`
-- `wget`
-- `curl`
-- `unzip`
-- `openssl`
-- `rattler-build`
-- `fastfetch`
-- `stylua`
-- `selene`
-- `jujutsu`
-- `hyperfine`
-- `tree-sitter-cli`
-- `ty`
+- `git`
+- `git`
+- `git`
+- `git`
+- `eval`
+- `if`
+- `printf`
+- `sudo`
+- `fi`
+- `if`
+- `gsettings`
+- `fi`
+- `if`
+- `print_message`
+- `fi`
 
 ### Other
 - [Pixi](https://pixi.sh/)
