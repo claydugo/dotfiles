@@ -28,7 +28,6 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -57,8 +56,9 @@ jobs:
           su - clay -c "git config --global --add safe.directory '*'"
 
       - name: Checkout PR
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
+          persist-credentials: false
           path: dotfiles-pr
 
       - name: Stage PR repo at ~/dotfiles
@@ -67,14 +67,14 @@ jobs:
           chown -R clay:clay /home/clay/dotfiles
 
       - name: Cache pixi globals
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: /home/clay/.pixi
           key: pixi-${{ runner.os }}-${{ hashFiles('dotfiles-pr/scripts/bootstrap.sh') }}
           restore-keys: pixi-${{ runner.os }}-
 
       - name: Cache lazy.nvim plugins
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: /home/clay/.local/share/nvim/lazy
           key: lazy-${{ runner.os }}-${{ hashFiles('dotfiles-pr/.config/nvim/lazy-lock.json') }}
@@ -299,7 +299,7 @@ jobs:
           '
 
       - name: Restore benchmark history
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: /tmp/cache
           key: ${{ runner.os }}-benchmark-history-${{ github.run_id }}
@@ -321,7 +321,7 @@ jobs:
 
       - name: Save benchmark history
         if: github.event_name == 'push'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: /tmp/cache
           key: ${{ runner.os }}-benchmark-history-${{ github.run_id }}
@@ -352,8 +352,9 @@ jobs:
     timeout-minutes: 45
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
+          persist-credentials: false
           path: dotfiles-pr
 
       - name: Stage dotfiles at $HOME
@@ -364,14 +365,14 @@ jobs:
           git config --global --add safe.directory "$HOME/dotfiles"
 
       - name: Cache pixi globals
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/.pixi
           key: pixi-${{ runner.os }}-${{ hashFiles('dotfiles-pr/scripts/bootstrap.sh') }}
           restore-keys: pixi-${{ runner.os }}-
 
       - name: Cache lazy.nvim plugins
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/.local/share/nvim/lazy
           key: lazy-${{ runner.os }}-${{ hashFiles('dotfiles-pr/.config/nvim/lazy-lock.json') }}
@@ -459,7 +460,7 @@ jobs:
           cat /tmp/bash-result.json
 
       - name: Restore benchmark history
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: /tmp/cache
           key: ${{ runner.os }}-benchmark-history-${{ github.run_id }}
@@ -476,7 +477,7 @@ jobs:
 
       - name: Save benchmark history
         if: github.event_name == 'push'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: /tmp/cache
           key: ${{ runner.os }}-benchmark-history-${{ github.run_id }}
@@ -489,8 +490,10 @@ jobs:
       contents: read
       issues: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: yutkat/lazy-nvim-archived-checker@v1
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      - uses: yutkat/lazy-nvim-archived-checker@37335f7b997e03ecd574641c0ee400b76932ba0e # v1.0.2
         with:
           nvim-config-path: .config/nvim
           github-token: ${{ secrets.GITHUB_TOKEN }}

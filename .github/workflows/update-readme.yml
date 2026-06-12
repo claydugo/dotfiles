@@ -7,12 +7,18 @@ on:
       - 'README.md'
   workflow_dispatch:
 
+permissions:
+  contents: write # commits the regenerated README back to main
+
 jobs:
   update-readme:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          # the push step below needs the persisted token
+          persist-credentials: true # zizmor: ignore[artipacked]
 
       - name: Install tree
         run: sudo apt-get update && sudo apt-get install -y tree
