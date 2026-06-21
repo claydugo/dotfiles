@@ -224,3 +224,12 @@ if hash exiftool 2>/dev/null; then
         exiftool -jumbf:all= -o "$out" "$in"
     }
 fi
+
+rebootw() {
+    local id='osprober-efi-8A75-BA31'
+    if ! sudo grep -q "'$id'" /boot/grub/grub.cfg; then
+        echo "rebootw: entry '$id' not found in grub.cfg — aborting (Windows reinstalled? ESP reformatted?)" >&2
+        return 1
+    fi
+    sudo grub-reboot "$id" && sudo reboot
+}
