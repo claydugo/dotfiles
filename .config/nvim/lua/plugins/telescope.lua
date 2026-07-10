@@ -43,7 +43,6 @@ local M = {
   dependencies = {
     { "nvim-lua/plenary.nvim" },
     { "nvim-treesitter/nvim-treesitter" },
-    { "ThePrimeagen/harpoon", branch = "harpoon2" },
     { "debugloop/telescope-undo.nvim" },
     { "nvim-telescope/telescope-fzf-native.nvim", build = fzf_build },
     { "nvim-telescope/telescope-ui-select.nvim" },
@@ -84,8 +83,7 @@ function M.config()
         "%.pdf",
         "%.bin",
         ".git/",
-        "%.class", -- Java compiled files
-        "build/", -- Gradle build directory
+        "build/",
       },
       mappings = {
         i = {
@@ -131,46 +129,6 @@ function M.config()
   tele.load_extension("fzf")
   tele.load_extension("undo")
   tele.load_extension("ui-select")
-
-  local harpoon = require("harpoon")
-  harpoon:setup({})
-  local conf = require("telescope.config").values
-  local function toggle_telescope(harpoon_files)
-    if not harpoon_files or not harpoon_files.items then
-      return
-    end
-    local file_paths = {}
-    for _, item in ipairs(harpoon_files.items) do
-      table.insert(file_paths, item.value)
-    end
-
-    require("telescope.pickers")
-      .new({}, {
-        prompt_title = "Harpoon",
-        finder = require("telescope.finders").new_table({
-          results = file_paths,
-        }),
-        previewer = conf.file_previewer({}),
-        sorter = conf.generic_sorter({}),
-      })
-      :find()
-  end
-
-  vim.keymap.set("n", "<leader>h", function()
-    toggle_telescope(harpoon:list())
-  end)
-  vim.keymap.set("n", "<leader>aa", function()
-    harpoon:list():add()
-  end)
-  vim.keymap.set("n", "<leader>ah", function()
-    harpoon.ui:toggle_quick_menu(harpoon:list())
-  end)
-
-  for i = 1, 9 do
-    vim.keymap.set("n", "<leader>" .. i, function()
-      harpoon:list():select(i)
-    end)
-  end
 end
 
 function M.init()

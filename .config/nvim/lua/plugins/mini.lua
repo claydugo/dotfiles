@@ -17,7 +17,6 @@ return {
         hex_color = require("mini.hipatterns").gen_highlighter.hex_color(),
       },
     })
-    require("mini.comment").setup()
     require("mini.trailspace").setup()
   end,
 }

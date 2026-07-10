@@ -30,6 +30,7 @@ M.mason = {
   "biome",
   "harper-ls",
   "bash-language-server",
+  "copilot-language-server",
   "emmylua_ls",
   "rust-analyzer",
   "shellcheck",
@@ -38,8 +39,5 @@ M.mason = {
   "taplo",
   "yaml-language-server",
 }
-
-M.treesitter_java = { "java", "groovy" }
-M.mason_java = { "jdtls" }
 
 return M

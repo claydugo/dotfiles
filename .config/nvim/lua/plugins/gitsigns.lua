@@ -12,14 +12,14 @@ return {
     {
       "<leader>ss",
       function()
-        require("gitsigns").next_hunk()
+        require("gitsigns").nav_hunk("next")
       end,
       desc = "Next hunk",
     },
     {
       "<leader>sa",
       function()
-        require("gitsigns").prev_hunk()
+        require("gitsigns").nav_hunk("prev")
       end,
       desc = "Previous hunk",
     },

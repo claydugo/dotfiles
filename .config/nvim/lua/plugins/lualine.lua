@@ -4,7 +4,7 @@ local M = {
 }
 
 local function get_LSP()
-  local clients = vim.lsp.get_clients()
+  local clients = vim.lsp.get_clients({ bufnr = 0 })
   if not next(clients) then
     return ""
   end

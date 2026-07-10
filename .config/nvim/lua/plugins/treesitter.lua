@@ -10,13 +10,7 @@ return {
   config = function()
     require("nvim-ts-autotag").setup()
 
-    local packages = require("packages")
-    local ensure_installed = vim.list_extend({}, packages.treesitter)
-
-    -- Only install Java/Gradle parsers if JDK is available
-    if vim.fn.executable("javac") == 1 then
-      vim.list_extend(ensure_installed, packages.treesitter_java)
-    end
+    local ensure_installed = require("packages").treesitter
 
     -- nvim-treesitter 1.x: highlight/indent are built into Neovim.
     -- tree-sitter-cli and compilers must be in the nvim pixi env.

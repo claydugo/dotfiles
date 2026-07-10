@@ -1,6 +1,3 @@
--- correct Y behavior
-vim.keymap.set("n", "Y", "y$")
-
 -- correct U behavior
 vim.keymap.set("n", "U", "<C-r>")
 

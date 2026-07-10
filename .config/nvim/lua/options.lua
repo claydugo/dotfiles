@@ -4,55 +4,42 @@ vim.g.maplocalleader = " "
 vim.o.grepprg = "rg --vimgrep"
 vim.o.grepformat = "%f:%l:%c:%m"
 
-vim.o.encoding = "utf-8"
-vim.o.backspace = "indent,eol,start"
-
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 vim.opt.completeopt:append("fuzzy")
 vim.opt.completeopt:append("nearest")
 
-vim.o.hidden = true
-vim.o.backup = false
 vim.o.writebackup = false
 vim.o.swapfile = false
 vim.o.undofile = true
 vim.o.confirm = true
-vim.opt.clipboard = { "unnamed", "unnamedplus" }
+vim.o.clipboard = "unnamedplus"
 vim.opt.jumpoptions = "stack,view"
 
 vim.o.updatetime = 300
 vim.o.ignorecase = true
-vim.o.incsearch = true
 vim.o.smartcase = true
-vim.o.hlsearch = true
 vim.opt.shortmess:append("S")
 vim.opt.shortmess:append("WIcC")
 
-vim.o.history = 1000
-vim.o.ruler = true
-vim.o.showcmd = true
 vim.o.autowrite = true
-vim.o.modelines = 0
-vim.o.modeline = true
+vim.o.modeline = false
 vim.o.number = true
 vim.o.relativenumber = true
 vim.o.showmode = false
 vim.o.scrolloff = 6
 
-vim.o.visualbell = true
 vim.o.showmatch = true
 
 vim.o.tabstop = 4
 vim.o.softtabstop = 4
 vim.o.shiftwidth = 4
 vim.o.smartindent = true
-vim.o.autoindent = true
 vim.o.expandtab = true
-vim.o.smarttab = true
 
-vim.o.ttimeout = true
 vim.o.ttimeoutlen = 5
 vim.o.timeoutlen = 1000
+
+vim.o.spellfile = vim.fs.joinpath(vim.fn.stdpath("config"), "spell", "en.utf-8.add")
 
 vim.o.winborder = "rounded"
 vim.o.pumheight = 5
@@ -84,6 +71,42 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
       vim.cmd([[keeppatterns %s/^\s\+//e]])
       vim.fn.setpos(".", save_cursor)
     end
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+  callback = function(args)
+    if args.match:match("^%w+://") then
+      return
+    end
+    local dir = vim.fn.fnamemodify(args.match, ":p:h")
+    if vim.fn.isdirectory(dir) == 0 then
+      vim.fn.mkdir(dir, "p")
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd("TextYankPost", {
+  callback = function()
+    vim.hl.on_yank()
+  end,
+})
+
+vim.api.nvim_create_autocmd("BufReadPost", {
+  callback = function(args)
+    vim.schedule(function()
+      if
+        not vim.api.nvim_buf_is_valid(args.buf)
+        or vim.api.nvim_get_current_buf() ~= args.buf
+        or vim.tbl_contains({ "gitcommit", "gitrebase", "jj" }, vim.bo[args.buf].filetype)
+      then
+        return
+      end
+      local mark = vim.api.nvim_buf_get_mark(args.buf, '"')
+      if mark[1] > 0 and mark[1] <= vim.api.nvim_buf_line_count(args.buf) then
+        pcall(vim.api.nvim_win_set_cursor, 0, mark)
+      end
+    end)
   end,
 })
 

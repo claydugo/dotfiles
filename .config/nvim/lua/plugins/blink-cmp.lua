@@ -11,20 +11,8 @@ return {
       ["<CR>"] = { "accept", "fallback" },
       ["<Tab>"] = {
         function(cmp)
-          if vim.fn.exists("*copilot#Accept") == 1 then
-            local suggestion = vim.fn["copilot#GetDisplayedSuggestion"]()
-            if suggestion and suggestion.text and suggestion.text ~= "" then
-              local accept_keys = vim.fn["copilot#Accept"]("")
-              if accept_keys and accept_keys ~= "" then
-                vim.api.nvim_feedkeys(accept_keys, "n", true)
-                -- Go to next line with proper indentation
-                vim.schedule(function()
-                  local esc = vim.api.nvim_replace_termcodes("<Esc>o", true, false, true)
-                  vim.api.nvim_feedkeys(esc, "n", false)
-                end)
-                return true
-              end
-            end
+          if vim.lsp.inline_completion.get() then
+            return true
           end
           if cmp.is_visible() then
             return cmp.accept()
@@ -64,7 +52,6 @@ return {
     },
     fuzzy = {
       implementation = "prefer_rust",
-      prebuilt_binaries = { force_version = "v1.10.0" },
     },
   },
 }

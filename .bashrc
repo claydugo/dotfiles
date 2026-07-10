@@ -17,6 +17,7 @@ shopt -s dirspell
 shopt -s globstar 2>/dev/null
 
 set -o vi
+set -o ignoreeof
 
 # kitty doesnt work well with tmux
 if [[ ${TERM} == "xterm-kitty" ]]; then

@@ -11,7 +11,6 @@ return {
   biome = " ",
   taplo = " ",
   yamlls = " ",
-  jdtls = "",
   claudecode = "󰚩 ",
   copilot = " ",
   ["GitHub Copilot"] = " ",

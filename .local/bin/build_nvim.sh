@@ -50,8 +50,9 @@ elif [ "$CONDA_PREFIX" != "$EXPECTED_PIXI_ENV" ]; then
     echo "  Current:  $CONDA_PREFIX"
     echo "  Expected: $EXPECTED_PIXI_ENV"
     echo ""
-    echo "This will embed the current environment path into nvim's RPATH."
-    echo "If you switch environments later, nvim may fail to find libraries."
+    echo "The build itself always runs in the 'build' pixi env (pixi run -e build),"
+    echo "so nvim's RPATH points at ~/.pixi/envs/build regardless. This guard just"
+    echo "checks that a project pixi env is active so 'pixi' resolves this project."
     echo ""
     read -p "Continue anyway? [y/N] " -n 1 -r
     echo
@@ -118,7 +119,7 @@ fi
 # Clean build if requested
 if [ "$CLEAN_BUILD" = true ]; then
     echo "Running clean build..."
-    pixi run with-compilers "cd '$NEOVIM_DIR' && make distclean"
+    pixi run -e build with-compilers "cd '$NEOVIM_DIR' && make distclean"
 fi
 
 # Always clean .deps when switching commits to avoid stale CMake cache issues
@@ -136,8 +137,10 @@ NEW_VERSION=$(git describe --tags --always)
 echo "Building version: $NEW_VERSION"
 
 # Build without sudo (parallel using all CPU cores)
+# Build in the `build` pixi environment: the conda compiler toolchain lives in
+# [feature.build.dependencies], so it is only present in ~/.pixi/envs/build.
 echo "Building Neovim..."
-pixi run with-compilers "cd '$NEOVIM_DIR' && make CMAKE_BUILD_TYPE=RelWithDebInfo -j\$(nproc)"
+pixi run -e build with-compilers "cd '$NEOVIM_DIR' && make CMAKE_BUILD_TYPE=RelWithDebInfo -j\$(nproc)"
 
 # Only use sudo for installation
 echo "Installing Neovim (requires sudo)..."
