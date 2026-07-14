@@ -70,6 +70,7 @@ CLAUDE.md
 
 .claude/*
 !.claude/settings.json
+!.claude/statusline.sh
 !.claude/commands/
 !.claude/output-styles/
 

@@ -23,10 +23,12 @@ cd ~/dotfiles
 │   │   ├── jj.md
 │   │   ├── luaist.md
 │   │   ├── pythonista.md
+│   │   ├── rebase.md
 │   │   └── remove_slop.md
 │   ├── output-styles
 │   │   └── direct-action.md
-│   └── settings.json
+│   ├── settings.json
+│   └── statusline.sh
 ├── .config
 │   ├── .ripgreprc
 │   ├── jj
@@ -104,31 +106,37 @@ cd ~/dotfiles
 Installed via `scripts/bootstrap.sh`:
 
 ### Pixi
-- `linux)`
-- `macos)`
-- `windows)`
-- `install_node_windows`
-- `install_nvm`
-- `setup_modern_bash`
-- `setup_windows_env`
-- `print_message`
-- `cd`
+- `nvim`
+- `starship`
+- `eza`
+- `bat`
+- `fzf`
+- `ripgrep`
+- `fd-find`
+- `cmake`
+- `make`
+- `openssl`
+- `rattler-build`
+- `stylua`
+- `selene`
+- `jujutsu`
+- `hyperfine`
+- `tree-sitter-cli`
+- `ty`
+- `bash`
 - `git`
-- `git`
-- `git`
-- `git`
-- `git`
-- `eval`
-- `if`
-- `printf`
-- `sudo`
-- `fi`
-- `if`
-- `gsettings`
-- `fi`
-- `if`
-- `print_message`
-- `fi`
+- `curl`
+- `tmux`
+- `htop`
+- `wget`
+- `unzip`
+- `fastfetch`
+- `xclip`
+- `fswatch`
+- `gifski`
+- `zig`
+- `fnm`
+- `ninja`
 
 ### Other
 - [Pixi](https://pixi.sh/)

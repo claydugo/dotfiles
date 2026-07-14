@@ -2,6 +2,9 @@
 
 set -euo pipefail
 
+# Stable sort order for tree output regardless of host locale
+export LC_ALL=C
+
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 cd "$SCRIPT_DIR/.." || exit 1
 
@@ -31,7 +34,7 @@ cd ~/dotfiles
 ```
 HEADER
 
-tree -a -I '.git|ramona|karabiner|.github|*.png|__pycache__|.ruff_cache' --noreport
+tree -a --gitignore --charset=utf-8 -I '.git|.jj|ramona|karabiner|.github|*.png|__pycache__|.ruff_cache' --noreport
 
 cat << 'HEADER'
 ```
@@ -45,10 +48,18 @@ Installed via `scripts/bootstrap.sh`:
 ### Pixi
 HEADER
 
-sed -n '/^global_cli_tools=(/,/^)/p' scripts/bootstrap.sh | grep -E '^\s+[a-z]' | while read -r line; do
-    pkg=$(echo "$line" | awk '{print $1}')
-    echo "- \`$pkg\`"
-done
+awk '
+    /^(common|unix|linux|windows)_cli_tools=\(/ { in_array = 1 }
+    in_array {
+        line = $0
+        sub(/^[a-z_]+=\(/, "", line)
+        closed = sub(/\).*/, "", line)
+        n = split(line, tools, /[ \t]+/)
+        for (i = 1; i <= n; i++)
+            if (tools[i] != "") printf "- `%s`\n", tools[i]
+        if (closed) in_array = 0
+    }
+' scripts/bootstrap.sh
 
 cat << 'FOOTER'
 
