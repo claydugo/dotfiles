@@ -28,13 +28,14 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 </details>
 
 <details>
-<summary>Structure (76 tracked files)</summary>
+<summary>Structure (78 tracked files)</summary>
 
 ```
 .
 ├── .aliases
 ├── .bashrc
 ├── .claude
+│   ├── CLAUDE.md
 │   ├── commands
 │   │   ├── interview.md
 │   │   ├── jj.md
@@ -54,6 +55,10 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 │   │   └── kitty.conf
 │   ├── nvim
 │   │   ├── .luarc.json
+│   │   ├── after
+│   │   │   └── queries
+│   │   │       └── jinja
+│   │   │           └── injections.scm
 │   │   ├── bin
 │   │   │   └── zig-cc.cmd
 │   │   ├── ftplugin
@@ -201,7 +206,7 @@ Installed by `scripts/bootstrap.sh` via [`pixi global`](https://pixi.sh/latest/g
 
 </details>
 
-**Treesitter parsers:** `python`, `lua`, `wgsl`, `cuda`, `rust`, `c`, `bash`, `html`, `markdown`, `markdown_inline`, `json`, `toml`, `yaml`, `qmldir`, `luadoc`, `desktop`, `tmux`, `ssh_config`, `git_config`, `git_rebase`, `gitattributes`, `gitcommit`, `gitignore`
+**Treesitter parsers:** `python`, `lua`, `wgsl`, `cuda`, `rust`, `c`, `bash`, `html`, `markdown`, `markdown_inline`, `json`, `toml`, `yaml`, `jinja`, `jinja_inline`, `qmldir`, `luadoc`, `desktop`, `tmux`, `ssh_config`, `git_config`, `git_rebase`, `gitattributes`, `gitcommit`, `gitignore`
 
 **Mason packages:** `biome`, `harper-ls`, `bash-language-server`, `copilot-language-server`, `emmylua_ls`, `rust-analyzer`, `shellcheck`, `wgsl-analyzer`, `clangd`, `taplo`, `yaml-language-server`
 
