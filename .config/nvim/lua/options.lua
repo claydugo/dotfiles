@@ -110,6 +110,17 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   end,
 })
 
+-- Conda recipes are Jinja-templated yaml; the yaml treesitter grammar chokes
+-- on the template tags (whole-file ERROR node, no highlights). Parse them
+-- with the jinja grammar instead and inject yaml into the content nodes
+-- (see after/queries/jinja/injections.scm).
+vim.filetype.add({
+  pattern = {
+    [".*/recipe/meta%.ya?ml"] = "yaml.jinja",
+  },
+})
+vim.treesitter.language.register("jinja", "yaml.jinja")
+
 if vim.g.vscode then
   vim.o.cmdheight = 3
 else

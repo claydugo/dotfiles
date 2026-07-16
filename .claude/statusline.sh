@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 # Claude Code status line — receives session JSON on stdin.
 # Fields: https://code.claude.com/docs/en/statusline.md
-LC_ALL=C
-
-input=$(cat)
+export LC_ALL=C
 
 # \x1f delimiter: unlike tab, non-whitespace IFS preserves empty fields
 IFS=$'\x1f' read -r model effort fast ctx_pct in_tok out_tok win vim cost five five_reset seven version cache_rate pr_num pr_url pr_state <<<"$(jq -r '
@@ -23,11 +21,13 @@ IFS=$'\x1f' read -r model effort fast ctx_pct in_tok out_tok win vim cost five f
     (.version // "?"),
     (.context_window.current_usage as $u |
       (($u.input_tokens // 0) + ($u.cache_creation_input_tokens // 0) + ($u.cache_read_input_tokens // 0)) as $tot |
-      if $u == null or $tot == 0 then -1 else ($u.cache_read_input_tokens // 0) * 100 / $tot | floor end),
+      if $tot == 0 then -1 else ($u.cache_read_input_tokens // 0) * 100 / $tot | floor end),
     (.pr.number // ""),
     (.pr.url // ""),
     (.pr.review_state // "")
-  ] | map(tostring) | join("\u001f")' <<<"$input")"
+  ] | map(tostring) | join("\u001f")')"
+
+[[ -n $model ]] || exit 0
 
 DIM=$'\033[2m' RST=$'\033[0m' GRN=$'\033[32m' YLW=$'\033[33m' RED=$'\033[31m' BLU=$'\033[34m' MAG=$'\033[35m'
 
@@ -69,7 +69,10 @@ cost_fmt=$(printf '%.2f' "$cost")
 
 if ((five >= 0)); then
     s="$(pct_color "$five")5h ${five}%${RST}"
-    ((five_reset > 0)) && s+=" ${DIM}↻$(date -d "@${five_reset}" +%H:%M)${RST}"
+    if ((five_reset > 0)); then
+        printf -v reset_fmt '%(%H:%M)T' "$five_reset"
+        s+=" ${DIM}↻${reset_fmt}${RST}"
+    fi
     ((seven >= 0)) && s+=" ${DIM}·${RST} $(pct_color "$seven")7d ${seven}%${RST}"
     seg+=("$(link 'https://claude.ai/settings/usage' "$s")")
 fi
@@ -90,6 +93,7 @@ case $vim in
     INSERT) seg+=("${GRN}I${RST}") ;;
     "VISUAL LINE") seg+=("${MAG}VL${RST}") ;;
     VISUAL) seg+=("${MAG}V${RST}") ;;
+    *) [[ -n $vim ]] && seg+=("${DIM}${vim}${RST}") ;;
 esac
 
 seg+=("$(link 'https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md' "${DIM}v${version}${RST}")")

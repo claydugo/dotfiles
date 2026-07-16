@@ -14,6 +14,8 @@ M.treesitter = {
   "json",
   "toml",
   "yaml",
+  "jinja",
+  "jinja_inline",
   "qmldir",
   "luadoc",
   "desktop",

@@ -4,18 +4,14 @@
   "permissions": {
     "allow": [
       "Read(//home/clay/**)",
-      "Write(//home/clay/**)",
       "Edit(//home/clay/**)",
-      "MultiEdit(//home/clay/**)",
       "Bash",
       "Grep(//home/clay/**)",
-      "Glob(//home/clay/**)",
       "LS(//home/clay/**)",
       "WebSearch",
       "WebFetch(domain:*)",
       "Task(*)",
       "TodoWrite(*)",
-      "NotebookEdit(//home/clay/**)",
       "BashOutput(*)",
       "KillBash(*)",
       "ExitPlanMode(*)"

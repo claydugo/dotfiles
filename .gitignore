@@ -69,6 +69,7 @@ CLAUDE.md
 .prompt
 
 .claude/*
+!.claude/CLAUDE.md
 !.claude/settings.json
 !.claude/statusline.sh
 !.claude/commands/

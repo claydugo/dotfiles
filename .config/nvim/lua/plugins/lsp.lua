@@ -87,12 +87,20 @@ function M.config()
           LongSentences = true,
           SpelledNumbers = true,
           PossessiveNoun = true,
-          NoOxfordComma = true,
+          NoOxfordComma = false,
           BoringWords = false,
           UseGenitive = true,
+          OxfordComma = false,
         },
       },
     },
+  })
+
+  -- conda recipe meta.yaml files use ft yaml.jinja (see options.lua)
+  local yamlls_filetypes = vim.deepcopy(vim.lsp.config.yamlls.filetypes or {})
+  vim.list_extend(yamlls_filetypes, { "yaml.jinja" })
+  vim.lsp.config("yamlls", {
+    filetypes = yamlls_filetypes,
   })
 
   vim.lsp.config("bashls", {
