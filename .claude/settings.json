@@ -25,7 +25,6 @@
       "/home/clay"
     ]
   },
-  "model": "opus",
   "statusLine": {
     "type": "command",
     "command": "~/dotfiles/.claude/statusline.sh",
@@ -56,7 +55,7 @@
   },
   "spinnerTipsEnabled": false,
   "alwaysThinkingEnabled": true,
-  "effortLevel": "high",
+  "effortLevel": "xhigh",
   "companyAnnouncements": [
     "https://github.com/claydugo/dotfiles"
   ],

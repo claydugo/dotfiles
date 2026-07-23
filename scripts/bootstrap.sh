@@ -392,6 +392,18 @@ if [ "$OS" = windows ] && command -v fnm >/dev/null 2>&1; then
 fi
 nvim --headless "+lua vim.pack.update(nil, { force = true, target = 'lockfile' })" +qa
 
+# Diagnostic: vim.pack swallows checkout errors. Report any partial working tree
+# and the live `git checkout` stderr that explains it.
+for repo in "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim*/site/pack/core/opt/*/; do
+    [ -d "$repo/.git" ] || continue
+    missing=$(git -C "$repo" ls-files --deleted)
+    [ -n "$missing" ] || continue
+    print_message "31" "[$(basename "$repo")] partial checkout; missing tracked files:"
+    printf '%s\n' "$missing" | head -20
+    print_message "33" "[$(basename "$repo")] git checkout -f HEAD stderr:"
+    git -C "$repo" checkout -f HEAD 2>&1 | head -20 || true
+done
+
 print_message "32" "Installing Treesitter parsers and Mason packages..."
 nvim --headless -c "lua require('headless_install').run()" -c "qall"
 
