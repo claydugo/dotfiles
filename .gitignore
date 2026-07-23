@@ -39,6 +39,10 @@ __pycache__/
 nvimstartup.log
 .config/nvim/plugin
 
+# Committing this forces vim.pack to mass-install every plugin in one batch,
+# which exceeds its hardcoded 120s budget on slow runners. Keep it machine-local.
+.config/nvim/nvim-pack-lock.json
+
 hmmst.py
 
 # FPGA

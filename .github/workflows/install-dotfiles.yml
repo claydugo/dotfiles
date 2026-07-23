@@ -64,7 +64,7 @@ jobs:
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: /home/clay/.local/share/nvim/site/pack
-          key: pack-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/.config/nvim/nvim-pack-lock.json') }}
+          key: pack-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/.config/nvim/lua/plugins/*.lua') }}
 
       - name: Reset cached path ownership
         run: chown -R clay:clay /home/clay
@@ -398,7 +398,7 @@ jobs:
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/.local/share/nvim/site/pack
-          key: pack-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/.config/nvim/nvim-pack-lock.json') }}
+          key: pack-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/.config/nvim/lua/plugins/*.lua') }}
 
       - name: Authenticated git for plugin clones
         if: github.actor == github.repository_owner
@@ -620,10 +620,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.local/share/nvim-data/site/pack
-          # Failed runs save broken (empty) plugin dirs to this cache, and
-          # vim.pack treats a present dir as installed and never repairs it.
-          # Bump the version suffix to discard a poisoned cache and force reclone.
-          key: pack-v3-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/.config/nvim/nvim-pack-lock.json') }}
+          # Bump the version suffix to discard a cache poisoned by a failed run.
+          key: pack-v3-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/.config/nvim/lua/plugins/*.lua') }}
 
       - name: Authenticated git for plugin clones (lift GH rate limit)
         if: github.actor == github.repository_owner
