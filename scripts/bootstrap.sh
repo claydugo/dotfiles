@@ -390,7 +390,7 @@ if [ "$OS" = windows ] && command -v fnm >/dev/null 2>&1; then
     # Put the fnm-managed node on PATH so mason can install npm-based servers.
     eval "$(fnm env)" 2>/dev/null || true
 fi
-nvim --headless "+Lazy! restore" +qa
+nvim --headless "+lua vim.pack.update(nil, { force = true, target = 'lockfile' })" +qa
 
 print_message "32" "Installing Treesitter parsers and Mason packages..."
 nvim --headless -c "lua require('headless_install').run()" -c "qall"

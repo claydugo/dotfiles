@@ -1,7 +1,7 @@
 local M = {
-  "folke/tokyonight.nvim",
-  lazy = false,
-  priority = 1000,
+  specs = {
+    { src = "https://github.com/folke/tokyonight.nvim" },
+  },
 }
 
 function M.config()

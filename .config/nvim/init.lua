@@ -1,6 +1,7 @@
+vim.loader.enable()
 require("options")
 require("maps")
 
 if not vim.g.vscode then
-  require("config.lazy")
+  require("config.pack")
 end

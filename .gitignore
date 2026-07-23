@@ -39,8 +39,6 @@ __pycache__/
 nvimstartup.log
 .config/nvim/plugin
 
-# lazy.nvim
-lazy-lock.json
 hmmst.py
 
 # FPGA
@@ -73,7 +71,6 @@ CLAUDE.md
 !.claude/settings.json
 !.claude/statusline.sh
 !.claude/commands/
-!.claude/output-styles/
 
 # IPython runtime state (only the startup script + __init__.py are tracked).
 .ipython/profile_default/history.sqlite

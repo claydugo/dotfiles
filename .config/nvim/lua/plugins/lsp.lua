@@ -1,8 +1,7 @@
 local M = {
-  "neovim/nvim-lspconfig",
-  lazy = false,
-  dependencies = {
-    { "mason-org/mason.nvim" },
+  specs = {
+    { src = "https://github.com/mason-org/mason.nvim" },
+    { src = "https://github.com/neovim/nvim-lspconfig" },
   },
 }
 

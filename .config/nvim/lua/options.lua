@@ -86,6 +86,26 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   end,
 })
 
+-- Files over 1.5MB: mark as bigfile, drop undo history and syntax
+-- (treesitter.lua skips highlighting for b:bigfile buffers)
+vim.api.nvim_create_autocmd("BufReadPre", {
+  callback = function(args)
+    local stat = vim.uv.fs_stat(args.match)
+    if not (stat and stat.size > 1.5 * 1024 * 1024) then
+      return
+    end
+    vim.b[args.buf].bigfile = true
+    vim.bo[args.buf].undolevels = -1
+    vim.api.nvim_create_autocmd("FileType", {
+      buffer = args.buf,
+      once = true,
+      callback = function()
+        vim.bo[args.buf].syntax = ""
+      end,
+    })
+  end,
+})
+
 vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function()
     vim.hl.on_yank()

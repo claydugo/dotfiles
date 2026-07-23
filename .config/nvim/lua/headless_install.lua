@@ -3,8 +3,6 @@ local packages = require("packages")
 local M = {}
 
 function M.run()
-  require("lazy").load({ plugins = { "nvim-treesitter", "mason.nvim" } })
-
   local parsers = packages.treesitter
 
   print("Installing Treesitter parsers...")

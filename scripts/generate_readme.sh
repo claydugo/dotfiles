@@ -106,19 +106,14 @@ cat << 'FOOTER'
 ## Neovim
 FOOTER
 
-plugins=$({
-    # Short specs like `"owner/repo",` — the lookbehind skips `branch = "..."`
-    # and `path = "..."` values, which share the owner/repo shape.
-    grep -rhoP '(?<!= )"[A-Za-z0-9._-]+/[A-Za-z0-9._-]+"' \
-        .config/nvim/lua/plugins .config/nvim/lua/config | tr -d '"'
-    # Full-URL specs (local-dir plugins with a github fallback, lazy.nvim itself)
+plugins=$(
     grep -rhoP 'https://github\.com/[A-Za-z0-9_-]+/[A-Za-z0-9._-]+' \
         .config/nvim/lua/plugins .config/nvim/lua/config |
-        sed -e 's|https://github.com/||' -e 's|\.git$||'
-} | sort -fu)
+        sed -e 's|https://github.com/||' -e 's|\.git$||' | sort -fu
+)
 plugin_count=$(printf '%s\n' "$plugins" | grep -c .)
 
-printf '\n<details>\n<summary>Plugins (%s, managed by <a href="https://github.com/folke/lazy.nvim">lazy.nvim</a>)</summary>\n\n' "$plugin_count"
+printf '\n<details>\n<summary>Plugins (%s, managed by <a href="https://neovim.io/doc/user/pack.html#vim.pack">vim.pack</a>)</summary>\n\n' "$plugin_count"
 printf '%s\n' "$plugins" | awk -F/ '{ printf "- [%s](https://github.com/%s) by `%s`\n", $2, $0, $1 }'
 printf '\n</details>\n'
 

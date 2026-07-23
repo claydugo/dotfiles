@@ -1,6 +1,11 @@
-return {
-  "MeanderingProgrammer/markdown.nvim",
-  event = { "BufReadPre", "BufNewFile" },
-  dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" },
-  opts = {},
+local M = {
+  specs = {
+    { src = "https://github.com/MeanderingProgrammer/markdown.nvim" },
+  },
 }
+
+function M.config()
+  require("render-markdown").setup({})
+end
+
+return M

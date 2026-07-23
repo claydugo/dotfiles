@@ -60,11 +60,11 @@ jobs:
           path: /home/clay/.pixi
           key: pixi-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/scripts/bootstrap.sh') }}
 
-      - name: Cache lazy.nvim plugins
+      - name: Cache vim.pack plugins
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
-          path: /home/clay/.local/share/nvim/lazy
-          key: lazy-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/.config/nvim/lazy-lock.json') }}
+          path: /home/clay/.local/share/nvim/site/pack
+          key: pack-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/.config/nvim/nvim-pack-lock.json') }}
 
       - name: Reset cached path ownership
         run: chown -R clay:clay /home/clay
@@ -221,15 +221,15 @@ jobs:
             nvim_version=$(nvim --version | head -1)
             echo "✓ $nvim_version"
 
-            if [ -d ~/.local/share/nvim/lazy ]; then
-              plugin_count=$(find ~/.local/share/nvim/lazy -maxdepth 1 -type d | wc -l)
+            if [ -d ~/.local/share/nvim/site/pack/core/opt ]; then
+              plugin_count=$(find ~/.local/share/nvim/site/pack/core/opt -maxdepth 1 -type d | wc -l)
               if [ "$plugin_count" -gt 10 ]; then
-                echo "✓ Lazy plugins installed ($plugin_count plugins)"
+                echo "✓ vim.pack plugins installed ($plugin_count plugins)"
               else
                 echo "⚠ Fewer than expected plugins ($plugin_count)"
               fi
             else
-              echo "✗ Lazy plugin directory not found"
+              echo "✗ vim.pack plugin directory not found"
               exit 1
             fi
 
@@ -256,7 +256,7 @@ jobs:
               exit 1
             fi
 
-            FZF_LIB=~/.local/share/nvim/lazy/telescope-fzf-native.nvim/build/libfzf.so
+            FZF_LIB=~/.local/share/nvim/site/pack/core/opt/telescope-fzf-native.nvim/build/libfzf.so
             if [ -f "$FZF_LIB" ]; then
               echo "✓ telescope-fzf-native built"
             else
@@ -275,7 +275,7 @@ jobs:
               echo "$output"
               exit 1
             fi
-            if echo "$output" | grep -qE "^E[0-9]+:|Error detected while processing|stack traceback"; then
+            if echo "$output" | grep -qE "^E[0-9]+:|Error detected while processing|stack traceback|plugins\.[a-z_-]+:"; then
               echo "✗ nvim startup output contains errors:"
               echo "$output"
               exit 1
@@ -394,11 +394,11 @@ jobs:
           path: ~/.pixi
           key: pixi-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/scripts/bootstrap.sh') }}
 
-      - name: Cache lazy.nvim plugins
+      - name: Cache vim.pack plugins
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
-          path: ~/.local/share/nvim/lazy
-          key: lazy-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/.config/nvim/lazy-lock.json') }}
+          path: ~/.local/share/nvim/site/pack
+          key: pack-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/.config/nvim/nvim-pack-lock.json') }}
 
       - name: Authenticated git for plugin clones
         if: github.actor == github.repository_owner
@@ -508,7 +508,7 @@ jobs:
             echo "$output"
             exit 1
           fi
-          if echo "$output" | grep -qE "^E[0-9]+:|Error detected while processing|stack traceback"; then
+          if echo "$output" | grep -qE "^E[0-9]+:|Error detected while processing|stack traceback|plugins\.[a-z_-]+:"; then
             echo "✗ nvim startup output contains errors:"
             echo "$output"
             exit 1
@@ -603,11 +603,11 @@ jobs:
           path: ~/.pixi
           key: pixi-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/scripts/bootstrap.sh') }}
 
-      - name: Cache lazy.nvim plugins
+      - name: Cache vim.pack plugins
         uses: actions/cache@v4
         with:
-          path: ~/.local/share/nvim-data/lazy
-          key: lazy-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/.config/nvim/lazy-lock.json') }}
+          path: ~/.local/share/nvim-data/site/pack
+          key: pack-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/.config/nvim/nvim-pack-lock.json') }}
 
       - name: Authenticated git for plugin clones (lift GH rate limit)
         if: github.actor == github.repository_owner
@@ -696,11 +696,11 @@ jobs:
           export XDG_CONFIG_HOME="$HOME/.config"
           export XDG_DATA_HOME="$HOME/.local/share"
 
-          if [ -d ~/.local/share/nvim-data/lazy ]; then
-            plugin_count=$(find ~/.local/share/nvim-data/lazy -maxdepth 1 -type d | wc -l)
-            echo "✓ Lazy plugins installed ($plugin_count)"
+          if [ -d ~/.local/share/nvim-data/site/pack/core/opt ]; then
+            plugin_count=$(find ~/.local/share/nvim-data/site/pack/core/opt -maxdepth 1 -type d | wc -l)
+            echo "✓ vim.pack plugins installed ($plugin_count)"
           else
-            echo "✗ Lazy plugin directory not found"
+            echo "✗ vim.pack plugin directory not found"
             exit 1
           fi
 
@@ -727,7 +727,7 @@ jobs:
             echo "⚠ Mason directory not found"
           fi
 
-          FZF_DLL=~/.local/share/nvim-data/lazy/telescope-fzf-native.nvim/build/libfzf.dll
+          FZF_DLL=~/.local/share/nvim-data/site/pack/core/opt/telescope-fzf-native.nvim/build/libfzf.dll
           if [ -f "$FZF_DLL" ]; then
             echo "✓ telescope-fzf-native built"
           else
@@ -744,7 +744,7 @@ jobs:
             echo "$output"
             exit 1
           fi
-          if echo "$output" | grep -qE "^E[0-9]+:|Error detected while processing|stack traceback"; then
+          if echo "$output" | grep -qE "^E[0-9]+:|Error detected while processing|stack traceback|plugins\.[a-z_-]+:"; then
             echo "✗ nvim startup output contains errors:"
             echo "$output"
             exit 1
@@ -785,19 +785,3 @@ jobs:
             echo "| zig | $(zig version 2>/dev/null || echo N/A) |"
             echo "| pwsh | $(pwsh --version 2>/dev/null || echo N/A) |"
           } >> "$GITHUB_STEP_SUMMARY"
-
-  plugin-freshness:
-    name: Lazy.nvim plugin archive check
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      issues: write
-    steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
-        with:
-          persist-credentials: false
-      - uses: yutkat/lazy-nvim-archived-checker@37335f7b997e03ecd574641c0ee400b76932ba0e # v1.0.2
-        with:
-          nvim-config-path: .config/nvim
-          github-token: ${{ secrets.GITHUB_TOKEN }}

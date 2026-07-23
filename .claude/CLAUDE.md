@@ -6,6 +6,10 @@ Wide-ranging open-source contributor across languages and ecosystems: upstream w
 
 Primarily Python; also writes Rust and Lua, and C. Codes in Neovim on Linux, tmux-heavy (single Neovim window per pane, no vim splits). Bleeding-edge toolchain: pixi for envs, ruff and ty as LSPs, jj alongside git.
 
+# Python Environments
+
+Never use pip to install, upgrade, or uninstall anything. Use pixi for env management, and run Python through the pixi env (`pixi run python ...`).
+
 # Git
 
 IMPORTANT: Never run state-changing git or jj commands (add, commit, push, branch ops) unless I ask in that conversation. Read-only git is fine. After making changes, stop and report; at most mention they're ready to commit.
@@ -21,6 +25,8 @@ IMPORTANT: Never run state-changing git or jj commands (add, commit, push, branc
 - Don't blindly copy boilerplate from similar-looking code (test trios, validator lists, config blocks). Evaluate each piece on its own merits.
 
 # Prose Style (Docs, Commits, Comments, Wiki)
+
+Follow ASD-STE100 Simplified Technical English: active voice, present tense, one topic per sentence, one meaning per word, no noun clusters longer than three words. Keep sentences under 20 words.
 
 Short declarative sentences. No em-dashes as connectors: use periods, commas, colons, or parens. No `**Term** — definition` glossary bullets. No meta-summaries ("three moving parts", "the flow is") and no over-explained tails. Prefer "verify" over "sanity-check". No templated user-facing strings that interpolate invented noun phrases; reword so the varying detail disappears.
 

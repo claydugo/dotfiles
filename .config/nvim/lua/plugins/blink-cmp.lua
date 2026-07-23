@@ -1,9 +1,12 @@
-return {
-  "saghen/blink.cmp",
-  version = "1.*",
-  lazy = false,
-  dependencies = { "rafamadriz/friendly-snippets" },
-  opts = {
+local M = {
+  specs = {
+    { src = "https://github.com/rafamadriz/friendly-snippets" },
+    { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("1.*") },
+  },
+}
+
+function M.config()
+  require("blink.cmp").setup({
     keymap = {
       preset = "default",
       ["<C-space>"] = { "show", "show_documentation", "hide_documentation" },
@@ -53,5 +56,7 @@ return {
     fuzzy = {
       implementation = "prefer_rust",
     },
-  },
-}
+  })
+end
+
+return M

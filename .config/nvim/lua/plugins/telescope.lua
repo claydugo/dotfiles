@@ -1,51 +1,10 @@
-local fzf_build = "make"
-if vim.fn.has("win32") == 1 then
-  fzf_build = table.concat({
-    "cmake -S. -Bbuild -G Ninja -DCMAKE_BUILD_TYPE=Release",
-    "cmake --build build --config Release",
-    "cmake --install build --prefix build",
-  }, " && ")
-end
-
 local M = {
-  "nvim-telescope/telescope.nvim",
-  cmd = { "Telescope" },
-  keys = {
-    {
-      "<leader>f",
-      function()
-        require("telescope.builtin").find_files({ hidden = true })
-      end,
-      desc = "Find files",
-    },
-    {
-      "<leader>g",
-      function()
-        require("telescope.builtin").live_grep()
-      end,
-      desc = "Live grep",
-    },
-    {
-      "<leader>d",
-      function()
-        require("telescope.builtin").lsp_definitions()
-      end,
-      desc = "LSP definitions",
-    },
-    {
-      "<leader>t",
-      function()
-        require("telescope.builtin").lsp_type_definitions()
-      end,
-      desc = "LSP type definitions",
-    },
-  },
-  dependencies = {
-    { "nvim-lua/plenary.nvim" },
-    { "nvim-treesitter/nvim-treesitter" },
-    { "debugloop/telescope-undo.nvim" },
-    { "nvim-telescope/telescope-fzf-native.nvim", build = fzf_build },
-    { "nvim-telescope/telescope-ui-select.nvim" },
+  specs = {
+    { src = "https://github.com/nvim-lua/plenary.nvim" },
+    { src = "https://github.com/debugloop/telescope-undo.nvim" },
+    { src = "https://github.com/nvim-telescope/telescope-fzf-native.nvim" },
+    { src = "https://github.com/nvim-telescope/telescope-ui-select.nvim" },
+    { src = "https://github.com/nvim-telescope/telescope.nvim" },
   },
 }
 
@@ -129,9 +88,20 @@ function M.config()
   tele.load_extension("fzf")
   tele.load_extension("undo")
   tele.load_extension("ui-select")
-end
 
-function M.init()
+  vim.keymap.set("n", "<leader>f", function()
+    require("telescope.builtin").find_files({ hidden = true })
+  end, { desc = "Find files" })
+  vim.keymap.set("n", "<leader>g", function()
+    require("telescope.builtin").live_grep()
+  end, { desc = "Live grep" })
+  vim.keymap.set("n", "<leader>d", function()
+    require("telescope.builtin").lsp_definitions()
+  end, { desc = "LSP definitions" })
+  vim.keymap.set("n", "<leader>t", function()
+    require("telescope.builtin").lsp_type_definitions()
+  end, { desc = "LSP type definitions" })
+
   vim.api.nvim_create_autocmd("VimEnter", {
     group = vim.api.nvim_create_augroup("telescope_startup", { clear = true }),
     callback = function()

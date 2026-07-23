@@ -25,7 +25,7 @@
       "/home/clay"
     ]
   },
-  "model": "claude-fable-5[1m]",
+  "model": "opus",
   "statusLine": {
     "type": "command",
     "command": "~/dotfiles/.claude/statusline.sh",

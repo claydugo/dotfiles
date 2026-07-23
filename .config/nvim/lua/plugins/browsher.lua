@@ -8,17 +8,18 @@ local config_opts = {
 }
 
 local M = {
-  event = "VeryLazy",
+  specs = {
+    { src = "https://github.com/claydugo/browsher.nvim" },
+  },
 }
-if is_local then
-  M.dir = plugin_dir
-  M.dev = true
-else
-  M.url = "https://github.com/claydugo/browsher.nvim"
-  M.dev = false
-end
 
 function M.config()
+  if is_local then
+    vim.opt.rtp:prepend(plugin_dir)
+    if vim.uv.fs_stat(plugin_dir .. "doc") and not vim.uv.fs_stat(plugin_dir .. "doc/tags") then
+      vim.cmd.helptags(plugin_dir .. "doc")
+    end
+  end
   require("browsher").setup(config_opts)
   vim.keymap.set("n", "<leader>b", "<cmd>Browsher<CR>", { silent = true })
   vim.keymap.set("v", "<leader>b", ":'<,'>Browsher<CR>gv", { silent = true })
