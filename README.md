@@ -28,7 +28,7 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 </details>
 
 <details>
-<summary>Structure (78 tracked files)</summary>
+<summary>Structure (76 tracked files)</summary>
 
 ```
 .
@@ -37,14 +37,13 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 ├── .claude
 │   ├── CLAUDE.md
 │   ├── commands
+│   │   ├── commitmsg.md
 │   │   ├── interview.md
 │   │   ├── jj.md
 │   │   ├── luaist.md
 │   │   ├── pythonista.md
 │   │   ├── rebase.md
 │   │   └── remove_slop.md
-│   ├── output-styles
-│   │   └── direct-action.md
 │   ├── settings.json
 │   └── statusline.sh
 ├── .config
@@ -66,7 +65,7 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 │   │   ├── init.lua
 │   │   ├── lua
 │   │   │   ├── config
-│   │   │   │   └── lazy.lua
+│   │   │   │   └── pack.lua
 │   │   │   ├── headless_install.lua
 │   │   │   ├── langserver_icons.lua
 │   │   │   ├── maps.lua
@@ -77,19 +76,17 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 │   │   │       ├── browsher.lua
 │   │   │       ├── dropbar.lua
 │   │   │       ├── gitsigns.lua
-│   │   │       ├── harpoon.lua
 │   │   │       ├── lazydev.lua
 │   │   │       ├── lsp.lua
-│   │   │       ├── lualine.lua
 │   │   │       ├── markdown.lua
 │   │   │       ├── mini.lua
 │   │   │       ├── noice.lua
 │   │   │       ├── showtime.lua
-│   │   │       ├── snacks.lua
 │   │   │       ├── telescope.lua
 │   │   │       ├── tip_of_my_buffer.lua
 │   │   │       ├── tokyonight.lua
 │   │   │       └── treesitter.lua
+│   │   ├── nvim-pack-lock.json
 │   │   └── spell
 │   │       └── en.utf-8.add
 │   ├── starship.toml
@@ -171,7 +168,7 @@ Installed by `scripts/bootstrap.sh` via [`pixi global`](https://pixi.sh/latest/g
 ## Neovim
 
 <details>
-<summary>Plugins (30, managed by <a href="https://github.com/folke/lazy.nvim">lazy.nvim</a>)</summary>
+<summary>Plugins (26, managed by <a href="https://neovim.io/doc/user/pack.html#vim.pack">vim.pack</a>)</summary>
 
 - [luvit-meta](https://github.com/Bilal2453/luvit-meta) by `Bilal2453`
 - [browsher.nvim](https://github.com/claydugo/browsher.nvim) by `claydugo`
@@ -180,10 +177,8 @@ Installed by `scripts/bootstrap.sh` via [`pixi global`](https://pixi.sh/latest/g
 - [tip_of_my_buffer.nvim](https://github.com/claydugo/tip_of_my_buffer.nvim) by `claydugo`
 - [telescope-undo.nvim](https://github.com/debugloop/telescope-undo.nvim) by `debugloop`
 - [mini.nvim](https://github.com/echasnovski/mini.nvim) by `echasnovski`
-- [lazy.nvim](https://github.com/folke/lazy.nvim) by `folke`
 - [lazydev.nvim](https://github.com/folke/lazydev.nvim) by `folke`
 - [noice.nvim](https://github.com/folke/noice.nvim) by `folke`
-- [snacks.nvim](https://github.com/folke/snacks.nvim) by `folke`
 - [tokyonight.nvim](https://github.com/folke/tokyonight.nvim) by `folke`
 - [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) by `lewis6991`
 - [mason.nvim](https://github.com/mason-org/mason.nvim) by `mason-org`
@@ -191,7 +186,6 @@ Installed by `scripts/bootstrap.sh` via [`pixi global`](https://pixi.sh/latest/g
 - [nui.nvim](https://github.com/MunifTanjim/nui.nvim) by `MunifTanjim`
 - [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) by `neovim`
 - [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) by `nvim-lua`
-- [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) by `nvim-lualine`
 - [telescope-fzf-native.nvim](https://github.com/nvim-telescope/telescope-fzf-native.nvim) by `nvim-telescope`
 - [telescope-ui-select.nvim](https://github.com/nvim-telescope/telescope-ui-select.nvim) by `nvim-telescope`
 - [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) by `nvim-telescope`
@@ -201,7 +195,6 @@ Installed by `scripts/bootstrap.sh` via [`pixi global`](https://pixi.sh/latest/g
 - [friendly-snippets](https://github.com/rafamadriz/friendly-snippets) by `rafamadriz`
 - [nvim-notify](https://github.com/rcarriga/nvim-notify) by `rcarriga`
 - [blink.cmp](https://github.com/saghen/blink.cmp) by `saghen`
-- [harpoon](https://github.com/ThePrimeagen/harpoon) by `ThePrimeagen`
 - [nvim-ts-autotag](https://github.com/windwp/nvim-ts-autotag) by `windwp`
 
 </details>
