@@ -591,14 +591,24 @@ jobs:
             -Name AllowDevelopmentWithoutDevLicense -PropertyType DWord -Value 1 -Force | Out-Null
           Write-Host "Developer Mode enabled"
 
+      # Defender scans every file git writes. A cold checkout of ~26 plugins then
+      # exceeds vim.pack's hardcoded 120s install budget (_async.lua) and aborts
+      # mid-clone. Linux/macOS have no such scanner, so only Windows times out.
+      - name: Disable Defender scanning (git checkout speed)
+        shell: pwsh
+        run: |
+          Set-MpPreference -DisableRealtimeMonitoring $true -ErrorAction SilentlyContinue
+          Add-MpPreference -ExclusionProcess git.exe -ErrorAction SilentlyContinue
+          Add-MpPreference -ExclusionProcess nvim.exe -ErrorAction SilentlyContinue
+          Add-MpPreference -ExclusionPath "$env:USERPROFILE\.local\share" -ErrorAction SilentlyContinue
+          Add-MpPreference -ExclusionPath "$env:USERPROFILE\.pixi" -ErrorAction SilentlyContinue
+          Write-Host "Defender real-time scanning disabled for CI"
+
       - name: Stage PR repo at ~/dotfiles
         run: |
           cp -a dotfiles-pr "$HOME/dotfiles"
           git config --global --add safe.directory '*'
           git config --global core.symlinks true
-          # vim.pack's ~28 concurrent blobless-clone lazy fetches hit the
-          # Git-for-Windows HTTP/2 bug (curl 56/92); HTTP/1.1 avoids it.
-          git config --global http.version HTTP/1.1
 
       - name: Cache pixi globals
         uses: actions/cache@v4
@@ -610,9 +620,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.local/share/nvim-data/site/pack
-          # -v2: prior key cached empty mason/mini dirs; vim.pack treats a
-          # present dir as installed and never repairs, so bump to force reclone.
-          key: pack-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/.config/nvim/nvim-pack-lock.json') }}
+          # Failed runs save broken (empty) plugin dirs to this cache, and
+          # vim.pack treats a present dir as installed and never repairs it.
+          # Bump the version suffix to discard a poisoned cache and force reclone.
+          key: pack-v3-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('dotfiles-pr/.config/nvim/nvim-pack-lock.json') }}
 
       - name: Authenticated git for plugin clones (lift GH rate limit)
         if: github.actor == github.repository_owner
@@ -625,28 +636,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: cd "$HOME/dotfiles" && ./scripts/bootstrap.sh
-
-      # TEMPORARY: mason/mini dirs exist but working trees are empty. Determine
-      # whether .git still has the objects (cache dropped the working tree) or
-      # the clone is gutted (checkout never fetched blobs). Remove once known.
-      - name: DIAGNOSTIC (temporary) — plugin working-tree state
-        run: |
-          export PATH="$HOME/.pixi/bin:$PATH"
-          echo "probe-start"
-          opt="$HOME/.local/share/nvim-data/site/pack/core/opt"
-          for name in mason.nvim mini.nvim tokyonight.nvim; do
-            d="$opt/$name"
-            echo "== $name =="
-            [ -d "$d/.git" ] && echo "  dotgit: yes" || echo "  dotgit: no"
-            echo "  index_files: $(git -C "$d" ls-files 2>&1 | wc -l)"
-            echo "  worktree_files: $(find "$d" -type f -not -path '*/.git/*' 2>/dev/null | wc -l)"
-            echo "  head: $(git -C "$d" rev-parse --short HEAD 2>&1)"
-            echo "  filter: $(git -C "$d" config --get remote.origin.partialclonefilter 2>&1)"
-            echo "  -- git checkout -f HEAD (repair attempt + stderr) --"
-            git -C "$d" checkout -f HEAD 2>&1 | head -8
-            echo "  after: worktree_files=$(find "$d" -type f -not -path '*/.git/*' 2>/dev/null | wc -l)"
-          done
-          echo "probe-end"
 
       - name: Assert first bootstrap produced no tracked-file drift
         run: |
