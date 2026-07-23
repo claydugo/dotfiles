@@ -621,6 +621,22 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: cd "$HOME/dotfiles" && ./scripts/bootstrap.sh
 
+      # TEMPORARY: diagnose why mason/mini require() fails though vim.pack.add
+      # does not throw. Remove once the cause is known. Sentinels bracket the
+      # output so silence cannot be misread as "ran and found nothing".
+      - name: DIAGNOSTIC (temporary) — plugin load state
+        run: |
+          export PATH="$HOME/.pixi/bin:$PATH"
+          export XDG_CONFIG_HOME="$HOME/.config"
+          export XDG_DATA_HOME="$HOME/.local/share"
+          echo "probe-start"
+          nvim --headless -c "lua io.write('runtime_find mason='..#vim.api.nvim_get_runtime_file('lua/mason/init.lua',true)..' mini_hipatterns='..#vim.api.nvim_get_runtime_file('lua/mini/hipatterns.lua',true)..'\n'); for _,p in ipairs(vim.pack.get(nil,{info=false})) do local n=p.spec.name; if n=='mason.nvim' or n=='mini.nvim' then io.write('vimpack '..n..' active='..tostring(p.active)..' path='..p.path..'\n') end end" -c "qa" 2>&1 || echo "probe-nvim-failed rc=$?"
+          for rel in mason.nvim/lua/mason/init.lua mini.nvim/lua/mini/hipatterns.lua; do
+            f="$HOME/.local/share/nvim-data/site/pack/core/opt/$rel"
+            [ -f "$f" ] && echo "ondisk YES $f" || echo "ondisk NO  $f"
+          done
+          echo "probe-end"
+
       - name: Assert first bootstrap produced no tracked-file drift
         run: |
           set -e
