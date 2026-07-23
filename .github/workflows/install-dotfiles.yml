@@ -596,6 +596,9 @@ jobs:
           cp -a dotfiles-pr "$HOME/dotfiles"
           git config --global --add safe.directory '*'
           git config --global core.symlinks true
+          # vim.pack's ~28 concurrent blobless-clone lazy fetches hit the
+          # Git-for-Windows HTTP/2 bug (curl 56/92); HTTP/1.1 avoids it.
+          git config --global http.version HTTP/1.1
 
       - name: Cache pixi globals
         uses: actions/cache@v4
