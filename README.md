@@ -28,7 +28,7 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 </details>
 
 <details>
-<summary>Structure (76 tracked files)</summary>
+<summary>Structure (75 tracked files)</summary>
 
 ```
 .
@@ -86,7 +86,6 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 │   │   │       ├── tip_of_my_buffer.lua
 │   │   │       ├── tokyonight.lua
 │   │   │       └── treesitter.lua
-│   │   ├── nvim-pack-lock.json
 │   │   └── spell
 │   │       └── en.utf-8.add
 │   ├── starship.toml
