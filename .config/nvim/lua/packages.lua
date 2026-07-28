@@ -19,7 +19,6 @@ M.treesitter = {
   "qmldir",
   "luadoc",
   "desktop",
-  "tmux",
   "ssh_config",
   "git_config",
   "git_rebase",

@@ -49,7 +49,6 @@ jobs:
               -not -path './ramona/*' \
               -not -path './.local/share/*' \
               -not -path './.pixi/*' \
-              -not -path './.config/nvim/lazy-lock.json' \
               -exec sh -c 'head -n1 "$1" 2>/dev/null | grep -qE "^(#!.*sh\b|# shellcheck shell=)"' _ {} \; \
               -print
           )

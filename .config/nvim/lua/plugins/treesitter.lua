@@ -26,13 +26,16 @@ function M.config()
         -- Jinja-templated yaml (e.g. conda recipe/meta.yaml) parses as one
         -- whole-file ERROR node, leaving the buffer with no highlights at
         -- all. Fall back to regex syntax instead.
-        local root = vim.treesitter.get_parser(args.buf):parse()[1]:root()
+        local parser = vim.treesitter.get_parser(args.buf)
+        local root = parser:parse()[1]:root()
         if root:type() == "ERROR" then
           vim.treesitter.stop(args.buf)
           vim.bo[args.buf].syntax = vim.bo[args.buf].filetype
           return
         end
-        vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        if vim.treesitter.query.get(parser:lang(), "indents") then
+          vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end
       end
     end,
   })
@@ -110,14 +113,6 @@ function M.config()
   }) do
     vim.keymap.set({ "n", "x", "o" }, key, fn)
   end
-
-  -- Force treesitter re-highlight after external file changes
-  vim.api.nvim_create_autocmd("FileChangedShellPost", {
-    group = vim.api.nvim_create_augroup("treesitter_external_changes", { clear = true }),
-    callback = function()
-      vim.cmd("edit")
-    end,
-  })
 end
 
 return M

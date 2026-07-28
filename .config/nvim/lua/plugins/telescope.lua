@@ -67,6 +67,8 @@ function M.config()
         "--column",
         "--smart-case",
         "--hidden",
+        "--glob=!**/.git/*",
+        "--trim",
       },
       color_devicons = false,
     },

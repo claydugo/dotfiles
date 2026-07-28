@@ -25,6 +25,7 @@
       "/home/clay"
     ]
   },
+  "model": "claude-fable-5[1m]",
   "statusLine": {
     "type": "command",
     "command": "~/dotfiles/.claude/statusline.sh",
@@ -56,6 +57,7 @@
   "spinnerTipsEnabled": false,
   "alwaysThinkingEnabled": true,
   "effortLevel": "xhigh",
+  "fastMode": true,
   "companyAnnouncements": [
     "https://github.com/claydugo/dotfiles"
   ],
@@ -64,5 +66,6 @@
   "theme": "dark",
   "editorMode": "vim",
   "verbose": true,
+  "remoteControlAtStartup": true,
   "agentPushNotifEnabled": true
 }

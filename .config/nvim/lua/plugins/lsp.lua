@@ -88,7 +88,6 @@ function M.config()
           PossessiveNoun = true,
           NoOxfordComma = false,
           BoringWords = false,
-          UseGenitive = true,
           OxfordComma = false,
         },
       },
@@ -109,6 +108,12 @@ function M.config()
         globPattern = "**/*@(.sh|.inc|.bash|.command)",
       },
     },
+  })
+
+  -- lspconfig adds offsetEncoding = { "utf-8", "utf-16" }, and the deep merge
+  -- keeps both, so clangd picks utf-8 and disagrees with every other client
+  vim.lsp.config("clangd", {
+    capabilities = { offsetEncoding = { "utf-16" } },
   })
 
   vim.lsp.config("biome", {

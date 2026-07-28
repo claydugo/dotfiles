@@ -390,7 +390,7 @@ if [ "$OS" = windows ] && command -v fnm >/dev/null 2>&1; then
     # Put the fnm-managed node on PATH so mason can install npm-based servers.
     eval "$(fnm env)" 2>/dev/null || true
 fi
-# Startup runs vim.pack.add per plugin group, installing whatever is missing.
+# Installs missing plugins only. Update with <leader>l.
 nvim --headless +qa
 
 print_message "32" "Installing Treesitter parsers and Mason packages..."

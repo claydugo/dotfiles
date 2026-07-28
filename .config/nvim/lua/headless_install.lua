@@ -7,9 +7,11 @@ function M.run()
 
   print("Installing Treesitter parsers...")
   local ts_install = require("nvim-treesitter.install")
-  local ok, err = ts_install.install(parsers, { force = true, summary = true }):pwait(300000)
+  local ok, installed = ts_install.install(parsers, { force = true, summary = true }):pwait(300000)
   if not ok then
-    print("Treesitter install error: " .. tostring(err))
+    print("Treesitter install error: " .. tostring(installed))
+  elseif not installed then
+    print("Treesitter install failed for some parsers")
   end
 
   local mason_packages = packages.mason

@@ -6,14 +6,13 @@ vim.o.grepformat = "%f:%l:%c:%m"
 
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 vim.opt.completeopt:append("fuzzy")
-vim.opt.completeopt:append("nearest")
 
 vim.o.writebackup = false
 vim.o.swapfile = false
 vim.o.undofile = true
 vim.o.confirm = true
 vim.o.clipboard = "unnamedplus"
-vim.opt.jumpoptions = "stack,view"
+vim.opt.jumpoptions = "clean,stack,view"
 
 vim.o.updatetime = 300
 vim.o.ignorecase = true
@@ -33,7 +32,6 @@ vim.o.showmatch = true
 vim.o.tabstop = 4
 vim.o.softtabstop = 4
 vim.o.shiftwidth = 4
-vim.o.smartindent = true
 vim.o.expandtab = true
 
 vim.o.ttimeoutlen = 5
@@ -57,24 +55,30 @@ end
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   pattern = { "*" },
   callback = function()
-    local save_cursor = vim.fn.getpos(".")
+    if not vim.bo.modifiable then
+      return
+    end
+    local view = vim.fn.winsaveview()
     vim.cmd([[keeppatterns %s/\s\+$//e]])
-    vim.fn.setpos(".", save_cursor)
+    vim.fn.winrestview(view)
   end,
 })
 
 -- Strip leading whitespace for commit messages
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   callback = function()
+    if not vim.bo.modifiable then
+      return
+    end
     if vim.bo.filetype == "jj" or vim.bo.filetype == "gitcommit" then
-      local save_cursor = vim.fn.getpos(".")
+      local view = vim.fn.winsaveview()
       vim.cmd([[keeppatterns %s/^\s\+//e]])
-      vim.fn.setpos(".", save_cursor)
+      vim.fn.winrestview(view)
     end
   end,
 })
 
-vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+vim.api.nvim_create_autocmd({ "BufWritePre", "FileWritePre", "FileAppendPre" }, {
   callback = function(args)
     if args.match:match("^%w+://") then
       return
