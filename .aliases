@@ -66,9 +66,32 @@ fi
 
 if command -v ffmpeg >/dev/null 2>&1 && command -v gifski >/dev/null 2>&1; then
     mp4togif() {
-        input_file="$1"
+        local input_file="$1"
+        local base_name frame_dir width height source_rate duration delay fps
         base_name="$(basename "${input_file}" .mp4)"
-        ffmpeg -i "${input_file}" -f yuv4mpegpipe - | gifski -Q 100 --extra -o "${base_name}.gif" -
+        frame_dir="$(mktemp -d)" || return 1
+        IFS=, read -r width height source_rate < <(
+            ffprobe -v error -select_streams v:0 \
+                -show_entries stream=width,height,r_frame_rate \
+                -of csv=p=0:nk=1 "${input_file}")
+        duration="$(ffprobe -v error -show_entries format=duration \
+            -of csv=p=0 "${input_file}")"
+        # gif delay is a whole centisecond count, so only 100/delay rates play evenly
+        # floor 2 because renderers clamp 1cs, and duration/10 keeps frames <= 1000
+        delay="$(awk -F/ -v duration="${duration}" '{
+            centiseconds = 100 / ($1 / $2)
+            if (centiseconds < 2) centiseconds = 2
+            if (centiseconds < duration / 10) centiseconds = duration / 10
+            whole = int(centiseconds)
+            if (centiseconds - whole > 1e-9) whole += 1
+            print whole
+        }' <<< "${source_rate}")"
+        fps="$(awk -v delay="${delay}" 'BEGIN { printf "%.6f", 100 / delay }')"
+        ffmpeg -v error -i "${input_file}" -vf "fps=100/${delay}" -pix_fmt rgb24 \
+            "${frame_dir}/frame_%06d.png" &&
+            gifski -Q 100 --extra -W "${width}" -H "${height}" -r "${fps}" \
+                -o "${base_name}.gif" "${frame_dir}"/frame_*.png
+        rm -rf "${frame_dir}"
     }
 fi
 

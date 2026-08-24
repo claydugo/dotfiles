@@ -70,6 +70,7 @@ load("lazydev")
 load("showtime")
 load("browsher")
 load("tip_of_my_buffer")
+load("claudeconnect")
 
 vim.api.nvim_create_user_command("PackProfile", function()
   local names = vim.tbl_keys(plugin_load_times)

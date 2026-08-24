@@ -14,13 +14,18 @@ Never use pip to install, upgrade, or uninstall anything. Use pixi for env manag
 
 IMPORTANT: Never run state-changing git or jj commands (add, commit, push, branch ops) unless I ask in that conversation. Read-only git is fine. After making changes, stop and report; at most mention they're ready to commit.
 
+# Testing
+
+Run only the tests that target the change at hand. Never run a full test namespace blindly.
+
 # Code Style
 
 - No docstrings and no narrating comments in new code, ever. Terse one-line invariant or math comments are fine (`# var = E[x^2] - E[x]^2`). Multi-sentence explanatory blocks are slop.
 - Never remove my existing comments, links, or docs unless I ask.
 - No shorthand identifiers: spell out `fraction`, `rectangle`, `minimum`, `bounding_box`, `frame_count`, `world_object`. Acronyms are fine (`gpu`, `rgba`, `exif`, `nan`). Don't rename pre-existing identifiers.
 - Explicit beats DRY in declarative code: write literal values at each call site instead of derived constants or negative flags ("everything except X" constants are just exclusions in disguise).
-- No single-use module constants, in tests or scripts especially: inline the literal at the call site. Only name a constant when it's reused in 2+ places or genuinely needs a name.
+- Do not name a constant or extract a helper until it has 3+ call sites: inline it, in tests and scripts especially.
+- Do not preserve backwards compatibility unless I ask. Remove the obsolete path instead of adding a compatibility layer.
 - No `_VALID_X` allowlist tuples, and never mirror a value list that canonically lives in another module. Let the downstream consumer raise, or import the live source.
 - Don't blindly copy boilerplate from similar-looking code (test trios, validator lists, config blocks). Evaluate each piece on its own merits.
 
