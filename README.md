@@ -28,7 +28,7 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 </details>
 
 <details>
-<summary>Structure (75 tracked files)</summary>
+<summary>Structure (76 tracked files)</summary>
 
 ```
 .
@@ -74,6 +74,7 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 │   │   │   └── plugins
 │   │   │       ├── blink-cmp.lua
 │   │   │       ├── browsher.lua
+│   │   │       ├── claudeconnect.lua
 │   │   │       ├── dropbar.lua
 │   │   │       ├── gitsigns.lua
 │   │   │       ├── lazydev.lua
