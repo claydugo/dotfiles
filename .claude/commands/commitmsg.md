@@ -25,5 +25,4 @@ Write a commit message for the diff above. Output the message in a fenced code b
 - Wrap the body at 72 characters. Reference issues or PRs in a footer if the log shows that pattern.
 - Follow ASD-STE100 Simplified Technical English: active voice, present tense, one instruction per sentence, one meaning per word, no noun clusters longer than three words. Keep sentences under 20 words.
 - Banned: "This commit", "comprehensive", "enhanced", "improved", "robust", "various", "minor", bullet lists that paraphrase hunks, and any AI attribution or co-author footer.
-- If the diff mixes unrelated concerns, say so in one line, then give a separate message per logical commit in dependency order.
 - If the diff is empty, say so and stop.
