@@ -89,7 +89,7 @@ def scan(root, names=None):
             continue
         by_abspath[os.path.abspath(path)] = (name, added)
         if name.endswith(".py"):
-            findings[name] = checker.python_findings(current, lines, added, path)
+            findings[name] = checker.python_findings(current, lines, added)
         else:
             findings[name] = checker.markdown_findings(lines, added)
 
