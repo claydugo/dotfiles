@@ -56,3 +56,6 @@
 *.flac  binary
 *.ogg   binary
 *.webm  binary
+
+.config/agent-hooks/**/*.py -linguist-detectable
+.config/codex/**/*.py -linguist-detectable
