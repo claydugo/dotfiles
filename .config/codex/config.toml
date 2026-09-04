@@ -1,0 +1,13 @@
+personality = "pragmatic"
+model = "gpt-5.6-sol"
+model_reasoning_effort = "xhigh"
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
+project_doc_fallback_filenames = ["CLAUDE.md"]
+check_for_update_on_startup = true
+
+[tui]
+notifications = true
+notification_condition = "unfocused"
+vim_mode_default = true
+status_line = ["model-with-reasoning", "fast-mode", "context-used", "used-tokens", "five-hour-limit", "weekly-limit", "git-branch", "estimated-thread-cost", "codex-version"]

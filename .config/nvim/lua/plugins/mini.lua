@@ -18,7 +18,7 @@ local function get_LSP()
 end
 
 local function search_display()
-  local search = vim.fn.searchcount({ maxcount = 0 })
+  local search = vim.fn.searchcount()
   local search_term = vim.fn.getreg("/")
   if search.current > 0 then
     return string.format("/%s [%d/%d]", search_term, search.current, search.total)

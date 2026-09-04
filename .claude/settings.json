@@ -69,7 +69,7 @@
       "### Org-wide",
       "**Organization**: Ramona Optics",
       "**Cloud provider(s)**: None configured",
-      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
+      "**Internal sharing / snippet hosting**: None configured \u2014 treat public paste/gist services as outside the trust boundary",
       "**Secrets management**: None configured",
       "**Default / protected branches**: main (default; protection status not queryable)",
       "**CI/CD deploy targets**: None configured",
@@ -82,9 +82,98 @@
       "**Sensitive data locations & audiences**: any file or store holding personal data, confidential business data, credentials, regulated data, or similarly sensitive material; preserve exact handles when known and share only with audiences cleared at the [named+specifics] bar",
       "**Data retention / declassification**: None configured",
       "### User-specific",
-      "**Primary use of Claude Code**: software development — computational imaging at Ramona Optics",
-      "**Org-specific CLIs**: pixi (env management — never use pip to install/upgrade/uninstall), glab (GitLab CLI), mcam (project CLI)",
+      "**Primary use of Claude Code**: software development \u2014 computational imaging at Ramona Optics",
+      "**Org-specific CLIs**: pixi (env management \u2014 never use pip to install/upgrade/uninstall), glab (GitLab CLI), mcam (project CLI)",
       "State-changing git/jj operations (add, commit, push, branch ops) require explicit in-conversation confirmation; read-only git is routine"
+    ]
+  },
+  "outputStyle": "No slop",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_check.py\"",
+            "timeout": 5,
+            "statusMessage": "Checking for slop..."
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|PowerShell|Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
+            "timeout": 10,
+            "statusMessage": "Snapshotting changed files..."
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash|PowerShell|Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
+            "timeout": 10,
+            "statusMessage": "Checking changed files..."
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash|PowerShell|Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
+            "timeout": 10,
+            "statusMessage": "Checking partial tool changes..."
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
+            "timeout": 10,
+            "statusMessage": "Baselining the working tree..."
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
+            "timeout": 10,
+            "statusMessage": "Checking the working tree..."
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
+            "timeout": 5
+          }
+        ]
+      }
     ]
   }
 }

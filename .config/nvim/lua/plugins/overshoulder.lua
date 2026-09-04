@@ -1,6 +1,6 @@
 local home = vim.uv.os_homedir()
 
-local plugin_dir = home .. "/projects/claudeconnect/"
+local plugin_dir = home .. "/projects/overshoulder/"
 local is_local = vim.uv.fs_stat(plugin_dir) ~= nil
 
 local config_opts = {
@@ -15,8 +15,8 @@ function M.config()
     if vim.uv.fs_stat(plugin_dir .. "doc") and not vim.uv.fs_stat(plugin_dir .. "doc/tags") then
       vim.cmd.helptags(plugin_dir .. "doc")
     end
-    require("claudeconnect").setup(config_opts)
-    vim.keymap.set("v", "<leader>s", ":ClaudeMentionSelection<cr>", { silent = true })
+    require("overshoulder").setup(config_opts)
+    vim.keymap.set("v", "<leader>s", ":OvershoulderMentionSelection<cr>", { silent = true })
   end
 end
 

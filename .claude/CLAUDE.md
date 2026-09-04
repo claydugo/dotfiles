@@ -20,7 +20,7 @@ Run only the tests that target the change at hand. Never run a full test namespa
 
 # Code Style
 
-- No docstrings and no narrating comments in new code, ever. Terse one-line invariant or math comments are fine (`# var = E[x^2] - E[x]^2`). Multi-sentence explanatory blocks are slop.
+- No docstrings and no comments in new code, ever. Tool directives (`# noqa`, `# type:`) are the only exception.
 - Never remove my existing comments, links, or docs unless I ask.
 - No shorthand identifiers: spell out `fraction`, `rectangle`, `minimum`, `bounding_box`, `frame_count`, `world_object`. Acronyms are fine (`gpu`, `rgba`, `exif`, `nan`). Don't rename pre-existing identifiers.
 - Explicit beats DRY in declarative code: write literal values at each call site instead of derived constants or negative flags ("everything except X" constants are just exclusions in disguise).

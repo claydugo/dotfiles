@@ -19,7 +19,7 @@ flowchart LR
     B --> C[Install terminal<br>Kitty / WezTerm]
     C --> D[Install Pixi]
     D --> E[pixi global install<br>CLI tools]
-    E --> F[NVM + Node<br>Claude Code]
+    E --> F[NVM + Node<br>Claude Code + Codex]
     F --> G[Neovim: restore plugins,<br>Treesitter parsers, Mason LSPs]
 ```
 
@@ -74,7 +74,6 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 │   │   │   └── plugins
 │   │   │       ├── blink-cmp.lua
 │   │   │       ├── browsher.lua
-│   │   │       ├── claudeconnect.lua
 │   │   │       ├── dropbar.lua
 │   │   │       ├── gitsigns.lua
 │   │   │       ├── lazydev.lua
@@ -82,6 +81,7 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 │   │   │       ├── markdown.lua
 │   │   │       ├── mini.lua
 │   │   │       ├── noice.lua
+│   │   │       ├── overshoulder.lua
 │   │   │       ├── showtime.lua
 │   │   │       ├── telescope.lua
 │   │   │       ├── tip_of_my_buffer.lua
@@ -143,6 +143,8 @@ Installed by `scripts/bootstrap.sh` via [`pixi global`](https://pixi.sh/latest/g
 | [`hyperfine`](https://prefix.dev/channels/conda-forge/packages/hyperfine) | ✅ | ✅ | ✅ |
 | [`tree-sitter-cli`](https://prefix.dev/channels/conda-forge/packages/tree-sitter-cli) | ✅ | ✅ | ✅ |
 | [`ty`](https://prefix.dev/channels/conda-forge/packages/ty) | ✅ | ✅ | ✅ |
+| [`jq`](https://prefix.dev/channels/conda-forge/packages/jq) | ✅ | ✅ | ✅ |
+| [`vale`](https://prefix.dev/channels/conda-forge/packages/vale) | ✅ | ✅ | ✅ |
 | [`bash`](https://prefix.dev/channels/conda-forge/packages/bash) | ✅ | ✅ | — |
 | [`git`](https://prefix.dev/channels/conda-forge/packages/git) | ✅ | ✅ | — |
 | [`curl`](https://prefix.dev/channels/conda-forge/packages/curl) | ✅ | ✅ | — |
@@ -162,6 +164,7 @@ Installed by `scripts/bootstrap.sh` via [`pixi global`](https://pixi.sh/latest/g
 - [Pixi](https://pixi.sh/)
 - [NVM](https://github.com/nvm-sh/nvm) (Linux/macOS) / [fnm](https://github.com/Schniz/fnm) (Windows)
 - [Claude Code](https://code.claude.com/docs/en/overview)
+- [Codex](https://learn.chatgpt.com/docs)
 - [Kitty](https://sw.kovidgoyal.net/kitty/) (Linux/macOS) / [WezTerm](https://wezterm.org/) (Windows)
 - [Google Sans Code Nerd Font](https://github.com/AliApg/GoogleSansCode-Nerd)
 

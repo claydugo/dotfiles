@@ -117,12 +117,12 @@ install_nvm() {
     if [ ! -d "$NVM_DIR" ]; then
         mkdir -p "$NVM_DIR"
         download_and_execute "https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh"
-        # shellcheck source=/dev/null
-        [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-        nvm install --lts
     else
         print_message "34" "NVM is already installed."
     fi
+    # shellcheck source=/dev/null
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+    command -v node >/dev/null 2>&1 || nvm install --lts
 }
 
 install_node_windows() {
@@ -146,23 +146,73 @@ install_pixi() {
 }
 
 install_claude_code() {
+    local install_status=0 settings_backup="" settings_file="$HOME/dotfiles/.claude/settings.json"
     print_message "32" "Installing Claude Code..."
     export PATH="$HOME/.local/bin:$PATH"
     if command -v claude >/dev/null 2>&1; then
         print_message "34" "Claude Code is already installed."
         return 0
     fi
-    if [ "$OS" = windows ]; then
-        powershell -NoProfile -Command "irm https://claude.ai/install.ps1 | iex" ||
-            print_message "33" "Claude Code install failed (install manually: irm https://claude.ai/install.ps1 | iex)."
-    else
-        download_and_execute "https://claude.ai/install.sh"
+    if [ -f "$settings_file" ]; then
+        settings_backup=$(mktemp)
+        cp "$settings_file" "$settings_backup"
     fi
-    # Installer rewrites .claude/settings.json with its own key order / new keys
-    # (e.g. autoUpdatesChannel). ~/.claude is a symlink into the dotfiles repo,
-    # so the install dirties tracked state. Reset to the committed version so
-    # bootstrap stays idempotent and CI doesn't need a settings.json exclusion.
-    git -C "$HOME/dotfiles" checkout -- .claude/settings.json 2>/dev/null || true
+    if [ "$OS" = windows ]; then
+        powershell -NoProfile -Command "irm https://claude.ai/install.ps1 | iex" || install_status=$?
+    else
+        download_and_execute "https://claude.ai/install.sh" || install_status=$?
+    fi
+    if [ -n "$settings_backup" ]; then
+        cp "$settings_backup" "$settings_file"
+        rm -f "$settings_backup"
+    fi
+    link "$settings_file" "$HOME/.claude/settings.json"
+    return "$install_status"
+}
+
+install_codex() {
+    print_message "32" "Installing Codex..."
+    export PATH="$HOME/.local/bin:$PATH"
+    if command -v codex >/dev/null 2>&1; then
+        codex update || print_message "33" "Codex update failed (continuing)."
+        return 0
+    fi
+    if [ "$OS" = windows ]; then
+        powershell -NoProfile -Command "irm https://chatgpt.com/codex/install.ps1 | iex"
+    else
+        download_and_execute "https://chatgpt.com/codex/install.sh"
+    fi
+}
+
+setup_codex() {
+    local command legacy skill
+    mkdir -p "$HOME/.codex" "$HOME/.agents/skills"
+    link "$HOME/dotfiles/.claude/CLAUDE.md" "$HOME/.codex/AGENTS.md"
+    link "$HOME/dotfiles/.config/agent-hooks/codex.json" "$HOME/.codex/hooks.json"
+    for command in commitmsg interview jj luaist pythonista rebase remove_slop; do
+        skill="${command//_/-}"
+        legacy="$HOME/.codex/skills/$skill"
+        if [ -L "$legacy/SKILL.md" ] && [ "$legacy/SKILL.md" -ef "$HOME/dotfiles/.claude/commands/$command.md" ]; then
+            rm -f "$legacy/SKILL.md"
+            rmdir "$legacy" 2>/dev/null || true
+        fi
+        link "$HOME/dotfiles/.config/agent-skills/$skill" "$HOME/.agents/skills/$skill"
+    done
+}
+
+setup_codex_config() {
+    if [ ! -f "$HOME/.codex/config.toml" ]; then
+        cp "$HOME/dotfiles/.config/codex/config.toml" "$HOME/.codex/config.toml"
+        return 0
+    fi
+    "$HOME/dotfiles/.config/agent-hooks/run_python.sh" \
+        "$HOME/dotfiles/.config/codex/merge_config.py" \
+        "$HOME/dotfiles/.config/codex/config.toml" \
+        "$HOME/.codex/config.toml"
+}
+
+setup_vale() {
+    vale --config="$XDG_CONFIG_HOME/vale/.vale.ini" sync
 }
 
 install_with_pixi_global() {
@@ -256,7 +306,11 @@ if [ -f "$HOME/dotfiles/.condarc" ]; then
     link "$HOME/dotfiles/.condarc" "$XDG_CONFIG_HOME/conda/.condarc"
 fi
 
-link "$HOME/dotfiles/.claude" "$HOME/.claude"
+mkdir -p "$HOME/.claude"
+for item in CLAUDE.md commands output-styles settings.json statusline.sh; do
+    link "$HOME/dotfiles/.claude/$item" "$HOME/.claude/$item"
+done
+setup_codex
 
 for item in "$HOME/dotfiles/.config"/*; do
     base_item=$(basename "$item")
@@ -331,6 +385,8 @@ common_cli_tools=(
     hyperfine
     tree-sitter-cli
     ty
+    jq
+    vale
 )
 
 unix_cli_tools=(
@@ -358,6 +414,8 @@ esac
 install_pixi || { print_message "31" "Failed to install Pixi"; exit 1; }
 setup_pixi_environment
 install_with_pixi_global "${global_cli_tools[@]}" || { print_message "31" "Failed to install global CLI tools"; exit 1; }
+setup_codex_config || { print_message "31" "Failed to configure Codex"; exit 1; }
+setup_vale || { print_message "31" "Failed to install Vale styles"; exit 1; }
 
 if [ "$OS" = windows ]; then
     install_node_windows || print_message "33" "Node setup via fnm failed (continuing)."
@@ -366,6 +424,7 @@ else
 fi
 
 install_claude_code || { print_message "31" "Failed to install Claude Code"; exit 1; }
+install_codex || { print_message "31" "Failed to install Codex"; exit 1; }
 
 if [ "$OS" != windows ]; then
     setup_modern_bash

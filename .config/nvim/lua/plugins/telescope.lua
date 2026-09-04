@@ -1,7 +1,6 @@
 local M = {
   specs = {
     { src = "https://github.com/nvim-lua/plenary.nvim" },
-    { src = "https://github.com/debugloop/telescope-undo.nvim" },
     { src = "https://github.com/nvim-telescope/telescope-fzf-native.nvim" },
     { src = "https://github.com/nvim-telescope/telescope-ui-select.nvim" },
     { src = "https://github.com/nvim-telescope/telescope.nvim" },
@@ -88,7 +87,6 @@ function M.config()
     },
   })
   tele.load_extension("fzf")
-  tele.load_extension("undo")
   tele.load_extension("ui-select")
 
   vim.keymap.set("n", "<leader>f", function()

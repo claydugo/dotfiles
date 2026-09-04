@@ -75,6 +75,7 @@ CLAUDE.md
 !.claude/settings.json
 !.claude/statusline.sh
 !.claude/commands/
+!.claude/output-styles/
 
 # IPython runtime state (only the startup script + __init__.py are tracked).
 .ipython/profile_default/history.sqlite
@@ -85,3 +86,10 @@ CLAUDE.md
 
 # Vim-generated binary spellfile artifact
 *.add.spl
+
+# Vale: version the config and vocabulary, not the downloaded style packs
+.config/vale/native/
+.config/vale/styles/*
+!.config/vale/styles/config/
+!.config/vale/styles/STE/
+!.config/vale/styles/STE/**

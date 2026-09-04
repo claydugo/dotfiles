@@ -8,6 +8,7 @@ return {
   rust_analyzer = " ",
   wgsl_analyzer = " ",
   harper_ls = " ",
+  vale_ls = "󰴤 ",
   biome = " ",
   taplo = " ",
   yamlls = " ",

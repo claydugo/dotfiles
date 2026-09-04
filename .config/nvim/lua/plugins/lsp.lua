@@ -64,10 +64,10 @@ function M.config()
     callback = function(args)
       local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
       if client.name == "ty" then
-        client.server_capabilities.semanticTokensProvider = nil
+        vim.lsp.semantic_tokens.enable(false, { client_id = args.data.client_id })
       elseif client.name == "ruff" then
         client.server_capabilities.hoverProvider = false
-        client.server_capabilities.semanticTokensProvider = nil
+        vim.lsp.semantic_tokens.enable(false, { client_id = args.data.client_id })
       end
     end,
   })
@@ -91,6 +91,18 @@ function M.config()
           OxfordComma = false,
         },
       },
+    },
+  })
+
+  vim.lsp.config("vale_ls", {
+    filetypes = { "markdown", "python" },
+    root_dir = function(bufnr, on_dir)
+      on_dir(vim.fs.root(bufnr, ".git") or vim.uv.cwd())
+    end,
+    init_options = {
+      installVale = false,
+      syncOnStartup = false,
+      configPath = vim.fn.expand("~/.config/vale/.vale.ini"),
     },
   })
 
@@ -150,6 +162,7 @@ function M.config()
     ruff = "ruff",
     biome = "biome",
     harper_ls = "harper-ls",
+    vale_ls = "vale-ls",
     bashls = "bash-language-server",
     emmylua_ls = "emmylua_ls",
     rust_analyzer = "rust-analyzer",

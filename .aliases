@@ -20,6 +20,7 @@ alias gti='git'
 alias path='echo -e ${PATH//:/\\n}'
 alias t='tmux new-session -s $(hostname)'
 alias ta="tmux a"
+alias c='codex'
 td() {
     local dir
     dir=$(mktemp -d "/tmp/${1:+$1.}XXXXX") || return 1
@@ -36,7 +37,7 @@ alias ~='cd ~'
 
 # Linux desktop
 alias f='nautilus .'
-alias v='/usr/bin/env nvim'
+alias v='nvim'
 alias aptup='sudo apt update && sudo apt upgrade -y && sudo apt autoremove -y'
 
 # Ramona Specific
@@ -93,10 +94,6 @@ if command -v ffmpeg >/dev/null 2>&1 && command -v gifski >/dev/null 2>&1; then
                 -o "${base_name}.gif" "${frame_dir}"/frame_*.png
         rm -rf "${frame_dir}"
     }
-fi
-
-if hash codex 2>/dev/null; then
-    alias codex='codex --sandbox danger-full-access --ask-for-approval never'
 fi
 
 mkworktrees() {

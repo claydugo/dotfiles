@@ -1,0 +1,67 @@
+{
+  "description": "Apply Clay's no-slop checks to Codex changes.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
+            "timeout": 10,
+            "statusMessage": "Baselining the working tree"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
+            "timeout": 10,
+            "statusMessage": "Snapshotting changed files"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
+            "timeout": 10,
+            "statusMessage": "Checking changed files"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
+            "timeout": 10,
+            "statusMessage": "Checking the working tree"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
+            "timeout": 3
+          }
+        ]
+      }
+    ]
+  }
+}

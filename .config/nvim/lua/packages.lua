@@ -30,6 +30,7 @@ M.treesitter = {
 M.mason = {
   "biome",
   "harper-ls",
+  "vale-ls",
   "bash-language-server",
   "copilot-language-server",
   "emmylua_ls",

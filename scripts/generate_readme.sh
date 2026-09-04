@@ -39,7 +39,7 @@ flowchart LR
     B --> C[Install terminal<br>Kitty / WezTerm]
     C --> D[Install Pixi]
     D --> E[pixi global install<br>CLI tools]
-    E --> F[NVM + Node<br>Claude Code]
+    E --> F[NVM + Node<br>Claude Code + Codex]
     F --> G[Neovim: restore plugins,<br>Treesitter parsers, Mason LSPs]
 \`\`\`
 
@@ -100,6 +100,7 @@ cat << 'FOOTER'
 - [Pixi](https://pixi.sh/)
 - [NVM](https://github.com/nvm-sh/nvm) (Linux/macOS) / [fnm](https://github.com/Schniz/fnm) (Windows)
 - [Claude Code](https://code.claude.com/docs/en/overview)
+- [Codex](https://learn.chatgpt.com/docs)
 - [Kitty](https://sw.kovidgoyal.net/kitty/) (Linux/macOS) / [WezTerm](https://wezterm.org/) (Windows)
 - [Google Sans Code Nerd Font](https://github.com/AliApg/GoogleSansCode-Nerd)
 

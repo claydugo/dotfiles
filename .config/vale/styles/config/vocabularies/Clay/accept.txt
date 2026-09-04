@@ -1,0 +1,12 @@
+bounding box
+brightfield
+colormap
+conda-forge
+fluorescence
+microscopy
+numpy
+pixi
+pygfx
+stitching
+wgsl
+zebrafish

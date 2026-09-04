@@ -1,10 +1,10 @@
 ---
 argument-hint: [specification_file]
-description: This tool interviews the user in detail about a project and writes a comprehensive specification to a file.
+description: Interview the user about a project and write a detailed specification to a file
 ---
 
 Read $ARGUMENTS
 
-Then interview me in detail using the AskUserQuestionTool about literally anything: technical implementation, UI & UX, concerns, tradeoffs, etc. but make sure the questions are not obvious
+Then interview me in detail. Use the interactive question tool when available. Ask direct questions otherwise. Cover technical implementation, UI and UX, concerns, and tradeoffs. Do not ask obvious questions.
 
-be very in-depth and continue interviewing me continually until it's complete, then write the specification to the file specified in $ARGUMENTS
+Ask one to three focused questions per round. Continue until the material decisions are complete. Then write the specification to the file specified in $ARGUMENTS.

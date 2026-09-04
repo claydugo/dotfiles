@@ -26,7 +26,10 @@ function M.config()
         -- Jinja-templated yaml (e.g. conda recipe/meta.yaml) parses as one
         -- whole-file ERROR node, leaving the buffer with no highlights at
         -- all. Fall back to regex syntax instead.
-        local parser = vim.treesitter.get_parser(args.buf)
+        local parser = vim.treesitter.get_parser(args.buf, nil, { error = false })
+        if not parser then
+          return
+        end
         local root = parser:parse()[1]:root()
         if root:type() == "ERROR" then
           vim.treesitter.stop(args.buf)
