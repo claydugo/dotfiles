@@ -1,0 +1,7 @@
+preset = "clay"
+
+[vale]
+enabled = true
+command = ["vale"]
+config = "~/.config/vale/.vale.ini"
+timeout_ms = 5000

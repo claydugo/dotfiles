@@ -91,50 +91,39 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Write|Edit",
+        "matcher": "Write|Edit|Bash|PowerShell",
         "hooks": [
           {
             "type": "command",
-            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_check.py\"",
-            "timeout": 5,
-            "statusMessage": "Checking for slop..."
-          }
-        ]
-      },
-      {
-        "matcher": "Bash|PowerShell|Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
+            "command": "\"$HOME/.local/bin/wristslap\" hook claude",
             "timeout": 10,
-            "statusMessage": "Snapshotting changed files..."
+            "statusMessage": "Checking personal rules"
           }
         ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "Bash|PowerShell|Write|Edit",
+        "matcher": "Write|Edit|Bash|PowerShell",
         "hooks": [
           {
             "type": "command",
-            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
+            "command": "\"$HOME/.local/bin/wristslap\" hook claude",
             "timeout": 10,
-            "statusMessage": "Checking changed files..."
+            "statusMessage": "Checking changed files"
           }
         ]
       }
     ],
     "PostToolUseFailure": [
       {
-        "matcher": "Bash|PowerShell|Write|Edit",
+        "matcher": "Write|Edit|Bash|PowerShell",
         "hooks": [
           {
             "type": "command",
-            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
+            "command": "\"$HOME/.local/bin/wristslap\" hook claude",
             "timeout": 10,
-            "statusMessage": "Checking partial tool changes..."
+            "statusMessage": "Checking partial changes"
           }
         ]
       }
@@ -145,9 +134,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
+            "command": "\"$HOME/.local/bin/wristslap\" hook claude",
             "timeout": 10,
-            "statusMessage": "Baselining the working tree..."
+            "statusMessage": "Loading personal rules"
           }
         ]
       }
@@ -157,9 +146,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
+            "command": "\"$HOME/.local/bin/wristslap\" hook claude",
             "timeout": 10,
-            "statusMessage": "Checking the working tree..."
+            "statusMessage": "Checking completion"
           }
         ]
       }
@@ -169,8 +158,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
-            "timeout": 5
+            "command": "\"$HOME/.local/bin/wristslap\" hook claude",
+            "timeout": 3
           }
         ]
       }

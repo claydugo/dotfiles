@@ -1,5 +1,5 @@
 {
-  "description": "Apply Clay's no-slop checks to Codex changes.",
+  "description": "Enforce personal rules with wristslap.",
   "hooks": {
     "SessionStart": [
       {
@@ -7,33 +7,33 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
+            "command": "\"$HOME/.local/bin/wristslap\" hook codex",
             "timeout": 10,
-            "statusMessage": "Baselining the working tree"
+            "statusMessage": "Loading personal rules"
           }
         ]
       }
     ],
     "PreToolUse": [
       {
-        "matcher": "Bash|Edit|Write",
+        "matcher": "Bash|apply_patch",
         "hooks": [
           {
             "type": "command",
-            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
+            "command": "\"$HOME/.local/bin/wristslap\" hook codex",
             "timeout": 10,
-            "statusMessage": "Snapshotting changed files"
+            "statusMessage": "Checking personal rules"
           }
         ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "Bash|Edit|Write",
+        "matcher": "Bash|apply_patch",
         "hooks": [
           {
             "type": "command",
-            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
+            "command": "\"$HOME/.local/bin/wristslap\" hook codex",
             "timeout": 10,
             "statusMessage": "Checking changed files"
           }
@@ -45,9 +45,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
+            "command": "\"$HOME/.local/bin/wristslap\" hook codex",
             "timeout": 10,
-            "statusMessage": "Checking the working tree"
+            "statusMessage": "Checking completion"
           }
         ]
       }
@@ -57,7 +57,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$HOME/.config/agent-hooks/run_python.sh\" \"$HOME/.config/agent-hooks/no_slop_post_bash.py\"",
+            "command": "\"$HOME/.local/bin/wristslap\" hook codex",
             "timeout": 3
           }
         ]
