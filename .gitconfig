@@ -38,6 +38,7 @@
 [push]
     autoSetupRemote = true
     followTags = true
+    recurseSubmodules = no
 
 [submodule]
     recurse = true
