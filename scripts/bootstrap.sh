@@ -185,7 +185,7 @@ install_codex() {
         return 0
     fi
     if [ "$OS" = windows ]; then
-        OS=Windows_NT powershell -NoProfile -Command "irm https://chatgpt.com/codex/install.ps1 | iex"
+        OS=Windows_NT powershell -NoProfile -Command "\$env:Path = \"\$env:SystemRoot\System32;\$env:Path\"; irm https://chatgpt.com/codex/install.ps1 | iex"
     else
         download_and_execute "https://chatgpt.com/codex/install.sh"
     fi
