@@ -185,7 +185,7 @@ install_codex() {
         return 0
     fi
     if [ "$OS" = windows ]; then
-        powershell -NoProfile -Command "irm https://chatgpt.com/codex/install.ps1 | iex"
+        OS=Windows_NT powershell -NoProfile -Command "irm https://chatgpt.com/codex/install.ps1 | iex"
     else
         download_and_execute "https://chatgpt.com/codex/install.sh"
     fi
@@ -212,7 +212,7 @@ setup_codex_config() {
         cp "$HOME/dotfiles/.config/codex/config.toml" "$HOME/.codex/config.toml"
         return 0
     fi
-    "$HOME/dotfiles/.config/agent-hooks/run_python.sh" \
+    pixi exec --spec 'python>=3.11' -- python \
         "$HOME/dotfiles/.config/codex/merge_config.py" \
         "$HOME/dotfiles/.config/codex/config.toml" \
         "$HOME/.codex/config.toml"
@@ -226,12 +226,10 @@ install_with_pixi_global() {
     local packages=("$@")
     print_message "32" "Installing global CLI tools with Pixi: ${packages[*]}"
     for pkg in "${packages[@]}"; do
-        if ! pixi global list --environment "$pkg" --json >/dev/null 2>&1; then
-            if [ "$pkg" = nvim ] && [ "$OS" = linux ]; then
-                pixi global install nvim --with 'unibilium==2.1.2'
-            else
-                pixi global install "$pkg"
-            fi
+        if [ "$pkg" = nvim ] && [[ "$OS" = linux || "$OS" = macos ]]; then
+            pixi global install nvim --with 'unibilium==2.1.2'
+        elif ! pixi global list --environment "$pkg" --json >/dev/null 2>&1; then
+            pixi global install "$pkg"
         else
             print_message "34" "$pkg is already installed globally."
         fi
