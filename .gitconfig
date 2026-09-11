@@ -35,9 +35,6 @@
 [diff]
     colorMoved = default
 
-[submodule]
-    recurse = true
-
 [push]
     autoSetupRemote = true
     followTags = true
@@ -57,6 +54,7 @@
 
 [fetch]
     writeCommitGraph = true
+    recurseSubmodules = true
 
 [url "git@github.com:"]
     pushInsteadOf = "https://github.com/"
