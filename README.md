@@ -28,7 +28,7 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 </details>
 
 <details>
-<summary>Structure (112 tracked files)</summary>
+<summary>Structure (113 tracked files)</summary>
 
 ```
 .
@@ -126,6 +126,7 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 │   │   ├── .vale.ini
 │   │   └── styles
 │   │       ├── Clay
+│   │       │   ├── Ambiguity.yml
 │   │       │   └── Framing.yml
 │   │       ├── STE
 │   │       │   ├── Ambiguity.yml
