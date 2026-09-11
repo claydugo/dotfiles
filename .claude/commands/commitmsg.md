@@ -23,6 +23,6 @@ Write a commit message for the diff above. Output the message in a fenced code b
 - Subject says what changed at the level of behavior or intent, not which files moved.
 - Body covers the motivation and any detail the subject can't hold: constraints, tradeoffs, rejected alternatives. The diff already shows the what: never restate it, never enumerate files or functions.
 - Wrap the body at 72 characters. Reference issues or PRs in a footer if the log shows that pattern.
-- Follow ASD-STE100 Simplified Technical English: active voice, present tense, one instruction per sentence, one meaning per word, no noun clusters longer than three words. Keep sentences under 20 words.
+- Follow ASD-STE100 Simplified Technical English: active voice, present tense, one instruction per sentence, one meaning per word, no noun clusters longer than three words.
 - Banned: "This commit", "comprehensive", "enhanced", "improved", "robust", "various", "minor", bullet lists that paraphrase hunks, and any AI attribution or co-author footer.
 - If the diff is empty, say so and stop.

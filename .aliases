@@ -54,7 +54,7 @@ fi
 alias la='cat ~/dotfiles/.aliases'
 
 if hash bat 2>/dev/null; then
-    alias la='bat ~/.aliases -l bash'
+    alias la='bat ~/dotfiles/.aliases -l bash'
 fi
 
 alias lt='python3 ~/dotfiles/scripts/tmate_restore.py'

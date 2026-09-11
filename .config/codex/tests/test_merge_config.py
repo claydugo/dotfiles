@@ -28,4 +28,8 @@ assert config["tui"]["alternate_screen"] is False
 assert config["projects"]["/tmp/project"]["trust_level"] == "trusted"
 subprocess.run(command, check=True)
 assert target.read_text(encoding="utf-8") == first
+target.write_text('model = """old\nmodel"""\n', encoding="utf-8")
+result = subprocess.run(command, capture_output=True)
+assert result.returncode != 0
+assert target.read_text(encoding="utf-8") == 'model = """old\nmodel"""\n'
 temporary_directory.cleanup()

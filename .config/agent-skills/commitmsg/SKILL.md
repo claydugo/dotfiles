@@ -15,6 +15,6 @@ Describe behavior and intent. Use the body for motivation, constraints, and trad
 
 Wrap the body at 72 characters. Preserve the repository's issue footer style when present.
 
-Use active voice and present tense. Keep sentences under 20 words.
+Use active voice and present tense.
 
 Do not use AI attribution or a co-author footer. If the diff is empty, say so and stop.

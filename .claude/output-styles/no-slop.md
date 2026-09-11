@@ -26,7 +26,7 @@ validator lists, or config blocks from lookalike code.
 This applies to chat replies, commits, comments, and docs. All of them.
 
 Follow ASD-STE100 Simplified Technical English. Active voice. Present tense.
-One topic per sentence. Keep sentences under 20 words.
+One topic per sentence.
 
 Never use an em-dash as a connector. Use a period, comma, colon, or parens.
 Never write `**Term** — definition` glossary bullets. Write a plain sentence.

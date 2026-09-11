@@ -56,7 +56,7 @@ path_prepend "$BUN_INSTALL/bin"
 path_prepend "$HOME/go/bin"
 path_prepend "$HOME/.local/bin"
 
-if [[ -n "$MSYSTEM" ]]; then
+if [[ -n "${MSYSTEM:-}" ]]; then
     for _d in /usr/bin /bin /mingw64/bin; do
         case ":$PATH:" in *":$_d:"*) ;; *) PATH="$PATH:$_d" ;; esac
     done
@@ -86,7 +86,7 @@ fi
 source "$HOME/dotfiles/.aliases"
 
 export NVM_DIR="$XDG_DATA_HOME/nvm"
-if [[ -n "$MSYSTEM" ]]; then
+if [[ -n "${MSYSTEM:-}" ]]; then
     # Git Bash's login profile aliases node/npm/etc. to winpty wrappers, which
     # collide with the function definitions below at parse time (syntax error).
     unalias node npm nvm codex nvim 2>/dev/null || true
@@ -116,7 +116,7 @@ if [ -s "$NVM_DIR/nvm.sh" ]; then
         [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
         nvm "$@"
     }
-elif [[ -n "$MSYSTEM" ]] && hash fnm 2>/dev/null; then
+elif [[ -n "${MSYSTEM:-}" ]] && hash fnm 2>/dev/null; then
     # Windows uses fnm (not nvm). Skip if nvm is wired up so we don't double-init.
     eval "$(fnm env --use-on-cd)"
 fi
@@ -126,7 +126,7 @@ codex() {
         unset -f node npm nvm
         . "$NVM_DIR/nvm.sh"
         [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
-    elif [[ -n "$MSYSTEM" ]] && hash fnm 2>/dev/null; then
+    elif [[ -n "${MSYSTEM:-}" ]] && hash fnm 2>/dev/null; then
         eval "$(fnm env --use-on-cd)"
     fi
     command codex "$@"
@@ -136,5 +136,7 @@ export PYGFX_PRINT_WGSL_ON_COMPILATION_ERROR=1
 export RUST_BACKTRACE=full
 if [[ "$(uname)" == "Linux" ]]; then
     export QT_QPA_PLATFORMTHEME=gtk3
-    export QT_QPA_PLATFORM=wayland
+    if [[ -n ${WAYLAND_DISPLAY:-} && -z ${SSH_CONNECTION:-} ]]; then
+        export QT_QPA_PLATFORM="${QT_QPA_PLATFORM:-wayland}"
+    fi
 fi

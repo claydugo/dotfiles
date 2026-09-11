@@ -16,7 +16,6 @@
     ],
     "PreToolUse": [
       {
-        "matcher": "Bash|apply_patch",
         "hooks": [
           {
             "type": "command",
@@ -29,7 +28,6 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "Bash|apply_patch",
         "hooks": [
           {
             "type": "command",

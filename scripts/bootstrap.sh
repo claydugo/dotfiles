@@ -30,11 +30,18 @@ is_ci() {
 
 link() {
     local src="$1" dst="$2"
-    if [ -L "$dst" ] && [ "$dst" -ef "$src" ]; then
+    if [ "$dst" -ef "$src" ]; then
         return 0
     fi
+    if [ ! -e "$src" ]; then
+        printf 'Missing configuration source: %s\n' "$src" >&2
+        return 1
+    fi
     if [ -e "$dst" ] || [ -L "$dst" ]; then
-        rm -rf "$dst"
+        local backup_directory
+        backup_directory=$(mktemp -d "${dst}.backup.$(date +%Y%m%dT%H%M%S).XXXXXX") || return
+        mv "$dst" "$backup_directory/original" || return
+        printf 'Saved existing configuration: %s\n' "$backup_directory/original"
     fi
     if [ "$OS" = windows ]; then
         ln -sfn "$(cygpath -w "$src")" "$dst"
@@ -114,7 +121,7 @@ install_winget() {
 install_nvm() {
     print_message "32" "Installing NVM (Node Version Manager)..."
     export NVM_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/nvm"
-    if [ ! -d "$NVM_DIR" ]; then
+    if [ ! -s "$NVM_DIR/nvm.sh" ]; then
         mkdir -p "$NVM_DIR"
         download_and_execute "https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh"
     else
@@ -189,7 +196,7 @@ setup_codex() {
     mkdir -p "$HOME/.codex" "$HOME/.agents/skills"
     link "$HOME/dotfiles/.claude/CLAUDE.md" "$HOME/.codex/AGENTS.md"
     link "$HOME/dotfiles/.config/agent-hooks/codex.json" "$HOME/.codex/hooks.json"
-    for command in commitmsg interview jj luaist pythonista rebase remove_slop; do
+    for command in commitmsg interview jj luaist pythonista rebase remove_slop rustacean; do
         skill="${command//_/-}"
         legacy="$HOME/.codex/skills/$skill"
         if [ -L "$legacy/SKILL.md" ] && [ "$legacy/SKILL.md" -ef "$HOME/dotfiles/.claude/commands/$command.md" ]; then
@@ -219,8 +226,12 @@ install_with_pixi_global() {
     local packages=("$@")
     print_message "32" "Installing global CLI tools with Pixi: ${packages[*]}"
     for pkg in "${packages[@]}"; do
-        if ! pixi global list 2>/dev/null | grep -Fq "── ${pkg}: "; then
-            pixi global install "$pkg"
+        if ! pixi global list --environment "$pkg" --json >/dev/null 2>&1; then
+            if [ "$pkg" = nvim ] && [ "$OS" = linux ]; then
+                pixi global install nvim --with 'unibilium==2.1.2'
+            else
+                pixi global install "$pkg"
+            fi
         else
             print_message "34" "$pkg is already installed globally."
         fi
@@ -288,7 +299,7 @@ fi
 
 print_message "32" "Symlinking configuration files..."
 link "$HOME/dotfiles/.bashrc" "$HOME/.bashrc"
-if [ ! -e "$HOME/.bash_profile" ] || [ -L "$HOME/.bash_profile" ]; then
+if [ ! -e "$HOME/.bash_profile" ] && [ ! -L "$HOME/.bash_profile" ]; then
     # shellcheck disable=SC2016
     printf '[ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"\n' > "$HOME/.bash_profile"
 fi
@@ -319,6 +330,7 @@ for item in "$HOME/dotfiles/.config"/*; do
     [[ "$base_item" == "wezterm" && "$OS" != "windows" ]] && continue
     link "$item" "$XDG_CONFIG_HOME/$base_item"
 done
+link "$HOME/dotfiles/.config/.ripgreprc" "$XDG_CONFIG_HOME/.ripgreprc"
 
 # Windows: psmux reads ~/.psmux.conf first. Point it at the single unified tmux
 # config (the same file real tmux uses via ~/.config/tmux/tmux.conf above).
@@ -331,6 +343,7 @@ link "$HOME/dotfiles/.ipython" "$HOME/.ipython"
 if [ "$OS" = windows ]; then
     install_winget wez.wezterm wezterm "WezTerm"
     install_winget marlocarlo.psmux psmux "psmux (tmux for Windows)"
+    install_winget jqlang.jq jq "jq"
 else
     print_message "32" "Installing Kitty terminal..."
     mkdir -p "$HOME/.local/bin/"
@@ -385,11 +398,11 @@ common_cli_tools=(
     hyperfine
     tree-sitter-cli
     ty
-    jq
     vale
 )
 
 unix_cli_tools=(
+    jq
     bash
     git
     curl
@@ -453,7 +466,7 @@ fi
 nvim --headless +qa
 
 print_message "32" "Installing Treesitter parsers and Mason packages..."
-nvim --headless -c "lua require('headless_install').run()" -c "qall"
+nvim --headless -c "lua local successful, result = pcall(function() return require('headless_install').run() end); if not successful or not result then print(result); vim.cmd('cquit 1') end" -c "qall"
 
 if [ "$OS" = linux ]; then
     if ! grep -q "fs.inotify.max_user_watches=100000" /etc/sysctl.conf; then

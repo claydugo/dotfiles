@@ -14,13 +14,17 @@ vim.api.nvim_create_autocmd("PackChanged", {
     local kind = ev.data.kind
     if name == "telescope-fzf-native.nvim" and (kind == "install" or kind == "update") then
       if vim.fn.has("win32") == 1 then
-        vim
+        local result = vim
           .system({ "cmake", "-S.", "-Bbuild", "-G", "Ninja", "-DCMAKE_BUILD_TYPE=Release" }, { cwd = ev.data.path })
           :wait()
-        vim.system({ "cmake", "--build", "build", "--config", "Release" }, { cwd = ev.data.path }):wait()
-        vim.system({ "cmake", "--install", "build", "--prefix", "build" }, { cwd = ev.data.path }):wait()
+        assert(result.code == 0, result.stderr)
+        result = vim.system({ "cmake", "--build", "build", "--config", "Release" }, { cwd = ev.data.path }):wait()
+        assert(result.code == 0, result.stderr)
+        result = vim.system({ "cmake", "--install", "build", "--prefix", "build" }, { cwd = ev.data.path }):wait()
+        assert(result.code == 0, result.stderr)
       else
-        vim.system({ "make" }, { cwd = ev.data.path }):wait()
+        local result = vim.system({ "make" }, { cwd = ev.data.path }):wait()
+        assert(result.code == 0, result.stderr)
       end
     elseif name == "nvim-treesitter" and kind == "update" then
       vim.schedule(function()
@@ -47,6 +51,10 @@ local function load(name)
     end
   end)
   if not ok then
+    if #vim.api.nvim_list_uis() == 0 then
+      vim.api.nvim_err_writeln(err)
+      vim.cmd("cquit 1")
+    end
     vim.schedule(function()
       vim.notify("plugins." .. name .. ": " .. err, vim.log.levels.ERROR)
     end)

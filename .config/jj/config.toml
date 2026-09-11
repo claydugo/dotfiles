@@ -12,7 +12,7 @@ diff-formatter = ":color-words"
 [signing]
 backend = "ssh"
 behavior = "own"
-key = "/home/clay/.ssh/id_ed25519"
+key = "~/.ssh/id_ed25519"
 
 [[--scope]]
 --when.repositories = ["~/projects/ramona"]

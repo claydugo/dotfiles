@@ -2,6 +2,7 @@ import os
 import re
 import sys
 import tempfile
+import tomllib
 
 source_path = sys.argv[1]
 target_path = sys.argv[2]
@@ -76,6 +77,7 @@ if not tui_found:
     merged.append("[tui]")
     merged.extend(value for value in source_tui if value)
 merged_text = "\n".join(merged).rstrip() + "\n"
+tomllib.loads(merged_text)
 
 try:
     with open(target_path, encoding="utf-8") as target_handle:

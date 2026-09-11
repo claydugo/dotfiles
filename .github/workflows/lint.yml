@@ -87,7 +87,7 @@ jobs:
         uses: JohnnyMorganz/stylua-action@479972f01e665acfcba96ada452c36608bdbbb5e # v4.1.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          version: latest
+          version: v0.20.0
           args: --check .config/nvim
 
       - name: selene

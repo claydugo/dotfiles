@@ -31,7 +31,7 @@ Run only the tests that target the change at hand. Never run a full test namespa
 
 # Prose Style (Docs, Commits, Comments, Wiki)
 
-Follow ASD-STE100 Simplified Technical English: active voice, present tense, one topic per sentence, one meaning per word, no noun clusters longer than three words. Keep sentences under 20 words.
+Follow ASD-STE100 Simplified Technical English: active voice, present tense, one topic per sentence, one meaning per word, no noun clusters longer than three words.
 
 Short declarative sentences. No em-dashes as connectors: use periods, commas, colons, or parens. No `**Term** — definition` glossary bullets. No meta-summaries ("three moving parts", "the flow is") and no over-explained tails. Prefer "verify" over "sanity-check". No templated user-facing strings that interpolate invented noun phrases; reword so the varying detail disappears.
 

@@ -90,6 +90,7 @@ CLAUDE.md
 # Vale: version the config and vocabulary, not the downloaded style packs
 .config/vale/native/
 .config/vale/styles/*
+!.config/vale/styles/Clay/
 !.config/vale/styles/config/
 !.config/vale/styles/STE/
 !.config/vale/styles/STE/**

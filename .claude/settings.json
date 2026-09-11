@@ -91,7 +91,6 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Write|Edit|Bash|PowerShell",
         "hooks": [
           {
             "type": "command",
@@ -104,7 +103,6 @@
     ],
     "PostToolUse": [
       {
-        "matcher": "Write|Edit|Bash|PowerShell",
         "hooks": [
           {
             "type": "command",
@@ -117,7 +115,6 @@
     ],
     "PostToolUseFailure": [
       {
-        "matcher": "Write|Edit|Bash|PowerShell",
         "hooks": [
           {
             "type": "command",

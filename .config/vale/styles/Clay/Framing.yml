@@ -1,0 +1,9 @@
+extends: existence
+message: "State the result directly."
+level: warning
+scope: text & ~blockquote
+ignorecase: true
+nonword: true
+tokens:
+  - '\bthe\s+simplest\s+mental\s+model\s+is\b'
+  - '(?m)^bottom\s+line\s*:'

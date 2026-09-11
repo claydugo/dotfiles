@@ -55,7 +55,7 @@ end
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   pattern = { "*" },
   callback = function()
-    if not vim.bo.modifiable then
+    if not vim.bo.modifiable or vim.bo.filetype == "markdown" then
       return
     end
     local view = vim.fn.winsaveview()
