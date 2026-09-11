@@ -14,13 +14,13 @@ vim.api.nvim_create_autocmd("PackChanged", {
     local kind = ev.data.kind
     if name == "telescope-fzf-native.nvim" and (kind == "install" or kind == "update") then
       if vim.fn.has("win32") == 1 then
+        vim.fn.mkdir(vim.fs.joinpath(ev.data.path, "build"), "p")
         local result = vim
-          .system({ "cmake", "-S.", "-Bbuild", "-G", "Ninja", "-DCMAKE_BUILD_TYPE=Release" }, { cwd = ev.data.path })
+          .system(
+            { "zig", "cc", "-target", "native-windows-gnu", "-shared", "-O3", "src/fzf.c", "-o", "build/libfzf.dll" },
+            { cwd = ev.data.path }
+          )
           :wait()
-        assert(result.code == 0, result.stderr)
-        result = vim.system({ "cmake", "--build", "build", "--config", "Release" }, { cwd = ev.data.path }):wait()
-        assert(result.code == 0, result.stderr)
-        result = vim.system({ "cmake", "--install", "build", "--prefix", "build" }, { cwd = ev.data.path }):wait()
         assert(result.code == 0, result.stderr)
       else
         local result = vim.system({ "make" }, { cwd = ev.data.path }):wait()

@@ -779,20 +779,21 @@ jobs:
       - name: Collect failure diagnostics (Windows)
         if: failure()
         run: |
-          mkdir -p /tmp/failure-bundle
+          failure_directory="$(cygpath -u "$RUNNER_TEMP")/failure-bundle"
+          mkdir -p "$failure_directory"
           cd "$HOME/dotfiles"
-          git status --porcelain > /tmp/failure-bundle/git-status.txt 2>&1 || true
-          git diff > /tmp/failure-bundle/git-diff.txt 2>&1 || true
-          cp -a "$HOME/.local/state/nvim-data" /tmp/failure-bundle/nvim-state 2>/dev/null || true
-          "$HOME/.pixi/bin/pixi.exe" global list > /tmp/failure-bundle/pixi-globals.txt 2>&1 || true
-          ls -la "$HOME" > /tmp/failure-bundle/home-listing.txt 2>&1 || true
+          git status --porcelain > "$failure_directory/git-status.txt" 2>&1 || true
+          git diff > "$failure_directory/git-diff.txt" 2>&1 || true
+          cp -a "$HOME/.local/state/nvim-data" "$failure_directory/nvim-state" 2>/dev/null || true
+          "$HOME/.pixi/bin/pixi.exe" global list > "$failure_directory/pixi-globals.txt" 2>&1 || true
+          ls -la "$HOME" > "$failure_directory/home-listing.txt" 2>&1 || true
 
       - name: Upload failure diagnostics (Windows)
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: failure-windows-${{ github.run_id }}-${{ github.run_attempt }}
-          path: /tmp/failure-bundle
+          path: ${{ runner.temp }}/failure-bundle
           if-no-files-found: ignore
 
       - name: Test summary
