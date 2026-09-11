@@ -28,7 +28,7 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 </details>
 
 <details>
-<summary>Structure (110 tracked files)</summary>
+<summary>Structure (112 tracked files)</summary>
 
 ```
 .
@@ -56,8 +56,6 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 │   │   ├── no_slop_post_bash.py
 │   │   ├── run_python.sh
 │   │   └── tests
-│   │       ├── test_duplicate_tests.py
-│   │       ├── test_inline_checks.py
 │   │       ├── test_post_bash_gate.py
 │   │       └── test_vale_integration.py
 │   ├── agent-skills
@@ -73,7 +71,9 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 │   │   │   └── SKILL.md
 │   │   ├── rebase
 │   │   │   └── SKILL.md
-│   │   └── remove-slop
+│   │   ├── remove-slop
+│   │   │   └── SKILL.md
+│   │   └── rustacean
 │   │       └── SKILL.md
 │   ├── codex
 │   │   ├── config.toml
@@ -125,6 +125,8 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 │   ├── vale
 │   │   ├── .vale.ini
 │   │   └── styles
+│   │       ├── Clay
+│   │       │   └── Framing.yml
 │   │       ├── STE
 │   │       │   ├── Ambiguity.yml
 │   │       │   ├── Articles.yml
@@ -143,8 +145,11 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 │   │               └── Clay
 │   │                   ├── accept.txt
 │   │                   └── reject.txt
-│   └── wezterm
-│       └── wezterm.lua
+│   ├── wezterm
+│   │   └── wezterm.lua
+│   └── wristslap
+│       ├── README.md
+│       └── config.toml
 ├── .gitattributes
 ├── .gitconfig
 ├── .gitignore
@@ -196,8 +201,8 @@ Installed by `scripts/bootstrap.sh` via [`pixi global`](https://pixi.sh/latest/g
 | [`hyperfine`](https://prefix.dev/channels/conda-forge/packages/hyperfine) | ✅ | ✅ | ✅ |
 | [`tree-sitter-cli`](https://prefix.dev/channels/conda-forge/packages/tree-sitter-cli) | ✅ | ✅ | ✅ |
 | [`ty`](https://prefix.dev/channels/conda-forge/packages/ty) | ✅ | ✅ | ✅ |
-| [`jq`](https://prefix.dev/channels/conda-forge/packages/jq) | ✅ | ✅ | ✅ |
 | [`vale`](https://prefix.dev/channels/conda-forge/packages/vale) | ✅ | ✅ | ✅ |
+| [`jq`](https://prefix.dev/channels/conda-forge/packages/jq) | ✅ | ✅ | — |
 | [`bash`](https://prefix.dev/channels/conda-forge/packages/bash) | ✅ | ✅ | — |
 | [`git`](https://prefix.dev/channels/conda-forge/packages/git) | ✅ | ✅ | — |
 | [`curl`](https://prefix.dev/channels/conda-forge/packages/curl) | ✅ | ✅ | — |
