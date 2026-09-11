@@ -35,13 +35,13 @@
 [diff]
     colorMoved = default
 
+[submodule]
+    recurse = true
+
 [push]
     autoSetupRemote = true
     followTags = true
     recurseSubmodules = no
-
-[submodule]
-    recurse = true
 
 [column]
     ui = auto
