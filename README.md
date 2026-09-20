@@ -28,7 +28,7 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 </details>
 
 <details>
-<summary>Structure (113 tracked files)</summary>
+<summary>Structure (108 tracked files)</summary>
 
 ```
 .
@@ -224,7 +224,7 @@ Installed by `scripts/bootstrap.sh` via [`pixi global`](https://pixi.sh/latest/g
 ## Neovim
 
 <details>
-<summary>Plugins (25, managed by <a href="https://neovim.io/doc/user/pack.html#vim.pack">vim.pack</a>)</summary>
+<summary>Plugins (26, managed by <a href="https://neovim.io/doc/user/pack.html#vim.pack">vim.pack</a>)</summary>
 
 - [luvit-meta](https://github.com/Bilal2453/luvit-meta) by `Bilal2453`
 - [browsher.nvim](https://github.com/claydugo/browsher.nvim) by `claydugo`
@@ -250,11 +250,12 @@ Installed by `scripts/bootstrap.sh` via [`pixi global`](https://pixi.sh/latest/g
 - [friendly-snippets](https://github.com/rafamadriz/friendly-snippets) by `rafamadriz`
 - [nvim-notify](https://github.com/rcarriga/nvim-notify) by `rcarriga`
 - [blink.cmp](https://github.com/saghen/blink.cmp) by `saghen`
+- [tree-sitter-wesl](https://github.com/webgpu-tools/tree-sitter-wesl) by `webgpu-tools`
 - [nvim-ts-autotag](https://github.com/windwp/nvim-ts-autotag) by `windwp`
 
 </details>
 
-**Treesitter parsers:** `python`, `lua`, `wgsl`, `cuda`, `rust`, `c`, `bash`, `html`, `markdown`, `markdown_inline`, `json`, `toml`, `yaml`, `jinja`, `jinja_inline`, `qmldir`, `luadoc`, `desktop`, `ssh_config`, `git_config`, `git_rebase`, `gitattributes`, `gitcommit`, `gitignore`
+**Treesitter parsers:** `python`, `lua`, `wgsl`, `wesl`, `cuda`, `rust`, `c`, `bash`, `html`, `markdown`, `markdown_inline`, `json`, `toml`, `yaml`, `jinja`, `jinja_inline`, `qmldir`, `luadoc`, `desktop`, `ssh_config`, `git_config`, `git_rebase`, `gitattributes`, `gitcommit`, `gitignore`
 
 **Mason packages:** `biome`, `harper-ls`, `vale-ls`, `bash-language-server`, `copilot-language-server`, `emmylua_ls`, `rust-analyzer`, `shellcheck`, `wgsl-analyzer@nightly`, `clangd`, `taplo`, `yaml-language-server`
 
