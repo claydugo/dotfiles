@@ -11,6 +11,20 @@ function M.config()
 
   local ensure_installed = require("packages").treesitter
 
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "TSUpdate",
+    callback = function()
+      require("nvim-treesitter.parsers").wesl = {
+        install_info = {
+          url = "https://github.com/webgpu-tools/tree-sitter-wesl",
+          revision = "9c3277a3347776e3af12011792b9e9dde3c13ccf",
+          queries = "queries/nvim",
+        },
+        tier = 2,
+      }
+    end,
+  })
+
   -- nvim-treesitter 1.x: highlight/indent are built into Neovim.
   -- tree-sitter-cli and compilers must be in the nvim pixi env.
   require("nvim-treesitter").setup()
@@ -45,20 +59,7 @@ function M.config()
 
   -- Auto-install missing parsers (skip in headless; headless_install.lua handles it)
   if #vim.api.nvim_list_uis() > 0 then
-    local installed = require("nvim-treesitter").get_installed()
-    local installed_set = {}
-    for _, p in ipairs(installed) do
-      installed_set[p] = true
-    end
-    local to_install = {}
-    for _, p in ipairs(ensure_installed) do
-      if not installed_set[p] then
-        table.insert(to_install, p)
-      end
-    end
-    if #to_install > 0 then
-      require("nvim-treesitter").install(to_install)
-    end
+    require("nvim-treesitter").install(ensure_installed)
   end
 
   -- Textobjects (1.x API: config is separate from keymaps)

@@ -51,13 +51,7 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 ├── .config
 │   ├── .ripgreprc
 │   ├── agent-hooks
-│   │   ├── codex.json
-│   │   ├── no_slop_check.py
-│   │   ├── no_slop_post_bash.py
-│   │   ├── run_python.sh
-│   │   └── tests
-│   │       ├── test_post_bash_gate.py
-│   │       └── test_vale_integration.py
+│   │   └── codex.json
 │   ├── agent-skills
 │   │   ├── commitmsg
 │   │   │   └── SKILL.md
@@ -262,7 +256,7 @@ Installed by `scripts/bootstrap.sh` via [`pixi global`](https://pixi.sh/latest/g
 
 **Treesitter parsers:** `python`, `lua`, `wgsl`, `cuda`, `rust`, `c`, `bash`, `html`, `markdown`, `markdown_inline`, `json`, `toml`, `yaml`, `jinja`, `jinja_inline`, `qmldir`, `luadoc`, `desktop`, `ssh_config`, `git_config`, `git_rebase`, `gitattributes`, `gitcommit`, `gitignore`
 
-**Mason packages:** `biome`, `harper-ls`, `vale-ls`, `bash-language-server`, `copilot-language-server`, `emmylua_ls`, `rust-analyzer`, `shellcheck`, `wgsl-analyzer`, `clangd`, `taplo`, `yaml-language-server`
+**Mason packages:** `biome`, `harper-ls`, `vale-ls`, `bash-language-server`, `copilot-language-server`, `emmylua_ls`, `rust-analyzer`, `shellcheck`, `wgsl-analyzer@nightly`, `clangd`, `taplo`, `yaml-language-server`
 
 ## Submodules
 

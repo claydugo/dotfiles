@@ -34,8 +34,9 @@ function M.config()
       end
       local missing = {}
       for _, pkg_name in ipairs(require("packages").mason) do
-        local pkg_ok, package = pcall(registry.get_package, pkg_name)
-        if not pkg_ok or not package:is_installed() then
+        local package_name, version = require("mason-core.package").Parse(pkg_name)
+        local pkg_ok, package = pcall(registry.get_package, package_name)
+        if not pkg_ok or not package:is_installed() or (version and package:get_installed_version() ~= version) then
           table.insert(missing, pkg_name)
         end
       end
@@ -44,9 +45,10 @@ function M.config()
       end
       registry.refresh(function()
         for _, pkg_name in ipairs(missing) do
-          local pkg_ok, package = pcall(registry.get_package, pkg_name)
-          if pkg_ok and not package:is_installed() then
-            package:install()
+          local package_name, version = require("mason-core.package").Parse(pkg_name)
+          local pkg_ok, package = pcall(registry.get_package, package_name)
+          if pkg_ok and (not package:is_installed() or (version and package:get_installed_version() ~= version)) then
+            package:install({ version = version })
           end
         end
       end)
@@ -154,6 +156,14 @@ function M.config()
         return
       end
       on_dir(vim.fs.root(bufnr, ".git") or vim.uv.cwd())
+    end,
+  })
+
+  vim.lsp.config("wgsl_analyzer", {
+    filetypes = { "wgsl", "wesl" },
+    root_dir = function(buffer, on_directory)
+      local root = vim.fs.root(buffer, "wesl.toml")
+      on_directory(root or vim.fs.root(buffer, ".git") or vim.uv.cwd())
     end,
   })
 

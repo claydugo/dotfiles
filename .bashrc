@@ -79,6 +79,10 @@ if hash fzf 2>/dev/null; then
     export FZF_ALT_C_COMMAND='fd --type d --hidden --exclude .git'
 fi
 
+if hash wristslap 2>/dev/null; then
+    eval "$(wristslap generate-shell-completion bash)"
+fi
+
 if hash starship 2>/dev/null; then
     eval "$(starship init bash)"
 fi

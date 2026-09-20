@@ -37,7 +37,6 @@
 
 [push]
     autoSetupRemote = true
-    followTags = true
     recurseSubmodules = no
 
 [column]

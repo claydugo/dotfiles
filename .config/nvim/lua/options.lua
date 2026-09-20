@@ -136,6 +136,7 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 -- with the jinja grammar instead and inject yaml into the content nodes
 -- (see after/queries/jinja/injections.scm).
 vim.filetype.add({
+  extension = { wesl = "wesl" },
   pattern = {
     [".*/recipe/meta%.ya?ml"] = "yaml.jinja",
   },

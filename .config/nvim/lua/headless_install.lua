@@ -6,14 +6,17 @@ function M.run()
   local successful = true
   local parsers = packages.treesitter
 
-  print("Installing Treesitter parsers...")
+  print("Installing and updating Treesitter parsers...")
   local ts_install = require("nvim-treesitter.install")
-  local ok, installed = ts_install.install(parsers, { force = true, summary = true }):pwait(300000)
+  local ok, installed = ts_install.install(parsers, { summary = true }):pwait(300000)
+  if ok and installed then
+    ok, installed = ts_install.update(parsers, { summary = true }):pwait(300000)
+  end
   if not ok then
-    print("Treesitter install error: " .. tostring(installed))
+    print("Treesitter setup error: " .. tostring(installed))
     successful = false
   elseif not installed then
-    print("Treesitter install failed for some parsers")
+    print("Treesitter setup failed for some parsers")
     successful = false
   end
 
@@ -39,21 +42,22 @@ function M.run()
   local done = 0
   local total = #mason_packages
   for _, pkg_name in ipairs(mason_packages) do
-    local pkg_ok, pkg = pcall(registry.get_package, pkg_name)
+    local package_name, version = require("mason-core.package").Parse(pkg_name)
+    local pkg_ok, pkg = pcall(registry.get_package, package_name)
     if not pkg_ok then
       print("  ✗ " .. pkg_name .. " not found in registry")
       successful = false
       done = done + 1
-    elseif pkg:is_installed() then
+    elseif pkg:is_installed() and (not version or pkg:get_installed_version() == version) then
       print("  ✓ " .. pkg_name .. " (already installed)")
       done = done + 1
     else
-      local handle = pkg:install()
+      local handle = pkg:install({ version = version })
       handle:once(
         "closed",
         vim.schedule_wrap(function()
           done = done + 1
-          if pkg:is_installed() then
+          if pkg:is_installed() and (not version or pkg:get_installed_version() == version) then
             print("  ✓ " .. pkg_name .. " installed (" .. done .. "/" .. total .. ")")
           else
             print("  ✗ " .. pkg_name .. " failed to install")

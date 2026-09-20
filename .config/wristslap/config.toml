@@ -1,3 +1,12 @@
 preset = "strict"
 record = true
 record_identifiers = true
+
+[rules."python.nested-fallbacks"]
+action = "review"
+
+[rules."python.forwarding-helper"]
+action = "review"
+
+[rules."python.json-roundtrip"]
+action = "review"
