@@ -1,6 +1,5 @@
 preset = "strict"
-record = true
-record_identifiers = true
+exclude = ["/{home,Users}/*/.claude/**"]
 
 [rules."python.nested-fallbacks"]
 action = "review"

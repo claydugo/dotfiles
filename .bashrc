@@ -93,7 +93,7 @@ export NVM_DIR="$XDG_DATA_HOME/nvm"
 if [[ -n "${MSYSTEM:-}" ]]; then
     # Git Bash's login profile aliases node/npm/etc. to winpty wrappers, which
     # collide with the function definitions below at parse time (syntax error).
-    unalias node npm nvm codex nvim 2>/dev/null || true
+    unalias node npm nvm codex claude nvim 2>/dev/null || true
 fi
 if [ -s "$NVM_DIR/nvm.sh" ]; then
     nvim() {
@@ -134,6 +134,17 @@ codex() {
         eval "$(fnm env --use-on-cd)"
     fi
     command codex "$@"
+}
+
+claude() {
+    if [ -s "$NVM_DIR/nvm.sh" ]; then
+        unset -f node npm nvm
+        . "$NVM_DIR/nvm.sh"
+        [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+    elif [[ -n "${MSYSTEM:-}" ]] && hash fnm 2>/dev/null; then
+        eval "$(fnm env --use-on-cd)"
+    fi
+    command claude "$@"
 }
 
 export PYGFX_PRINT_WGSL_ON_COMPILATION_ERROR=1

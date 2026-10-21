@@ -46,11 +46,11 @@ Rebuild all three executables from the local project:
 cargo install --path "$HOME/projects/wristslap" --locked --root "$HOME/.local"
 ```
 
-Codex uses `.config/agent-hooks/codex.json`. Claude uses `.claude/settings.json`.
-Both configurations call `~/.local/bin/wristslap`.
+Codex uses `.config/agent-hooks/codex.json`, which calls `~/.local/bin/wristslap`.
+Claude Code loads the hooks from the `wristslap@wristslap` plugin that `.claude/settings.json` enables.
+The plugin runs `wristslap` from `PATH`, which resolves to the same executable.
 Subsequent hook calls use the rebuilt executable.
 The build embeds the current strict preset.
 
 Committing files preserves their saved comparison baselines.
 Incomplete checks report diagnostics without instructions to edit code.
-Statistics recording remains enabled. Inspect it with `wristslap stats --watch`.

@@ -192,18 +192,13 @@ install_codex() {
 }
 
 setup_codex() {
-    local command legacy skill
-    mkdir -p "$HOME/.codex" "$HOME/.agents/skills"
+    local skill
+    mkdir -p "$HOME/.codex" "$HOME/.agents/skills" "$HOME/.claude/skills"
     link "$HOME/dotfiles/.claude/CLAUDE.md" "$HOME/.codex/AGENTS.md"
     link "$HOME/dotfiles/.config/agent-hooks/codex.json" "$HOME/.codex/hooks.json"
-    for command in commitmsg interview jj luaist pythonista rebase remove_slop rustacean; do
-        skill="${command//_/-}"
-        legacy="$HOME/.codex/skills/$skill"
-        if [ -L "$legacy/SKILL.md" ] && [ "$legacy/SKILL.md" -ef "$HOME/dotfiles/.claude/commands/$command.md" ]; then
-            rm -f "$legacy/SKILL.md"
-            rmdir "$legacy" 2>/dev/null || true
-        fi
+    for skill in commitmsg interview jj luaist pythonista rebase remove-slop rustacean upstream-issue; do
         link "$HOME/dotfiles/.config/agent-skills/$skill" "$HOME/.agents/skills/$skill"
+        link "$HOME/dotfiles/.config/agent-skills/$skill" "$HOME/.claude/skills/$skill"
     done
 }
 
@@ -316,7 +311,7 @@ if [ -f "$HOME/dotfiles/.condarc" ]; then
 fi
 
 mkdir -p "$HOME/.claude"
-for item in CLAUDE.md commands output-styles settings.json statusline.sh; do
+for item in CLAUDE.md output-styles settings.json statusline.sh; do
     link "$HOME/dotfiles/.claude/$item" "$HOME/.claude/$item"
 done
 setup_codex

@@ -20,7 +20,7 @@ alias gti='git'
 alias path='echo -e ${PATH//:/\\n}'
 alias t='tmux new-session -s $(hostname)'
 alias ta="tmux a"
-alias c='codex'
+alias c='claude'
 td() {
     local dir
     dir=$(mktemp -d "/tmp/${1:+$1.}XXXXX") || return 1

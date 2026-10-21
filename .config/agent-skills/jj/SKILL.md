@@ -1,16 +1,80 @@
 ---
 name: jj
-description: Plan atomic Jujutsu commits and print the commands. Use when the user asks how to split, describe, or push current jj changes.
+allowed-tools: Bash(jj diff:*), Bash(jj git init:*), Bash(jj log:*), Bash(jj status:*), Bash(jj bookmark:*), Bash(jj op log:*), Bash(jj evolog:*)
+description: Generate jj commands for committing changes
 ---
 
-Inspect `jj diff --git`, `jj status`, recent history, operation history, evolution history, and bookmarks.
+## Context
 
-Output commands and commit messages only. Never execute a mutating Jujutsu command.
+- Diff: !`jj diff --git`
+- Status: !`jj status`
+- Log: !`jj log -n 10`
+- Operation Log: !`jj op log -n 5`
+- Evolution Log: !`jj evolog -n 5`
+- Bookmarks: !`jj bookmark list`
 
-Group changes into atomic commits. Order infrastructure before implementation, tests, and docs.
+## Rules
 
-Use `jj split` for every commit except the final commit. Use `jj describe` and `jj new` for the final commit.
+- **Output commands only**: never execute jj mutating commands
+- **Atomic commits**: one logical change per commit
+- **Dependency order**: infrastructure → implementation → tests → docs
+- **Imperative mood**: "Add feature" not "Added feature"
 
-Choose a feature bookmark unless this is a personal repository or the user requests a direct push. Reuse a suitable bookmark on `@` or `@-` when present.
+## Workflow
 
-Put fetch and rebase before bookmark movement and push. Use imperative commit subjects.
+1. **Determine push strategy** (do this FIRST)
+   - Feature branch (default): repo uses PRs, `main` protected, needs review
+   - Direct push: personal repo OR user explicitly requests
+
+2. **Analyze changes** (group by: feature, fix, refactor, docs, config)
+
+3. **For each logical commit, output using `jj split`:**
+   ```
+   ## Commit N: [description]
+   Files: [list]
+   Command: jj split
+   Message:
+   [imperative summary]
+
+   [optional body]
+   ```
+   (Repeat for each commit except the last)
+
+4. **For the final commit:**
+   ```
+   ## Commit N: [description]
+   Files: [remaining files already in @]
+   Command: jj describe && jj new
+   Message:
+   [imperative summary]
+
+   [optional body]
+   ```
+   Note: `jj new` finalizes the commit (moves it from @ to @-) so the push sequence works.
+
+5. **Output push sequence:**
+   - **Feature branch:**
+     - Check the log for an existing bookmark on @ or @- (the parent)
+     - If a bookmark exists, use it; otherwise create a descriptive name
+     ```bash
+     jj git fetch && jj rebase -d main@origin
+     jj bookmark set <existing-or-new-name> -r @- --allow-backwards
+     jj git push -b <existing-or-new-name>
+     ```
+   - **Direct push:**
+     ```bash
+     jj git fetch && jj rebase -d main@origin
+     jj bookmark set main -r @- --allow-backwards
+     jj git push
+     ```
+
+## Quick Reference
+
+| Command | Use |
+|---------|-----|
+| `jj split` | Interactively split @ into multiple commits |
+| `jj describe` | Set/edit commit message for @ |
+| `jj new` | Create fresh empty working copy |
+| `jj squash` | Move changes into parent commit |
+| `jj absorb` | Auto-distribute fixes to ancestors |
+| `jj undo` | Revert last operation |

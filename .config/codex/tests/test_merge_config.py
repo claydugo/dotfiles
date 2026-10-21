@@ -21,7 +21,7 @@ command = [
 subprocess.run(command, check=True)
 first = target.read_text(encoding="utf-8")
 config = tomllib.loads(first)
-assert config["model"] == "gpt-5.6-sol"
+assert config["model"] == "gpt-6-astra"
 assert config["custom_setting"] is True
 assert config["tui"]["notifications"] is True
 assert config["tui"]["alternate_screen"] is False

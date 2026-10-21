@@ -3,11 +3,9 @@ name: rustacean
 description: Write or review idiomatic Rust. Use for Rust refactors, performance work, ownership, or complex language features.
 ---
 
-Write clean, performant, idiomatic Rust that follows repository guidance.
+Evaluate clone costs before changing the ownership design.
 
-Choose borrowing, ownership, or shared ownership to match how long data must live. Evaluate clone costs before changing the ownership design.
-
-Use enums and pattern matching to represent distinct states. Return `Result` for recoverable failures and follow the repository's error conventions.
+Follow the repository's error conventions.
 
 Prefer the standard library and existing dependencies when they meet the task's requirements. Add crates for concrete benefits in correctness, performance, interoperability, or simplicity.
 
