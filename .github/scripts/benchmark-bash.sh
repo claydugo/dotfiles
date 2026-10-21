@@ -17,24 +17,20 @@ hyperfine \
     --export-json "$tmpdir/result.json" \
     'bash -i -c exit'
 
-read -r median_ms stddev_ms min_ms <<<"$(python3 - "$tmpdir/result.json" <<'PY'
+python3 - "$tmpdir/result.json" "$OUTPUT" <<'PY'
 import json, sys
 with open(sys.argv[1]) as f:
     r = json.load(f)["results"][0]
-print(f"{r['median']*1000:.3f} {r['stddev']*1000:.3f} {r['min']*1000:.3f}")
+median_ms = r["median"] * 1000
+stddev_ms = r["stddev"] * 1000
+min_ms = r["min"] * 1000
+print(f"Median: {median_ms:.3f}ms (stddev {stddev_ms:.3f}ms, min {min_ms:.3f}ms)")
+with open(sys.argv[2], "w") as f:
+    json.dump(
+        [{"name": "bash startup time", "unit": "ms", "value": round(median_ms, 3), "range": f"±{stddev_ms:.3f}"}],
+        f,
+        indent=2,
+        allow_nan=False,
+    )
 PY
-)"
-
-echo "Median: ${median_ms}ms (stddev ${stddev_ms}ms, min ${min_ms}ms)"
-
-cat > "$OUTPUT" <<EOF
-[
-  {
-    "name": "bash startup time",
-    "unit": "ms",
-    "value": $median_ms,
-    "range": "±$stddev_ms"
-  }
-]
-EOF
 echo "Wrote $OUTPUT"
