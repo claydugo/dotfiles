@@ -28,7 +28,7 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 </details>
 
 <details>
-<summary>Structure (108 tracked files)</summary>
+<summary>Structure (102 tracked files)</summary>
 
 ```
 .
@@ -36,14 +36,6 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 ├── .bashrc
 ├── .claude
 │   ├── CLAUDE.md
-│   ├── commands
-│   │   ├── commitmsg.md
-│   │   ├── interview.md
-│   │   ├── jj.md
-│   │   ├── luaist.md
-│   │   ├── pythonista.md
-│   │   ├── rebase.md
-│   │   └── remove_slop.md
 │   ├── output-styles
 │   │   └── no-slop.md
 │   ├── settings.json
@@ -67,7 +59,9 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 │   │   │   └── SKILL.md
 │   │   ├── remove-slop
 │   │   │   └── SKILL.md
-│   │   └── rustacean
+│   │   ├── rustacean
+│   │   │   └── SKILL.md
+│   │   └── upstream-issue
 │   │       └── SKILL.md
 │   ├── codex
 │   │   ├── config.toml
