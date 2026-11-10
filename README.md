@@ -28,7 +28,7 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 </details>
 
 <details>
-<summary>Structure (102 tracked files)</summary>
+<summary>Structure (103 tracked files)</summary>
 
 ```
 .
@@ -61,7 +61,9 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 │   │   │   └── SKILL.md
 │   │   ├── rustacean
 │   │   │   └── SKILL.md
-│   │   └── upstream-issue
+│   │   ├── upstream-issue
+│   │   │   └── SKILL.md
+│   │   └── upstream-triage
 │   │       └── SKILL.md
 │   ├── codex
 │   │   ├── config.toml
