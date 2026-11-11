@@ -28,14 +28,13 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 </details>
 
 <details>
-<summary>Structure (103 tracked files)</summary>
+<summary>Structure (104 tracked files)</summary>
 
 ```
 .
 ├── .aliases
 ├── .bashrc
 ├── .claude
-│   ├── CLAUDE.md
 │   ├── output-styles
 │   │   └── no-slop.md
 │   ├── settings.json
@@ -46,6 +45,8 @@ Supports Linux, macOS, and Windows (MSYS2/Git Bash); OS-specific steps are skipp
 │   │   └── codex.json
 │   ├── agent-skills
 │   │   ├── commitmsg
+│   │   │   └── SKILL.md
+│   │   ├── deepen
 │   │   │   └── SKILL.md
 │   │   ├── interview
 │   │   │   └── SKILL.md
