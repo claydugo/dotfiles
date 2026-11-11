@@ -20,7 +20,7 @@ end
 local function search_display()
   local search = vim.fn.searchcount()
   local search_term = vim.fn.getreg("/")
-  if search.current > 0 then
+  if (search.current or 0) > 0 then
     return string.format("/%s [%d/%d]", search_term:gsub("%%", "%%%%"), search.current, search.total)
   else
     return ""
