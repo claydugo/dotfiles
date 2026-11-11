@@ -196,7 +196,7 @@ setup_codex() {
     mkdir -p "$HOME/.codex" "$HOME/.agents/skills" "$HOME/.claude/skills"
     link "$HOME/dotfiles/.claude/CLAUDE.md" "$HOME/.codex/AGENTS.md"
     link "$HOME/dotfiles/.config/agent-hooks/codex.json" "$HOME/.codex/hooks.json"
-    for skill in commitmsg interview jj luaist pythonista rebase remove-slop rustacean upstream-issue; do
+    for skill in commitmsg deepen interview jj luaist pythonista rebase remove-slop rustacean upstream-issue upstream-triage; do
         link "$HOME/dotfiles/.config/agent-skills/$skill" "$HOME/.agents/skills/$skill"
         link "$HOME/dotfiles/.config/agent-skills/$skill" "$HOME/.claude/skills/$skill"
     done

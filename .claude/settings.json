@@ -18,7 +18,7 @@
       "Bash(gh:*)"
     ],
     "ask": [],
-    "defaultMode": "auto",
+    "defaultMode": "bypassPermissions",
     "additionalDirectories": [
       "/home/clay"
     ]
@@ -32,19 +32,11 @@
   "enabledPlugins": {
     "clangd-lsp@claude-plugins-official": true,
     "lua-lsp@claude-plugins-official": true,
-    "playwright@claude-plugins-official": true,
+    "playwright@claude-plugins-official": false,
     "pyright-lsp@claude-plugins-official": false,
     "qt-development-skills@claude-plugins-official": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
-    "wristslap@wristslap": true
-  },
-  "extraKnownMarketplaces": {
-    "wristslap": {
-      "source": {
-        "source": "github",
-        "repo": "claydugo/wristslap"
-      }
-    }
+    "wgsl-analyzer-lsp@local": true
   },
   "outputStyle": "No slop",
   "sandbox": {
@@ -63,6 +55,7 @@
     ]
   },
   "spinnerTipsEnabled": false,
+  "subagentPromptCacheTtl": "1h",
   "alwaysThinkingEnabled": true,
   "effortLevel": "xhigh",
   "modelSettings": {
@@ -70,16 +63,19 @@
       "effortLevel": "high"
     }
   },
+  "autoCompactWindow": 700000,
   "companyAnnouncements": [
     "https://github.com/claydugo/dotfiles"
   ],
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
   "theme": "dark",
   "editorMode": "vim",
   "verbose": false,
   "switchModelsOnFlag": false,
   "remoteControlAtStartup": true,
+  "crossSessionInbound": "accept",
   "agentPushNotifEnabled": true,
   "autoMode": {
     "environment": [

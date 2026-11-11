@@ -14,6 +14,11 @@ Never use pip to install, upgrade, or uninstall anything. Use pixi for env manag
 
 IMPORTANT: Never run state-changing git or jj commands (add, commit, push, branch ops) unless I ask in that conversation. Read-only git is fine. After making changes, stop and report; at most mention they're ready to commit.
 
+Exception for the overnight port runs: a `port` agent may commit and amend its
+one commit on its own `port/<id>` branch, and the coordinator may commit on
+`overnight/*`, `day/*` and `port/*` and fast-forward `studio_ts` at the landing.
+Nothing else changes: no push, no other branch.
+
 # Testing
 
 Run only the tests that target the change at hand. Never run a full test namespace blindly.

@@ -160,6 +160,7 @@ function M.config()
   })
 
   vim.lsp.config("wgsl_analyzer", {
+    cmd = { vim.fs.joinpath(vim.env.HOME, ".cargo/bin/wgsl-analyzer") },
     filetypes = { "wgsl", "wesl" },
     root_dir = function(buffer, on_directory)
       local root = vim.fs.root(buffer, "wesl.toml")
