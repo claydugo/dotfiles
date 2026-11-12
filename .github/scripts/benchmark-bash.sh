@@ -20,7 +20,7 @@ hyperfine \
 python3 - "$tmpdir/result.json" "$OUTPUT" <<'PY'
 import json, sys
 with open(sys.argv[1]) as f:
-    r = json.load(f)["results"][0]
+    r = json.load(f)["results"][0]["summary"]["time_wall_clock"]
 median_ms = r["median"] * 1000
 stddev_ms = r["stddev"] * 1000
 min_ms = r["min"] * 1000
